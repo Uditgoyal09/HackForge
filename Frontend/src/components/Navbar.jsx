@@ -1,13 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ user, onLogout }) => {
   return (
     <nav className="navbar glass">
       <div className="navbar-container">
-        <a href="/" className="navbar-logo">
+        <Link to="/" className="navbar-logo">
           <span className="logo-icon">▲</span> HackForge
-        </a>
+        </Link>
         
         <ul className="nav-menu">
           <li className="nav-item">
@@ -25,8 +26,17 @@ const Navbar = () => {
         </ul>
         
         <div className="nav-buttons">
-          <button className="btn btn-outline">Log In</button>
-          <button className="btn btn-primary">Sign Up</button>
+          {user ? (
+            <div className="user-profile">
+              <span className="user-greeting">Hi, {user.name}</span>
+              <button onClick={onLogout} className="btn btn-outline">Log Out</button>
+            </div>
+          ) : (
+            <>
+              <Link to="/login" className="btn btn-outline">Log In</Link>
+              <Link to="/signup" className="btn btn-primary">Sign Up</Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
