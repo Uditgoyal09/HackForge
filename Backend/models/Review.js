@@ -27,4 +27,4 @@ reviewSchema.pre('save', function(next) {
   next();
 });
 
-export default mongoose.model('Review', reviewSchema);
+export default mongoose.models.Review || mongoose.model('Review', reviewSchema);

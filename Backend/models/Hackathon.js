@@ -4,10 +4,10 @@ const hackathonSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   theme: { type: String },
-  mode: { 
-    type: String, 
-    enum: ['online', 'offline', 'hybrid'], 
-    default: 'online' 
+  mode: {
+    type: String,
+    enum: ['online', 'offline', 'hybrid'],
+    default: 'online'
   },
   venue: { type: String },
   startDate: { type: Date, required: true },
@@ -18,11 +18,11 @@ const hackathonSchema = new mongoose.Schema({
   maxTeamSize: { type: Number, default: 4 },
   rules: { type: String },
   judgingCriteria: { type: String },
-  organizer: { 
-    type: mongoose.Schema.Types.ObjectId, 
+  organizer: {
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   }
 }, { timestamps: true });
 
-export default mongoose.model('Hackathon', hackathonSchema);
+export default mongoose.models.Hackathon || mongoose.model('Hackathon', hackathonSchema);
