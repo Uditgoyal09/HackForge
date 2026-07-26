@@ -14,6 +14,7 @@ import OrganizerDashboard from './pages/dashboards/OrganizerDashboard';
 import JudgeDashboard from './pages/dashboards/JudgeDashboard';
 import AdminDashboard from './pages/dashboards/AdminDashboard';
 import CreateHackathon from './pages/dashboards/CreateHackathon';
+import EditHackathon from './pages/dashboards/EditHackathon';
 
 import './App.css';
 
@@ -50,6 +51,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['organizer', 'admin']}>
                 <CreateHackathon />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/edit-hackathon/:id" 
+            element={
+              <ProtectedRoute allowedRoles={['organizer', 'admin']}>
+                <EditHackathon />
               </ProtectedRoute>
             } 
           />

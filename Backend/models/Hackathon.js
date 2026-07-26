@@ -18,6 +18,7 @@ const hackathonSchema = new mongoose.Schema({
   maxTeamSize: { type: Number, default: 4 },
   rules: { type: String },
   judgingCriteria: { type: String },
+  registrationOpen: { type: Boolean, default: true },
   organizer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

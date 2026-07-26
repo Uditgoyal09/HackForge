@@ -59,6 +59,19 @@ export const getAllHackathons = async (req, res) => {
   }
 };
 
+// @desc    Get hackathons by organizer
+// @route   GET /api/hackathons/organizer/me
+// @access  Private (Organizer)
+export const getHackathonsByOrganizer = async (req, res) => {
+  try {
+    const hackathons = await Hackathon.find({ organizer: req.user.userId })
+      .sort({ createdAt: -1 });
+    res.status(200).json(hackathons);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error fetching organizer hackathons' });
+  }
+};
+
 // @desc    Get hackathon by ID
 // @route   GET /api/hackathons/:id
 // @access  Public
