@@ -28,6 +28,7 @@ const Navbar = ({ user, onLogout }) => {
         <div className="nav-buttons">
           {user ? (
             <div className="user-profile">
+              <Link to={`/${user.role}-dashboard`} className="nav-links">Dashboard</Link>
               <span className="user-greeting">Hi, {user.name}</span>
               <button onClick={onLogout} className="btn btn-outline">Log Out</button>
             </div>

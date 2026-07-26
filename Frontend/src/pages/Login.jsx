@@ -33,7 +33,7 @@ const Login = ({ onLoginSuccess }) => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       if (onLoginSuccess) onLoginSuccess(data.user);
-      navigate('/');
+      navigate(`/${data.user.role}-dashboard`);
     } catch (err) {
       setError(err.message);
     } finally {
