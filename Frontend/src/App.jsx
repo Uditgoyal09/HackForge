@@ -4,6 +4,8 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Hackathons from './pages/Hackathons';
+import HackathonDetails from './pages/HackathonDetails';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Dashboards
@@ -11,6 +13,7 @@ import ParticipantDashboard from './pages/dashboards/ParticipantDashboard';
 import OrganizerDashboard from './pages/dashboards/OrganizerDashboard';
 import JudgeDashboard from './pages/dashboards/JudgeDashboard';
 import AdminDashboard from './pages/dashboards/AdminDashboard';
+import CreateHackathon from './pages/dashboards/CreateHackathon';
 
 import './App.css';
 
@@ -36,10 +39,20 @@ function App() {
         <Navbar user={user} onLogout={handleLogout} />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/hackathons" element={<Hackathons />} />
+          <Route path="/hackathons/:id" element={<HackathonDetails />} />
           <Route path="/login" element={<Login onLoginSuccess={setUser} />} />
           <Route path="/signup" element={<Signup onLoginSuccess={setUser} />} />
           
           {/* Protected Dashboard Routes */}
+          <Route 
+            path="/create-hackathon" 
+            element={
+              <ProtectedRoute allowedRoles={['organizer', 'admin']}>
+                <CreateHackathon />
+              </ProtectedRoute>
+            } 
+          />
           <Route 
             path="/participant-dashboard" 
             element={

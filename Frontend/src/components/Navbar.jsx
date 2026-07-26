@@ -12,16 +12,16 @@ const Navbar = ({ user, onLogout }) => {
         
         <ul className="nav-menu">
           <li className="nav-item">
-            <a href="#organizers" className="nav-links">Organizers</a>
+            <Link to="/hackathons" className="nav-links">Hackathons</Link>
           </li>
           <li className="nav-item">
-            <a href="#participants" className="nav-links">Participants</a>
+            <a href="#events" className="nav-links">Events</a>
           </li>
           <li className="nav-item">
-            <a href="#judges" className="nav-links">Judges</a>
+            <a href="#leaderboard" className="nav-links">Leaderboard</a>
           </li>
           <li className="nav-item">
-            <a href="#admin" className="nav-links">Admin</a>
+            <a href="#about" className="nav-links">About</a>
           </li>
         </ul>
         

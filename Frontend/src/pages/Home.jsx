@@ -1,13 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
 import './Home.css';
-
-const FEATURED_HACKATHONS = [
-  { id: 1, title: 'Global AI Hackathon 2026', theme: 'Artificial Intelligence', prize: '$50,000', participants: 1200, status: 'Active' },
-  { id: 2, title: 'Web3 Innovators', theme: 'Blockchain & DeFi', prize: '$30,000', participants: 850, status: 'Active' },
-  { id: 3, title: 'EcoTech Challenge', theme: 'Sustainability', prize: '$20,000', participants: 500, status: '  Registration Open' },
-];
 
 const UPCOMING_EVENTS = [
   { id: 1, title: 'React Workshop', date: 'August 10, 2026', type: 'Workshop' },
@@ -23,6 +17,24 @@ const STATS = [
 ];
 
 const Home = () => {
+  const [featuredHackathons, setFeaturedHackathons] = useState([]);
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  useEffect(() => {
+    const fetchHackathons = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/hackathons');
+        if (response.ok) {
+          const data = await response.json();
+          // Take the top 3 most recent hackathons for the featured section
+          setFeaturedHackathons(data.slice(0, 3));
+        }
+      } catch (error) {
+        console.error('Error fetching hackathons:', error);
+      }
+    };
+    fetchHackathons();
+  }, []);
   return (
     <div className="home-container">
       <Hero />
@@ -44,18 +56,26 @@ const Home = () => {
         <div className="section-container">
           <h2 className="section-title">Featured <span className="text-gradient">Hackathons</span></h2>
           <div className="cards-grid">
-            {FEATURED_HACKATHONS.map(hackathon => (
-              <div key={hackathon.id} className="hackathon-card glass">
-                <div className="card-badge">{hackathon.status}</div>
-                <h3 className="card-title">{hackathon.title}</h3>
-                <p className="card-theme">Theme: {hackathon.theme}</p>
-                <div className="card-footer">
-                  <span className="card-prize">{hackathon.prize} Prize Pool</span>
-                  <span className="card-participants">{hackathon.participants} Enrolled</span>
+            {featuredHackathons.length > 0 ? (
+              featuredHackathons.map(hackathon => (
+                <div key={hackathon._id} className="hackathon-card glass">
+                  <div className="card-badge">{hackathon.status || 'Active'}</div>
+                  <h3 className="card-title">{hackathon.title}</h3>
+                  <p className="card-theme">Theme: {hackathon.theme || 'Open Innovation'}</p>
+                  <div className="card-footer">
+                    <span className="card-prize">{hackathon.prizePool || 'TBA'} Prize Pool</span>
+                    <span className="card-participants">{hackathon.mode || 'online'} Mode</span>
+                  </div>
+                  {user ? (
+                    <Link to={`/hackathons/${hackathon._id}`} className="btn btn-outline card-btn">Participate</Link>
+                  ) : (
+                    <Link to="/login" className="btn btn-outline card-btn">Login to Participate</Link>
+                  )}
                 </div>
-                <Link to="/login" className="btn btn-outline card-btn">View Details</Link>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p style={{textAlign: 'center', color: 'var(--text-secondary)'}}>No hackathons available yet.</p>
+            )}
           </div>
         </div>
       </section>

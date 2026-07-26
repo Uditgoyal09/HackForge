@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Dashboard.css';
 
 const OrganizerDashboard = () => {
@@ -15,7 +16,7 @@ const OrganizerDashboard = () => {
         <div className="dashboard-card glass">
           <h2 className="card-title">📅 Active Events</h2>
           <p className="card-content">You currently have 0 active hackathons. Create your first event to get started.</p>
-          <button className="btn btn-primary" style={{marginTop: '1.25rem'}}>Create Hackathon</button>
+          <Link to="/create-hackathon" className="btn btn-primary" style={{marginTop: '1.25rem', display: 'inline-block'}}>Create Hackathon</Link>
         </div>
         <div className="dashboard-card glass">
           <h2 className="card-title">👥 Participants</h2>
