@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
+import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -35,7 +35,7 @@ function App() {
       <div className="app-container">
         <Navbar user={user} onLogout={handleLogout} />
         <Routes>
-          <Route path="/" element={<Hero />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login onLoginSuccess={setUser} />} />
           <Route path="/signup" element={<Signup onLoginSuccess={setUser} />} />
           
