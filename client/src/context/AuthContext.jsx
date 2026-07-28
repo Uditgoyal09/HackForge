@@ -39,23 +39,47 @@ export const AuthProvider = ({ children }) => {
     restoreSession();
   }, []);
 
-  const login = async (email, password) => {
+  const setAuthSession = (userData, userToken) => {
+    if (userToken) {
+      localStorage.setItem('hackverse_token', userToken);
+      setToken(userToken);
+    }
+    if (userData) {
+      setUser(userData);
+    }
+  };
+
+  const login = async (arg1, arg2) => {
+    // Handle session setting when passed (userDataObject, tokenString)
+    if (typeof arg1 === 'object' && arg1 !== null) {
+      const userData = arg1;
+      const userToken = arg2 || userData.token;
+      setAuthSession(userData, userToken);
+      return userData;
+    }
+
+    // Handle credentials login when passed (emailString, passwordString)
+    const email = arg1;
+    const password = arg2;
+
     const res = await authService.login({ email, password });
     if (res.success && res.data?.token) {
-      localStorage.setItem('hackverse_token', res.data.token);
-      setToken(res.data.token);
-      setUser(res.data);
+      setAuthSession(res.data, res.data.token);
       return res.data;
     }
     throw new Error(res.message || 'Login failed');
   };
 
-  const signup = async (name, email, password) => {
-    const res = await authService.signup({ name, email, password });
+  const signup = async (dataOrName, email, password) => {
+    let res;
+    if (typeof dataOrName === 'object' && dataOrName !== null) {
+      res = await authService.signup(dataOrName);
+    } else {
+      res = await authService.signup({ name: dataOrName, email, password });
+    }
+
     if (res.success && res.data?.token) {
-      localStorage.setItem('hackverse_token', res.data.token);
-      setToken(res.data.token);
-      setUser(res.data);
+      setAuthSession(res.data, res.data.token);
       return res.data;
     }
     throw new Error(res.message || 'Signup failed');

@@ -167,8 +167,8 @@ const signup = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
   const { email, password, loginAs } = req.body || {};
 
-  if (!email || !email.trim() || !password) {
-    throw new ApiError(400, 'Please provide both email and password');
+  if (!email || typeof email !== 'string' || !email.trim() || !password || typeof password !== 'string') {
+    throw new ApiError(400, 'Please provide both email and password as valid text strings');
   }
 
   const cleanEmail = email.trim().toLowerCase();
