@@ -1,0 +1,388 @@
+{
+  "info": {
+    "_postman_id": "hackverse-api-collection-2026",
+    "name": "HackVerse Backend API",
+    "description": "Complete REST API Collection for HackVerse Hackathon Management Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Participant Signup",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Participant\",\n  \"email\": \"participant@example.com\",\n  \"password\": \"Password@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/signup", "host": ["{{baseUrl}}"], "path": ["auth", "signup"] }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"organizer@hackverse.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Get Current User (Me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{participantToken}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{participantToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Password@123\",\n  \"newPassword\": \"NewPassword@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/change-password", "host": ["{{baseUrl}}"], "path": ["auth", "change-password"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{participantToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated John\",\n  \"bio\": \"Fullstack Developer\",\n  \"skills\": [\"React\", \"Node.js\"],\n  \"github\": \"https://github.com/example\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/users/me", "host": ["{{baseUrl}}"], "path": ["users", "me"] }
+          }
+        },
+        {
+          "name": "Get Public Profile",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/users/{{userId}}/profile", "host": ["{{baseUrl}}"], "path": ["users", "{{userId}}", "profile"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hackathons",
+      "item": [
+        {
+          "name": "List All Hackathons",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/hackathons?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["hackathons"] }
+          }
+        },
+        {
+          "name": "Create Hackathon",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{organizerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Web3 Devfest 2026\",\n  \"description\": \"Build decentralized applications.\",\n  \"mode\": \"online\",\n  \"registrationDeadline\": \"2026-08-01T00:00:00.000Z\",\n  \"startDate\": \"2026-08-05T00:00:00.000Z\",\n  \"submissionDeadline\": \"2026-08-10T00:00:00.000Z\",\n  \"endDate\": \"2026-08-12T00:00:00.000Z\",\n  \"prizePool\": 25000,\n  \"maxTeamSize\": 4,\n  \"judgingCriteria\": [\n    { \"name\": \"Innovation\", \"description\": \"Novelty\", \"maxScore\": 50 },\n    { \"name\": \"Technical Execution\", \"description\": \"Code depth\", \"maxScore\": 50 }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/hackathons", "host": ["{{baseUrl}}"], "path": ["hackathons"] }
+          }
+        },
+        {
+          "name": "Get Hackathon by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/hackathons/{{hackathonId}}", "host": ["{{baseUrl}}"], "path": ["hackathons", "{{hackathonId}}"] }
+          }
+        },
+        {
+          "name": "Update Hackathon",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{organizerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Web3 Devfest 2026 (Updated)\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/hackathons/{{hackathonId}}", "host": ["{{baseUrl}}"], "path": ["hackathons", "{{hackathonId}}"] }
+          }
+        },
+        {
+          "name": "Open Registration",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{organizerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/hackathons/{{hackathonId}}/registration/open", "host": ["{{baseUrl}}"], "path": ["hackathons", "{{hackathonId}}", "registration", "open"] }
+          }
+        },
+        {
+          "name": "Close Registration",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{organizerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/hackathons/{{hackathonId}}/registration/close", "host": ["{{baseUrl}}"], "path": ["hackathons", "{{hackathonId}}", "registration", "close"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Registrations",
+      "item": [
+        {
+          "name": "Register for Hackathon",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{participantToken}}" }],
+            "url": { "raw": "{{baseUrl}}/hackathons/{{hackathonId}}/register", "host": ["{{baseUrl}}"], "path": ["hackathons", "{{hackathonId}}", "register"] }
+          }
+        },
+        {
+          "name": "My Registrations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{participantToken}}" }],
+            "url": { "raw": "{{baseUrl}}/registrations/me", "host": ["{{baseUrl}}"], "path": ["registrations", "me"] }
+          }
+        },
+        {
+          "name": "Organizer View Registrations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{organizerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/hackathons/{{hackathonId}}/registrations", "host": ["{{baseUrl}}"], "path": ["hackathons", "{{hackathonId}}", "registrations"] }
+          }
+        },
+        {
+          "name": "Approve Registration",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{organizerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/registrations/{{registrationId}}/approve", "host": ["{{baseUrl}}"], "path": ["registrations", "{{registrationId}}", "approve"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Teams & Invitations",
+      "item": [
+        {
+          "name": "Create Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{participantToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Crypto Coders\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/hackathons/{{hackathonId}}/teams", "host": ["{{baseUrl}}"], "path": ["hackathons", "{{hackathonId}}", "teams"] }
+          }
+        },
+        {
+          "name": "Invite Member",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{participantToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"teammate@example.com\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/teams/{{teamId}}/invitations", "host": ["{{baseUrl}}"], "path": ["teams", "{{teamId}}", "invitations"] }
+          }
+        },
+        {
+          "name": "My Invitations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{participant2Token}}" }],
+            "url": { "raw": "{{baseUrl}}/invitations/me", "host": ["{{baseUrl}}"], "path": ["invitations", "me"] }
+          }
+        },
+        {
+          "name": "Accept Invitation",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{participant2Token}}" }],
+            "url": { "raw": "{{baseUrl}}/invitations/{{invitationId}}/accept", "host": ["{{baseUrl}}"], "path": ["invitations", "{{invitationId}}", "accept"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Submissions",
+      "item": [
+        {
+          "name": "Submit Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{participantToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectName\": \"DeFi Swap Protocol\",\n  \"problemStatement\": \"High trading fees\",\n  \"solution\": \"Automated market maker protocol\",\n  \"githubRepository\": \"https://github.com/example/defi\",\n  \"techStack\": [\"Solidity\", \"React\", \"Node.js\"]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/hackathons/{{hackathonId}}/submissions", "host": ["{{baseUrl}}"], "path": ["hackathons", "{{hackathonId}}", "submissions"] }
+          }
+        },
+        {
+          "name": "Get Submission by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{participantToken}}" }],
+            "url": { "raw": "{{baseUrl}}/submissions/{{submissionId}}", "host": ["{{baseUrl}}"], "path": ["submissions", "{{submissionId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Judging & Reviews",
+      "item": [
+        {
+          "name": "Assign Judge",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{organizerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/submissions/{{submissionId}}/judges/{{judgeId}}", "host": ["{{baseUrl}}"], "path": ["submissions", "{{submissionId}}", "judges", "{{judgeId}}"] }
+          }
+        },
+        {
+          "name": "Judge Assignments",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{judgeToken}}" }],
+            "url": { "raw": "{{baseUrl}}/judge/assignments", "host": ["{{baseUrl}}"], "path": ["judge", "assignments"] }
+          }
+        },
+        {
+          "name": "Submit Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{judgeToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"criteriaScores\": [\n    { \"criterionName\": \"Innovation\", \"score\": 45 },\n    { \"criterionName\": \"Technical Execution\", \"score\": 45 }\n  ],\n  \"feedback\": \"Excellent protocol implementation!\",\n  \"status\": \"submitted\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/submissions/{{submissionId}}/reviews", "host": ["{{baseUrl}}"], "path": ["submissions", "{{submissionId}}", "reviews"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Leaderboard & Results",
+      "item": [
+        {
+          "name": "Publish Results",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{organizerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/hackathons/{{hackathonId}}/publish-results", "host": ["{{baseUrl}}"], "path": ["hackathons", "{{hackathonId}}", "publish-results"] }
+          }
+        },
+        {
+          "name": "Get Leaderboard",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/hackathons/{{hackathonId}}/leaderboard", "host": ["{{baseUrl}}"], "path": ["hackathons", "{{hackathonId}}", "leaderboard"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin & Analytics",
+      "item": [
+        {
+          "name": "Admin Analytics",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/analytics", "host": ["{{baseUrl}}"], "path": ["admin", "analytics"] }
+          }
+        },
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/users", "host": ["{{baseUrl}}"], "path": ["admin", "users"] }
+          }
+        },
+        {
+          "name": "Block User",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/users/{{userId}}/block", "host": ["{{baseUrl}}"], "path": ["admin", "users", "{{userId}}", "block"] }
+          }
+        },
+        {
+          "name": "Unblock User",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/users/{{userId}}/unblock", "host": ["{{baseUrl}}"], "path": ["admin", "users", "{{userId}}", "unblock"] }
+          }
+        },
+        {
+          "name": "Activity Logs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/activity-logs", "host": ["{{baseUrl}}"], "path": ["admin", "activity-logs"] }
+          }
+        }
+      ]
+    }
+  ]
+}
