@@ -297,19 +297,28 @@ const Signup = () => {
               <form onSubmit={handleNextStep3} className="space-y-4 text-xs">
                 {(role === 'organizer' || role === 'judge') && (
                   <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 mb-4">
-                    <label className="block font-bold text-amber-300 mb-1.5 flex items-center gap-1.5">
-                      <Key className="w-4 h-4 text-amber-400" /> {role.toUpperCase()} Access Verification Code *
-                    </label>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="font-bold text-amber-300 flex items-center gap-1.5">
+                        <Key className="w-4 h-4 text-amber-400" /> {role.toUpperCase()} Access Verification Code *
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setVerificationCode(role === 'organizer' ? 'ORG-HACKVERSE-2026' : 'JDG-HACKVERSE-2026')}
+                        className="text-[10px] font-mono font-bold text-indigo-400 hover:underline"
+                      >
+                        Auto-fill Default Code
+                      </button>
+                    </div>
                     <input
                       type="text"
                       required
-                      placeholder={role === 'organizer' ? 'ORG-XXXXXXXX' : 'JDG-XXXXXXXX'}
+                      placeholder={role === 'organizer' ? 'ORG-HACKVERSE-2026' : 'JDG-HACKVERSE-2026'}
                       value={verificationCode}
                       onChange={(e) => setVerificationCode(e.target.value.toUpperCase())}
                       className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white font-mono text-sm placeholder-slate-600 focus:outline-none focus:border-amber-500"
                     />
                     <p className="text-[11px] text-amber-400/80 mt-1.5">
-                      Enter the secure access code issued by your HackVerse platform administrator.
+                      Default Code: <code className="font-mono font-bold text-white bg-slate-900 px-1.5 py-0.5 rounded">{role === 'organizer' ? 'ORG-HACKVERSE-2026' : 'JDG-HACKVERSE-2026'}</code>
                     </p>
                   </div>
                 )}

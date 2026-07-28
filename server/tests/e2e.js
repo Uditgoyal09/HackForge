@@ -78,19 +78,22 @@ async function runE2ETests() {
     // 3. Admin Setup & Authentication
     {
       const User = require('../models/User');
-      let admin = await User.findOne({ role: 'admin' });
+      let admin = await User.findOne({ email: 'e2e_admin@hackverse.dev' });
       if (!admin) {
         admin = await User.create({
           name: 'E2E Test Super Admin',
-          email: 'admin@hackverse.com',
+          email: 'e2e_admin@hackverse.dev',
           password: 'password123',
           role: 'admin',
         });
+      } else {
+        admin.password = 'password123';
+        await admin.save();
       }
 
       const loginAdmin = await request('/auth/login', {
         method: 'POST',
-        body: { email: admin.email, password: 'password123', loginAs: 'admin' },
+        body: { email: 'e2e_admin@hackverse.dev', password: 'password123', loginAs: 'admin' },
       });
 
       if (loginAdmin.status === 200 && loginAdmin.data?.data?.token) {
@@ -242,17 +245,12 @@ async function runE2ETests() {
         }
       }
 
-      // Sign up Organizer 2
-      const org2Signup = await request('/auth/signup', { method: 'POST', body: { name: 'Organizer 2', email: `org2_${Date.now()}@hackverse.dev`, password: 'Test@123456' } });
+      // Sign up Organizer 2 with master access code
+      const org2SignupData = { name: 'Organizer 2', email: `org2_${Date.now()}@hackverse.dev`, password: 'Test@123456', role: 'organizer', verificationCode: 'ORG-HACKVERSE-2026' };
+      const org2Signup = await request('/auth/signup', { method: 'POST', body: org2SignupData });
       if (org2Signup.status === 201) {
         org2Id = org2Signup.data.data._id;
-        // Promote to organizer via Admin API
-        await request(`/admin/users/${org2Id}/role`, { method: 'PATCH', token: adminToken, body: { role: 'organizer' } });
-        // Refresh Org 2 token
-        const org2Relogin = await request('/auth/login', { method: 'POST', body: { email: org2Signup.data.data.email, password: 'Test@123456' } });
-        if (org2Relogin.status === 200) {
-          org2Token = org2Relogin.data.data.token;
-        }
+        org2Token = org2Signup.data.data.token;
       }
     }
 
