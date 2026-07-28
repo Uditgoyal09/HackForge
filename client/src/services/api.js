@@ -8,28 +8,38 @@ const api = axios.create({
   },
 });
 
-// Request Interceptor
+// Request Interceptor: Attach JWT Token
 api.interceptors.request.use(
   (config) => {
-    // Later: attach JWT token here
-    // const token = localStorage.getItem('token');
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+    const token = localStorage.getItem('hackverse_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor
+// Response Interceptor: Handle global errors (401, 403, 500)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Handle global errors here (401, 403, 500)
-    if (error.response?.status === 401) {
-      // Handle unauthorized access (e.g. redirect to login, clear token)
-      console.log('Unauthorized access - please login');
+    const status = error.response?.status;
+    const message = error.response?.data?.message || 'An unexpected error occurred.';
+
+    if (status === 401) {
+      // Clear invalid session
+      localStorage.removeItem('hackverse_token');
+      localStorage.removeItem('hackverse_user');
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login?expired=true';
+      }
+    } else if (status === 403 && message.toLowerCase().includes('blocked')) {
+      localStorage.removeItem('hackverse_token');
+      localStorage.removeItem('hackverse_user');
+      window.location.href = '/login?blocked=true';
     }
+
     return Promise.reject(error);
   }
 );

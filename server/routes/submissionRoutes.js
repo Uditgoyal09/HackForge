@@ -1,7 +1,8 @@
 const express = require('express');
 const { 
   updateSubmission, 
-  getSubmission 
+  getSubmission,
+  getPublicSubmissions
 } = require('../controllers/submissionController');
 const { protect } = require('../middleware/authMiddleware');
 const authorize = require('../middleware/authorize');
@@ -15,6 +16,7 @@ const upload = require('../middleware/upload');
 
 const router = express.Router();
 
+router.get('/public', getPublicSubmissions);
 router.get('/:id', protect, validateObjectId('id'), getSubmission);
 
 router.put('/:id', 

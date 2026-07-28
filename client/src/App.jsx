@@ -1,40 +1,221 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { PublicLayout } from './layouts/PublicLayout';
-import { AuthLayout } from './layouts/AuthLayout';
-import { DashboardLayout } from './layouts/DashboardLayout';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import Navbar from './components/layout/Navbar';
+import ErrorBoundary from './components/common/ErrorBoundary';
+import ProtectedRoute from './components/common/ProtectedRoute';
+import NotFound404 from './components/common/NotFound404';
 
-import { Home } from './pages/public/Home';
-import { NotFound } from './pages/public/NotFound';
-import { Login } from './pages/auth/Login';
-import { Signup } from './pages/auth/Signup';
-import { Dashboard } from './pages/admin/Dashboard';
+// Public Pages
+import LandingPage from './pages/public/LandingPage';
+import ExploreHackathons from './pages/public/ExploreHackathons';
+import HackathonDetails from './pages/public/HackathonDetails';
+import PublicProjects from './pages/public/PublicProjects';
+import LeaderboardView from './components/leaderboard/LeaderboardView';
+import Login from './pages/auth/Login';
+import Signup from './pages/auth/Signup';
+import UserProfilePage from './pages/public/UserProfilePage';
+import NotificationsPage from './pages/public/NotificationsPage';
 
-function App() {
+// Participant Pages
+import ParticipantDashboard from './pages/participant/ParticipantDashboard';
+import ParticipantRegistrations from './pages/participant/ParticipantRegistrations';
+import TeamManagement from './pages/participant/TeamManagement';
+import ProjectSubmission from './pages/participant/ProjectSubmission';
+
+// Organizer Pages
+import OrganizerDashboard from './pages/organizer/OrganizerDashboard';
+import CreateHackathon from './pages/organizer/CreateHackathon';
+import OrganizerRegistrations from './pages/organizer/OrganizerRegistrations';
+import OrganizerTeams from './pages/organizer/OrganizerTeams';
+import OrganizerSubmissions from './pages/organizer/OrganizerSubmissions';
+
+// Judge Pages
+import JudgeDashboard from './pages/judge/JudgeDashboard';
+import EvaluationInterface from './pages/judge/EvaluationInterface';
+
+// Admin Pages
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminUserManagement from './pages/admin/AdminUserManagement';
+import ActivityLogViewer from './pages/admin/ActivityLogViewer';
+
+export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public Routes */}
-        <Route element={<PublicLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
+    <Router>
+      <AuthProvider>
+        <ErrorBoundary>
+          <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-indigo-500 selection:text-white">
+            <Navbar />
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/hackathons" element={<ExploreHackathons />} />
+              <Route path="/hackathons/:id" element={<HackathonDetails />} />
+              <Route path="/hackathons/:id/leaderboard" element={<LeaderboardView />} />
+              <Route path="/projects" element={<PublicProjects />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
 
-        {/* Auth Routes */}
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-        </Route>
+              {/* Authenticated Shared Routes */}
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <UserProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/notifications"
+                element={
+                  <ProtectedRoute>
+                    <NotificationsPage />
+                  </ProtectedRoute>
+                }
+              />
 
-        {/* Dashboard Routes (Placeholder for role-based routes) */}
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="hackathons" element={<div>Hackathons Page Placeholder</div>} />
-          <Route path="teams" element={<div>Teams Page Placeholder</div>} />
-          <Route path="settings" element={<div>Settings Page Placeholder</div>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+              {/* Participant Routes */}
+              <Route
+                path="/participant/dashboard"
+                element={
+                  <ProtectedRoute allowedRoles={['participant']}>
+                    <ParticipantDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/participant/registrations"
+                element={
+                  <ProtectedRoute allowedRoles={['participant']}>
+                    <ParticipantRegistrations />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/participant/teams"
+                element={
+                  <ProtectedRoute allowedRoles={['participant']}>
+                    <TeamManagement />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/participant/submissions"
+                element={
+                  <ProtectedRoute allowedRoles={['participant']}>
+                    <ProjectSubmission />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Organizer Routes */}
+              <Route
+                path="/organizer/dashboard"
+                element={
+                  <ProtectedRoute allowedRoles={['organizer', 'admin']}>
+                    <OrganizerDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/organizer/hackathons/create"
+                element={
+                  <ProtectedRoute allowedRoles={['organizer', 'admin']}>
+                    <CreateHackathon />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/organizer/hackathons/:id/edit"
+                element={
+                  <ProtectedRoute allowedRoles={['organizer', 'admin']}>
+                    <CreateHackathon />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/organizer/hackathons/:id/registrations"
+                element={
+                  <ProtectedRoute allowedRoles={['organizer', 'admin']}>
+                    <OrganizerRegistrations />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/organizer/hackathons/:id/teams"
+                element={
+                  <ProtectedRoute allowedRoles={['organizer', 'admin']}>
+                    <OrganizerTeams />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/organizer/hackathons/:id/submissions"
+                element={
+                  <ProtectedRoute allowedRoles={['organizer', 'admin']}>
+                    <OrganizerSubmissions />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Judge Routes */}
+              <Route
+                path="/judge/dashboard"
+                element={
+                  <ProtectedRoute allowedRoles={['judge', 'admin']}>
+                    <JudgeDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/judge/assignments"
+                element={
+                  <ProtectedRoute allowedRoles={['judge', 'admin']}>
+                    <JudgeDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/judge/assignments/:id"
+                element={
+                  <ProtectedRoute allowedRoles={['judge', 'admin']}>
+                    <EvaluationInterface />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Admin Routes */}
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/users"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminUserManagement />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/activity"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <ActivityLogViewer />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Fallback 404 Route */}
+              <Route path="*" element={<NotFound404 />} />
+            </Routes>
+          </div>
+        </ErrorBoundary>
+      </AuthProvider>
+    </Router>
   );
 }
-
-export default App;

@@ -206,9 +206,22 @@ const getHackathonSubmissions = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, data: submissions });
 });
 
+// @desc    Get public submissions for published hackathons
+// @route   GET /api/submissions/public
+// @access  Public
+const getPublicSubmissions = asyncHandler(async (req, res) => {
+  const publishedHackathons = await Hackathon.find({ resultsPublished: true }).distinct('_id');
+  const submissions = await Submission.find({ hackathon: { $in: publishedHackathons } })
+    .populate('team', 'name')
+    .populate('hackathon', 'title');
+
+  res.status(200).json({ success: true, data: submissions });
+});
+
 module.exports = {
   createSubmission,
   updateSubmission,
   getSubmission,
   getHackathonSubmissions,
+  getPublicSubmissions,
 };
