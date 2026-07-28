@@ -6,17 +6,21 @@ const hackathonCriteriaSchema = z.object({
   maxScore: z.number().min(1, 'Max score must be at least 1'),
 });
 
+const dateStringSchema = z.string().refine((val) => !isNaN(Date.parse(val)), {
+  message: 'Invalid date format',
+});
+
 const createHackathonSchema = z.object({
   body: z.object({
     title: z.string().min(3, 'Title must be at least 3 characters'),
     description: z.string().min(10, 'Description is required'),
     theme: z.string().optional(),
-    mode: z.enum(['online', 'offline']),
+    mode: z.enum(['online', 'offline', 'hybrid']),
     venue: z.string().optional(),
-    startDate: z.string().datetime(),
-    endDate: z.string().datetime(),
-    registrationDeadline: z.string().datetime(),
-    submissionDeadline: z.string().datetime(),
+    startDate: dateStringSchema,
+    endDate: dateStringSchema,
+    registrationDeadline: dateStringSchema,
+    submissionDeadline: dateStringSchema,
     prizePool: z.number().min(0).default(0),
     maxTeamSize: z.number().min(1).default(4),
     rules: z.string().optional(),
@@ -40,12 +44,12 @@ const updateHackathonSchema = z.object({
     title: z.string().min(3).optional(),
     description: z.string().min(10).optional(),
     theme: z.string().optional(),
-    mode: z.enum(['online', 'offline']).optional(),
+    mode: z.enum(['online', 'offline', 'hybrid']).optional(),
     venue: z.string().optional(),
-    startDate: z.string().datetime().optional(),
-    endDate: z.string().datetime().optional(),
-    registrationDeadline: z.string().datetime().optional(),
-    submissionDeadline: z.string().datetime().optional(),
+    startDate: dateStringSchema.optional(),
+    endDate: dateStringSchema.optional(),
+    registrationDeadline: dateStringSchema.optional(),
+    submissionDeadline: dateStringSchema.optional(),
     prizePool: z.number().min(0).optional(),
     maxTeamSize: z.number().min(1).optional(),
     rules: z.string().optional(),

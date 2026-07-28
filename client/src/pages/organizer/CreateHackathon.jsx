@@ -72,9 +72,13 @@ const CreateHackathon = () => {
 
     const payload = {
       ...formData,
-      prizePool: Number(formData.prizePool),
-      maxTeamSize: Number(formData.maxTeamSize),
-      judgingCriteria: criteria.map(c => ({ ...c, maxScore: Number(c.maxScore) })),
+      startDate: formData.startDate ? new Date(formData.startDate).toISOString() : '',
+      endDate: formData.endDate ? new Date(formData.endDate).toISOString() : '',
+      registrationDeadline: formData.registrationDeadline ? new Date(formData.registrationDeadline).toISOString() : '',
+      submissionDeadline: formData.submissionDeadline ? new Date(formData.submissionDeadline).toISOString() : '',
+      prizePool: Number(formData.prizePool) || 0,
+      maxTeamSize: Number(formData.maxTeamSize) || 4,
+      judgingCriteria: criteria.map(c => ({ name: c.name, description: c.description || '', maxScore: Number(c.maxScore) || 10 })),
     };
 
     setSubmitting(true);
@@ -85,7 +89,16 @@ const CreateHackathon = () => {
         navigate('/organizer/dashboard');
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create hackathon');
+      const errorResponse = err.response?.data;
+      let errorMsg = 'Failed to create hackathon';
+      if (Array.isArray(errorResponse?.errors) && errorResponse.errors.length > 0) {
+        errorMsg = errorResponse.errors.map(e => e.message || e.field).join(', ');
+      } else if (errorResponse?.message) {
+        errorMsg = errorResponse.message;
+      } else if (err.message) {
+        errorMsg = err.message;
+      }
+      toast.error(errorMsg);
     } finally {
       setSubmitting(false);
     }
