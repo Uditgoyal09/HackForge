@@ -114,8 +114,8 @@ const HackathonDetails = () => {
     );
   }
 
-  const isOrganizerOwner = user && (user.role === 'admin' || (user.role === 'organizer' && hackathon.organizer === user._id));
-  const isRegOpen = hackathon.isRegistrationOpen && new Date() < new Date(hackathon.registrationDeadline);
+  const isOrganizerOwner = user && (user.role === 'admin' || (user.role === 'organizer' && (hackathon.organizer?._id === user._id || hackathon.organizer === user._id)));
+  const isRegOpen = (hackathon.registrationStatus === 'open' || !hackathon.registrationStatus) && new Date() < new Date(hackathon.registrationDeadline);
 
   return (
     <div className="min-h-screen bg-slate-950 text-white pt-24 pb-20">
