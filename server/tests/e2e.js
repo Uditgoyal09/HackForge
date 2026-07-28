@@ -195,13 +195,9 @@ async function runE2ETests() {
         }
       }
 
-      // Mismatched Login Portal Access Attack Test
-      const resMismatchLogin = await request('/auth/login', { method: 'POST', body: { email: partSignupData.email, password: 'Test@123456', loginAs: 'admin' } });
-      logTest('Security', 'Mismatched Portal Login Attack (Participant selecting Admin portal) Rejected with 403', resMismatchLogin.status === 403);
-
-      // Matching Portal Login Test
-      const resMatchLogin = await request('/auth/login', { method: 'POST', body: { email: partSignupData.email, password: 'Test@123456', loginAs: 'participant' } });
-      logTest('Auth', 'Matching Portal Login Success', resMatchLogin.status === 200);
+      // Standard Email + Password Login Test (Backend Automatically Determines Actual Role from MongoDB)
+      const resStandardLogin = await request('/auth/login', { method: 'POST', body: { email: partSignupData.email, password: 'Test@123456' } });
+      logTest('Auth', 'Email + Password Login Auto-Determines Role from MongoDB', resStandardLogin.status === 200 && resStandardLogin.data?.data?.role === 'participant');
 
       // Duplicate Email Signup
       const resDup = await request('/auth/signup', { method: 'POST', body: partSignupData });

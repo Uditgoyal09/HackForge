@@ -1,161 +1,136 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Shield, Award, Crown, Lock, Mail, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Eye, EyeOff, Loader2, Sparkles, Shield, User, Award, Crown } from 'lucide-react';
 import { authService } from '../../services/authService';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'sonner';
 
-const portalsConfig = [
-  {
-    id: 'participant',
-    title: 'Participant Portal',
-    description: 'Compete, join teams, and submit project deliverables.',
+const roleOnboardingMessages = {
+  participant: {
+    welcome: 'Ready to build something amazing?',
+    workspace: 'Opening your Participant Workspace...',
     icon: User,
-    color: 'border-indigo-500/40 text-indigo-400 bg-indigo-500/10 hover:border-indigo-500',
+    color: 'text-indigo-400 border-indigo-500/30 bg-indigo-500/10',
+    bar: 'bg-indigo-500',
+    route: '/participant/dashboard',
   },
-  {
-    id: 'organizer',
-    title: 'Organizer Portal',
-    description: 'Host events, approve registrations, and publish results.',
+  organizer: {
+    welcome: "Let's create the next great hackathon.",
+    workspace: 'Opening your Organizer Workspace...',
     icon: Shield,
-    color: 'border-purple-500/40 text-purple-400 bg-purple-500/10 hover:border-purple-500',
+    color: 'text-purple-400 border-purple-500/30 bg-purple-500/10',
+    bar: 'bg-purple-500',
+    route: '/organizer/dashboard',
   },
-  {
-    id: 'judge',
-    title: 'Judge Portal',
-    description: 'Review assigned submissions and score criteria.',
+  judge: {
+    welcome: 'Ready to discover the best innovations?',
+    workspace: 'Opening your Judge Workspace...',
     icon: Award,
-    color: 'border-cyan-500/40 text-cyan-400 bg-cyan-500/10 hover:border-cyan-500',
+    color: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10',
+    bar: 'bg-cyan-500',
+    route: '/judge/dashboard',
   },
-  {
-    id: 'admin',
-    title: 'Super Admin Portal',
-    description: 'Platform controls, user moderation, and audit logs.',
+  admin: {
+    welcome: 'Welcome back to HackVerse Control.',
+    workspace: 'Opening your Admin Workspace...',
     icon: Crown,
-    color: 'border-rose-500/40 text-rose-400 bg-rose-500/10 hover:border-rose-500',
+    color: 'text-rose-400 border-rose-500/30 bg-rose-500/10',
+    bar: 'bg-rose-500',
+    route: '/admin/dashboard',
   },
-];
+};
 
 const Login = () => {
   const navigate = useNavigate();
   const { login: setAuthSession } = useAuth();
 
-  const [step, setStep] = useState(1);
-  const [selectedPortal, setSelectedPortal] = useState('participant');
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
-  const handleSelectPortal = (portalId) => {
-    setSelectedPortal(portalId);
-    setStep(2);
-  };
+  // States: 'idle' | 'authenticating' | 'identified' | 'workspace_loading'
+  const [authState, setAuthState] = useState('idle');
+  const [authUser, setAuthUser] = useState(null);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     if (!email.trim() || !password) {
-      toast.error('Please enter email and password');
+      toast.error('Please enter both email and password');
       return;
     }
 
-    setLoading(true);
-    setStep(3); // Loading state
+    setAuthState('authenticating');
 
     try {
       const res = await authService.login({
         email: email.trim(),
         password,
-        loginAs: selectedPortal,
       });
 
       if (res.success && res.data) {
-        toast.success(`Welcome back to ${selectedPortal.toUpperCase()} Portal!`);
-        setAuthSession(res.data, res.data.token);
+        const user = res.data;
+        setAuthUser(user);
 
-        // Redirect to portal dashboard
-        if (selectedPortal === 'organizer') navigate('/organizer/dashboard');
-        else if (selectedPortal === 'judge') navigate('/judge/dashboard');
-        else if (selectedPortal === 'admin') navigate('/admin/dashboard');
-        else navigate('/participant/dashboard');
+        // State 2: User Identified
+        setAuthState('identified');
+
+        // State 3: Workspace Loading after 700ms
+        setTimeout(() => {
+          setAuthState('workspace_loading');
+
+          // Redirect to role dashboard after 700ms
+          setTimeout(() => {
+            setAuthSession(user, user.token);
+            const targetRoute = roleOnboardingMessages[user.role]?.route || '/participant/dashboard';
+            navigate(targetRoute);
+          }, 700);
+        }, 700);
+      } else {
+        setAuthState('idle');
+        toast.error(res.message || 'Invalid email or password');
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Invalid email or password');
-      setStep(2); // Return to credentials step on failure
-    } finally {
-      setLoading(false);
+      setAuthState('idle');
+      const errorMsg = err.response?.data?.message || 'Invalid email or password';
+      toast.error(errorMsg);
     }
   };
 
+  const currentRoleConfig = authUser
+    ? roleOnboardingMessages[authUser.role] || roleOnboardingMessages.participant
+    : roleOnboardingMessages.participant;
+  const RoleIcon = currentRoleConfig.icon;
+
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center pt-24 pb-12 px-6">
-      <div className="max-w-xl w-full">
+    <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center pt-24 pb-12 px-6 relative overflow-hidden">
+      {/* Dynamic Background Effects */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-[300px] h-[300px] bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-md w-full relative z-10">
         <AnimatePresence mode="wait">
-          {/* STEP 1: PORTAL SELECTION */}
-          {step === 1 && (
+          {/* LOGIN FORM (IDLE or AUTHENTICATING) */}
+          {(authState === 'idle' || authState === 'authenticating') && (
             <motion.div
-              key="portal-step1"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
+              key="login-form"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 shadow-2xl"
+              transition={{ duration: 0.3 }}
+              className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-8 shadow-2xl shadow-indigo-950/20"
             >
-              <h2 className="text-2xl font-extrabold mb-2 text-center">Welcome Back to HackVerse</h2>
-              <p className="text-xs text-slate-400 text-center mb-8">Select your target portal to proceed to authentication.</p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                {portalsConfig.map((p) => {
-                  const Icon = p.icon;
-                  return (
-                    <div
-                      key={p.id}
-                      onClick={() => handleSelectPortal(p.id)}
-                      className={`p-5 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between ${p.color}`}
-                    >
-                      <div className="flex items-center gap-3 mb-3">
-                        <Icon className="w-5 h-5" />
-                        <h3 className="font-bold text-sm text-white">{p.title}</h3>
-                      </div>
-                      <p className="text-xs text-slate-400 leading-relaxed mb-4">{p.description}</p>
-                      <div className="flex items-center text-xs font-semibold text-white gap-1 group">
-                        Access Portal <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </div>
-                  );
-                })}
+              {/* Header */}
+              <div className="text-center mb-8">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto mb-4">
+                  <Sparkles className="w-6 h-6" />
+                </div>
+                <h1 className="text-2xl font-black tracking-tight text-white mb-1">WELCOME BACK</h1>
+                <p className="text-xs text-slate-400">Continue your HackVerse journey.</p>
               </div>
 
-              <div className="text-center text-xs text-slate-500 border-t border-slate-800/60 pt-6">
-                Don't have an account yet?{' '}
-                <Link to="/signup" className="text-indigo-400 hover:underline font-semibold">
-                  Sign up for HackVerse
-                </Link>
-              </div>
-            </motion.div>
-          )}
-
-          {/* STEP 2: CREDENTIALS INPUT */}
-          {step === 2 && (
-            <motion.div
-              key="portal-step2"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 shadow-2xl"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <button onClick={() => setStep(1)} className="text-xs text-indigo-400 hover:underline flex items-center gap-1">
-                  <ArrowLeft className="w-3.5 h-3.5" /> Back to Portals
-                </button>
-                <span className="text-[10px] font-mono font-bold uppercase px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                  {selectedPortal} Portal
-                </span>
-              </div>
-
-              <h2 className="text-2xl font-extrabold mb-1">Enter Credentials</h2>
-              <p className="text-xs text-slate-400 mb-6">Authenticate to access your {selectedPortal.toUpperCase()} dashboard.</p>
-
+              {/* Form */}
               <form onSubmit={handleLoginSubmit} className="space-y-4 text-xs">
                 <div>
                   <label className="block font-semibold text-slate-300 mb-1.5">Email Address</label>
@@ -167,7 +142,8 @@ const Login = () => {
                       placeholder="user@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                      disabled={authState === 'authenticating'}
+                      className="w-full pl-10 pr-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors disabled:opacity-50"
                     />
                   </div>
                 </div>
@@ -177,39 +153,135 @@ const Login = () => {
                   <div className="relative">
                     <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
                     <input
-                      type="password"
+                      type={showPassword ? 'text' : 'password'}
                       required
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                      disabled={authState === 'authenticating'}
+                      className="w-full pl-10 pr-10 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors disabled:opacity-50"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-3.5 text-slate-500 hover:text-slate-300 transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
                   </div>
                 </div>
 
+                {/* Remember Me & Forgot Password */}
+                <div className="flex items-center justify-between pt-1">
+                  <label className="flex items-center gap-2 cursor-pointer select-none text-slate-400 hover:text-slate-300">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="rounded bg-slate-950 border-slate-800 text-indigo-500 focus:ring-indigo-500"
+                    />
+                    <span>Remember me</span>
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={() => toast.info('Password reset instructions will be sent to your registered email.')}
+                    className="text-indigo-400 hover:underline"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+
+                {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-all shadow-xl shadow-indigo-600/25 flex items-center justify-center gap-2 mt-6"
+                  disabled={authState === 'authenticating'}
+                  className="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-all shadow-xl shadow-indigo-600/25 flex items-center justify-center gap-2 mt-6 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  Log in to {selectedPortal.toUpperCase()} Portal <ArrowRight className="w-4 h-4" />
+                  {authState === 'authenticating' ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-white" />
+                      <span>Authenticating...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Login to HackVerse</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </form>
+
+              {/* Bottom Signup Link */}
+              <div className="text-center text-xs text-slate-500 border-t border-slate-800/60 pt-6 mt-6">
+                New to HackVerse?{' '}
+                <Link to="/signup" className="text-indigo-400 hover:underline font-semibold">
+                  Create Account
+                </Link>
+              </div>
             </motion.div>
           )}
 
-          {/* STEP 3: AUTHENTICATING LOADING TRANSITION */}
-          {step === 3 && (
+          {/* ONBOARDING STATE 2: USER IDENTIFIED */}
+          {authState === 'identified' && authUser && (
             <motion.div
-              key="portal-step3"
+              key="onboarding-identified"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="bg-slate-900/80 backdrop-blur-2xl border border-slate-800 rounded-3xl p-10 text-center shadow-2xl space-y-6"
+            >
+              <div className={`w-16 h-16 rounded-3xl border ${currentRoleConfig.color} flex items-center justify-center mx-auto shadow-lg`}>
+                <RoleIcon className="w-8 h-8" />
+              </div>
+
+              <div>
+                <h2 className="text-2xl font-black text-white mb-2">
+                  Welcome back, {authUser.name} 👋
+                </h2>
+                <p className="text-sm font-medium text-slate-300">
+                  {currentRoleConfig.welcome}
+                </p>
+              </div>
+
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-950 border border-slate-800 text-[11px] font-mono uppercase text-indigo-400 font-bold">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                Authenticated as {authUser.role}
+              </div>
+            </motion.div>
+          )}
+
+          {/* ONBOARDING STATE 3: WORKSPACE LOADING */}
+          {authState === 'workspace_loading' && authUser && (
+            <motion.div
+              key="onboarding-workspace"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-slate-900/60 border border-slate-800 rounded-3xl p-12 text-center shadow-2xl space-y-4"
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="bg-slate-900/80 backdrop-blur-2xl border border-slate-800 rounded-3xl p-10 text-center shadow-2xl space-y-6"
             >
-              <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto animate-spin">
-                <Shield className="w-6 h-6" />
+              <div className={`w-16 h-16 rounded-3xl border ${currentRoleConfig.color} flex items-center justify-center mx-auto shadow-lg`}>
+                <Loader2 className="w-8 h-8 animate-spin" />
               </div>
-              <h3 className="font-extrabold text-xl">Authenticating {selectedPortal.toUpperCase()}...</h3>
-              <p className="text-xs text-slate-400">Verifying credentials and MongoDB role permissions.</p>
+
+              <div>
+                <h2 className="text-xl font-bold text-white mb-1">
+                  {currentRoleConfig.workspace}
+                </h2>
+                <p className="text-xs text-slate-400">Loading your live dashboard and MongoDB metrics...</p>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+                <motion.div
+                  initial={{ width: '0%' }}
+                  animate={{ width: '100%' }}
+                  transition={{ duration: 0.6, ease: 'easeInOut' }}
+                  className={`h-full ${currentRoleConfig.bar}`}
+                />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
