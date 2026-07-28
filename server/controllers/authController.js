@@ -165,10 +165,16 @@ const signup = asyncHandler(async (req, res) => {
 // @route   POST /api/auth/login
 // @access  Public
 const login = asyncHandler(async (req, res) => {
-  const { email, password, loginAs } = req.body;
+  const { email, password, loginAs } = req.body || {};
+
+  if (!email || !email.trim() || !password) {
+    throw new ApiError(400, 'Please provide both email and password');
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
 
   // Find user and explicitly select password to compare
-  const user = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ email: cleanEmail }).select('+password');
 
   if (!user || !(await user.comparePassword(password))) {
     throw new ApiError(401, 'Invalid email or password');
