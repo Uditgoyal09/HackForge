@@ -38,6 +38,7 @@ import EvaluationInterface from './pages/judge/EvaluationInterface';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUserManagement from './pages/admin/AdminUserManagement';
 import ActivityLogViewer from './pages/admin/ActivityLogViewer';
+import AdminAccessCodes from './pages/admin/AdminAccessCodes';
 
 export default function App() {
   return (
@@ -206,6 +207,14 @@ export default function App() {
                 element={
                   <ProtectedRoute allowedRoles={['admin']}>
                     <ActivityLogViewer />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/access-codes"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminAccessCodes />
                   </ProtectedRoute>
                 }
               />

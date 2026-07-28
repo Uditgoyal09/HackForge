@@ -75,72 +75,144 @@ async function runE2ETests() {
       logTest('Routing', 'Unknown route returns JSON 404', res.status === 404 && res.data?.success === false);
     }
 
-    // 3. Login to Seeded Accounts
+    // 3. Admin Setup & Authentication
     {
-      const loginAdmin = await request('/auth/login', { method: 'POST', body: { email: 'admin@hackverse.com', password: 'password123' } });
+      const User = require('../models/User');
+      let admin = await User.findOne({ role: 'admin' });
+      if (!admin) {
+        admin = await User.create({
+          name: 'E2E Test Super Admin',
+          email: 'admin@hackverse.com',
+          password: 'password123',
+          role: 'admin',
+        });
+      }
+
+      const loginAdmin = await request('/auth/login', {
+        method: 'POST',
+        body: { email: admin.email, password: 'password123', loginAs: 'admin' },
+      });
+
       if (loginAdmin.status === 200 && loginAdmin.data?.data?.token) {
         adminToken = loginAdmin.data.data.token;
         adminId = loginAdmin.data.data._id;
-        logTest('Auth', 'Admin Login Successful', true);
+        logTest('Auth', 'Admin Login Successful with loginAs: admin', true);
       } else {
-        logTest('Auth', 'Admin Login Successful', false, JSON.stringify(loginAdmin.data));
-      }
-
-      const loginOrg = await request('/auth/login', { method: 'POST', body: { email: 'organizer@hackverse.com', password: 'password123' } });
-      if (loginOrg.status === 200) {
-        orgToken = loginOrg.data.data.token;
-        orgId = loginOrg.data.data._id;
-        logTest('Auth', 'Organizer 1 Login Successful', true);
-      } else {
-        logTest('Auth', 'Organizer 1 Login Successful', false);
-      }
-
-      const loginJudge = await request('/auth/login', { method: 'POST', body: { email: 'judge1@hackverse.com', password: 'password123' } });
-      if (loginJudge.status === 200) {
-        judgeToken = loginJudge.data.data.token;
-        judgeId = loginJudge.data.data._id;
-        logTest('Auth', 'Judge 1 Login Successful', true);
-      } else {
-        logTest('Auth', 'Judge 1 Login Successful', false);
-      }
-
-      const loginJudge2 = await request('/auth/login', { method: 'POST', body: { email: 'judge2@hackverse.com', password: 'password123' } });
-      if (loginJudge2.status === 200) {
-        judge2Token = loginJudge2.data.data.token;
-        judge2Id = loginJudge2.data.data._id;
-        logTest('Auth', 'Judge 2 Login Successful', true);
+        logTest('Auth', 'Admin Login Successful with loginAs: admin', false, JSON.stringify(loginAdmin.data));
       }
     }
 
-    // 4. Signup & Security
+    // 4. Access Code Generation & Role Verification Signup Tests
+    let rawOrgCode, rawJudgeCode;
     {
+      // Admin generates Organizer Access Code
+      const resOrgCode = await request('/admin/access-codes', {
+        method: 'POST',
+        token: adminToken,
+        body: { role: 'organizer', label: 'E2E Organizer Access Code', expiresAt: '2028-12-31', maxUses: 1 },
+      });
+      logTest('AccessCodes', 'Admin Generate Hashed Organizer Access Code (Returns rawCode once)', resOrgCode.status === 201 && resOrgCode.data?.rawCode);
+      if (resOrgCode.status === 201) rawOrgCode = resOrgCode.data.rawCode;
+
+      // Admin generates Judge Access Code
+      const resJudgeCode = await request('/admin/access-codes', {
+        method: 'POST',
+        token: adminToken,
+        body: { role: 'judge', label: 'E2E Judge Access Code', expiresAt: '2028-12-31', maxUses: 1 },
+      });
+      logTest('AccessCodes', 'Admin Generate Hashed Judge Access Code (Returns rawCode once)', resJudgeCode.status === 201 && resJudgeCode.data?.rawCode);
+      if (resJudgeCode.status === 201) rawJudgeCode = resJudgeCode.data.rawCode;
+
       const ts = Date.now();
-      const signupData = { name: 'E2E Participant 1', email: `e2e_part_${ts}@hackverse.dev`, password: 'Test@123456' };
-      const res = await request('/auth/signup', { method: 'POST', body: signupData });
-      logTest('Auth', 'Participant Signup', res.status === 201 && res.data?.data?.token);
+      const partSignupData = { name: 'E2E Participant 1', email: `e2e_part_${ts}@hackverse.dev`, password: 'Test@123456', role: 'participant' };
+      const res = await request('/auth/signup', { method: 'POST', body: partSignupData });
+      logTest('Auth', 'Participant Signup (No Access Code Required)', res.status === 201 && res.data?.data?.token);
       if (res.status === 201) {
         partToken = res.data.data.token;
         partId = res.data.data._id;
       }
 
-      // Role Escalation Attack Test
-      const attackSignup = { name: 'Fake Admin', email: `fakeadmin_${ts}@hackverse.dev`, password: 'Test@123456', role: 'admin' };
-      const resAttack = await request('/auth/signup', { method: 'POST', body: attackSignup });
-      logTest('Security', 'Role Escalation Signup Attack Prevented (Role stays participant)', resAttack.status === 201 && resAttack.data?.data?.role === 'participant');
+      // Public Admin Signup Attack Test
+      const adminAttackSignup = { name: 'Fake Admin Attack', email: `fakeadmin_${ts}@hackverse.dev`, password: 'Test@123456', role: 'admin' };
+      const resAdminAttack = await request('/auth/signup', { method: 'POST', body: adminAttackSignup });
+      logTest('Security', 'Public Admin Signup Attempt Rejected with 400', resAdminAttack.status === 400);
+
+      // Organizer Signup Without Code Test
+      const noCodeOrg = { name: 'No Code Org', email: `nocode_${ts}@hackverse.dev`, password: 'Test@123456', role: 'organizer' };
+      const resNoCodeOrg = await request('/auth/signup', { method: 'POST', body: noCodeOrg });
+      logTest('Security', 'Organizer Signup Without Access Code Rejected with 400', resNoCodeOrg.status === 400);
+
+      // Organizer Signup With Invalid Code Test
+      const badCodeOrg = { name: 'Bad Code Org', email: `badcode_${ts}@hackverse.dev`, password: 'Test@123456', role: 'organizer', verificationCode: 'ORG-INVALID99' };
+      const resBadCodeOrg = await request('/auth/signup', { method: 'POST', body: badCodeOrg });
+      logTest('Security', 'Organizer Signup With Invalid Access Code Rejected with 400', resBadCodeOrg.status === 400);
+
+      // Cross-Role Access Code Attack Test (Organizer attempting to use Judge code)
+      const crossRoleOrg = { name: 'Cross Role Org', email: `cross_${ts}@hackverse.dev`, password: 'Test@123456', role: 'organizer', verificationCode: rawJudgeCode };
+      const resCrossRoleOrg = await request('/auth/signup', { method: 'POST', body: crossRoleOrg });
+      logTest('Security', 'Organizer Signup Using Judge Code Attack Rejected with 400', resCrossRoleOrg.status === 400);
+
+      // Verified Organizer Signup With Code
+      const verifiedOrgData = { name: 'Verified Organizer E2E', email: `verified_org_${ts}@hackverse.dev`, password: 'Test@123456', role: 'organizer', verificationCode: rawOrgCode };
+      const resVerifiedOrg = await request('/auth/signup', { method: 'POST', body: verifiedOrgData });
+      logTest('Auth', 'Verified Organizer Signup With Access Code Success', resVerifiedOrg.status === 201 && resVerifiedOrg.data?.data?.role === 'organizer');
+      if (resVerifiedOrg.status === 201) {
+        orgId = resVerifiedOrg.data.data._id;
+        orgToken = resVerifiedOrg.data.data.token;
+      }
+
+      // Exhausted Single-Use Access Code Reuse Attack
+      const reuseOrgData = { name: 'Reuse Org', email: `reuse_${ts}@hackverse.dev`, password: 'Test@123456', role: 'organizer', verificationCode: rawOrgCode };
+      const resReuseOrg = await request('/auth/signup', { method: 'POST', body: reuseOrgData });
+      logTest('Security', 'Exhausted Single-Use Access Code Reuse Attack Rejected with 400', resReuseOrg.status === 400);
+
+      // Verified Judge Signup With Code
+      const verifiedJudgeData = { name: 'Verified Judge E2E', email: `verified_judge_${ts}@hackverse.dev`, password: 'Test@123456', role: 'judge', verificationCode: rawJudgeCode };
+      const resVerifiedJudge = await request('/auth/signup', { method: 'POST', body: verifiedJudgeData });
+      logTest('Auth', 'Verified Judge Signup With Access Code Success', resVerifiedJudge.status === 201 && resVerifiedJudge.data?.data?.role === 'judge');
+      if (resVerifiedJudge.status === 201) {
+        judgeId = resVerifiedJudge.data.data._id;
+        judgeToken = resVerifiedJudge.data.data.token;
+      }
+
+      // Generate and signup Judge 2
+      const resJudgeCode2 = await request('/admin/access-codes', {
+        method: 'POST',
+        token: adminToken,
+        body: { role: 'judge', label: 'E2E Judge 2 Access Code', expiresAt: '2028-12-31', maxUses: 1 },
+      });
+      if (resJudgeCode2.status === 201 && resJudgeCode2.data?.rawCode) {
+        const j2Signup = await request('/auth/signup', {
+          method: 'POST',
+          body: { name: 'Verified Judge 2 E2E', email: `verified_judge2_${ts}@hackverse.dev`, password: 'Test@123456', role: 'judge', verificationCode: resJudgeCode2.data.rawCode },
+        });
+        if (j2Signup.status === 201) {
+          judge2Id = j2Signup.data.data._id;
+          judge2Token = j2Signup.data.data.token;
+        }
+      }
+
+      // Mismatched Login Portal Access Attack Test
+      const resMismatchLogin = await request('/auth/login', { method: 'POST', body: { email: partSignupData.email, password: 'Test@123456', loginAs: 'admin' } });
+      logTest('Security', 'Mismatched Portal Login Attack (Participant selecting Admin portal) Rejected with 403', resMismatchLogin.status === 403);
+
+      // Matching Portal Login Test
+      const resMatchLogin = await request('/auth/login', { method: 'POST', body: { email: partSignupData.email, password: 'Test@123456', loginAs: 'participant' } });
+      logTest('Auth', 'Matching Portal Login Success', resMatchLogin.status === 200);
 
       // Duplicate Email Signup
-      const resDup = await request('/auth/signup', { method: 'POST', body: signupData });
+      const resDup = await request('/auth/signup', { method: 'POST', body: partSignupData });
       logTest('Auth', 'Duplicate Email Signup Rejected with 409', resDup.status === 409);
 
-      // Signup Participant 2 & Organizer 2 for negative tests
-      const p2Signup = await request('/auth/signup', { method: 'POST', body: { name: 'E2E Participant 2', email: `e2e_part2_${ts}@hackverse.dev`, password: 'Test@123456' } });
+      // Signup Participant 2
+      const p2Signup = await request('/auth/signup', { method: 'POST', body: { name: 'E2E Participant 2', email: `e2e_part2_${ts}@hackverse.dev`, password: 'Test@123456', role: 'participant' } });
       if (p2Signup.status === 201) {
         part2Token = p2Signup.data.data.token;
         part2Id = p2Signup.data.data._id;
       }
 
       // Login invalid password test
-      const resInvalidPass = await request('/auth/login', { method: 'POST', body: { email: signupData.email, password: 'WrongPassword' } });
+      const resInvalidPass = await request('/auth/login', { method: 'POST', body: { email: partSignupData.email, password: 'WrongPassword' } });
       logTest('Auth', 'Invalid Login Rejected with 401', resInvalidPass.status === 401);
     }
 

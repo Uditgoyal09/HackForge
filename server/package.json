@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test:api": "node tests/e2e.js"
+    "test:api": "node tests/e2e.js",
+    "create:admin": "node scripts/createAdmin.js"
   },
   "keywords": [],
   "author": "",

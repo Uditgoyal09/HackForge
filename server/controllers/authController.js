@@ -1,48 +1,150 @@
+const mongoose = require('mongoose');
 const User = require('../models/User');
+const RoleAccessCode = require('../models/RoleAccessCode');
+const ActivityLog = require('../models/ActivityLog');
 const generateToken = require('../utils/generateToken');
 const { asyncHandler } = require('../utils/asyncHandler');
 const { ApiError } = require('../utils/ApiError');
+const { hashCode } = require('./accessCodeController');
 
-// @desc    Register a new participant
+// @desc    Register a new user (Participant, Organizer with code, or Judge with code)
 // @route   POST /api/auth/signup
 // @access  Public
 const signup = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role = 'participant', verificationCode, profile } = req.body;
+
+  // Public admin registration is strictly forbidden
+  if (role === 'admin') {
+    throw new ApiError(400, 'Public admin registration is strictly disabled');
+  }
+
+  if (!['participant', 'organizer', 'judge'].includes(role)) {
+    throw new ApiError(400, 'Invalid account role requested');
+  }
 
   const userExists = await User.findOne({ email });
-
   if (userExists) {
     throw new ApiError(409, 'User with this email already exists');
   }
 
-  // Force role to participant for public signup to prevent mass assignment
-  const user = await User.create({
-    name,
-    email,
-    password,
-    role: 'participant',
-  });
+  let codeRecord = null;
+
+  // Organizer and Judge signups REQUIRE a valid access code
+  if (role === 'organizer' || role === 'judge') {
+    if (!verificationCode || !verificationCode.trim()) {
+      throw new ApiError(400, `${role.toUpperCase()} signup requires a valid access code`);
+    }
+
+    const codeHash = hashCode(verificationCode);
+    codeRecord = await RoleAccessCode.findOne({
+      codeHash,
+      role,
+      isActive: true,
+      expiresAt: { $gt: new Date() },
+    });
+
+    if (!codeRecord || codeRecord.usedCount >= codeRecord.maxUses) {
+      throw new ApiError(400, `Invalid or expired ${role} access code`);
+    }
+  }
+
+  // Create User with Session Transaction to ensure code usage rollback on failure
+  let user;
+  try {
+    const session = await mongoose.startSession();
+    try {
+      session.startTransaction();
+
+      const created = await User.create(
+        [
+          {
+            name,
+            email,
+            password,
+            role,
+            profile: profile || {},
+          },
+        ],
+        { session }
+      );
+      user = created[0];
+
+      if (codeRecord) {
+        codeRecord.usedCount += 1;
+        codeRecord.lastUsedAt = new Date();
+        await codeRecord.save({ session });
+
+        await ActivityLog.create(
+          [
+            {
+              user: user._id,
+              action: 'access_code_used',
+              entityType: 'RoleAccessCode',
+              entityId: codeRecord._id,
+            },
+          ],
+          { session }
+        );
+      }
+
+      await session.commitTransaction();
+    } catch (txErr) {
+      if (session.inTransaction()) {
+        await session.abortTransaction();
+      }
+      throw txErr;
+    } finally {
+      session.endSession();
+    }
+  } catch (err) {
+    // Rethrow known validation / duplicate errors
+    if (err.name === 'ValidationError' || err.code === 11000 || err.statusCode) {
+      throw err;
+    }
+
+    // Standalone MongoDB fallback without transactions
+    user = await User.create({
+      name,
+      email,
+      password,
+      role,
+      profile: profile || {},
+    });
+
+    if (codeRecord) {
+      codeRecord.usedCount += 1;
+      codeRecord.lastUsedAt = new Date();
+      await codeRecord.save();
+
+      await ActivityLog.create({
+        user: user._id,
+        action: 'access_code_used',
+        entityType: 'RoleAccessCode',
+        entityId: codeRecord._id,
+      });
+    }
+  }
 
   const token = generateToken(res, user._id);
 
   res.status(201).json({
     success: true,
-    message: 'User registered successfully',
+    message: `${role.toUpperCase()} registered successfully`,
     data: {
       _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
-      token, // Return token for apps that don't use cookies
+      token,
     },
   });
 });
 
-// @desc    Authenticate user & get token
+// @desc    Authenticate user & verify portal role
 // @route   POST /api/auth/login
 // @access  Public
 const login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, loginAs } = req.body;
 
   // Find user and explicitly select password to compare
   const user = await User.findOne({ email }).select('+password');
@@ -55,8 +157,13 @@ const login = asyncHandler(async (req, res) => {
     throw new ApiError(403, 'Your account has been blocked. Please contact support.');
   }
 
+  // If loginAs is specified, verify actual user role matches selected portal
+  if (loginAs && user.role !== loginAs) {
+    throw new ApiError(403, `This account is registered as a ${user.role} and cannot log into the ${loginAs} portal`);
+  }
+
   user.lastLogin = new Date();
-  await user.save({ validateBeforeSave: false }); // Don't run validation here just to update date
+  await user.save({ validateBeforeSave: false });
 
   const token = generateToken(res, user._id);
 
@@ -116,7 +223,6 @@ const changePassword = asyncHandler(async (req, res) => {
   user.password = newPassword;
   await user.save();
 
-  // Generate new token to keep user logged in
   const token = generateToken(res, user._id);
 
   res.status(200).json({

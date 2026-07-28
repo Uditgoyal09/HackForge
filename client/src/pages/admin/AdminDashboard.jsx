@@ -59,7 +59,13 @@ const AdminDashboard = () => {
             <p className="text-slate-400 text-sm mt-1">Platform-wide statistics, user moderation, role security, and audit logs.</p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              to="/admin/access-codes"
+              className="px-4 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 text-xs font-semibold text-amber-300 shadow-lg shadow-amber-500/10"
+            >
+              Role Access Codes
+            </Link>
             <Link
               to="/admin/users"
               className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/20"

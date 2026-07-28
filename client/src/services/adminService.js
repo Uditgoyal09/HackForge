@@ -35,4 +35,19 @@ export const adminService = {
     const res = await api.get('/admin/activity-logs', { params });
     return res.data;
   },
+
+  async createAccessCode(data) {
+    const res = await api.post('/admin/access-codes', data);
+    return res.data;
+  },
+
+  async getAccessCodes() {
+    const res = await api.get('/admin/access-codes');
+    return res.data;
+  },
+
+  async revokeAccessCode(id) {
+    const res = await api.patch(`/admin/access-codes/${id}/revoke`);
+    return res.data;
+  },
 };
