@@ -92,8 +92,8 @@ const HeroNetwork = () => {
   };
 
   const getEdgeOpacity = (edge) => {
-    if (!hoveredNode) return 0.25;
-    return isEdgeConnected(edge, hoveredNode) ? 0.8 : 0.1;
+    if (!hoveredNode) return 0.6; // Increased from 0.25 so the CSS alphas aren't overly faded
+    return isEdgeConnected(edge, hoveredNode) ? 1 : 0.15;
   };
 
   const getNodeOpacity = (node) => {

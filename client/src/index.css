@@ -40,10 +40,10 @@
     --warning: #F59E0B;
     --error: #EF4444;
     /* Hero Network Tokens (Dark Mode Default) */
-    --hero-network-line: rgba(182, 255, 0, 0.25);
-    --hero-network-line-muted: rgba(182, 255, 0, 0.12);
-    --hero-network-node: rgba(182, 255, 0, 0.4);
-    --hero-network-node-border: rgba(182, 255, 0, 0.8);
+    --hero-network-line: rgba(182, 255, 0, 0.6);
+    --hero-network-line-muted: rgba(182, 255, 0, 0.25);
+    --hero-network-node: rgba(182, 255, 0, 0.6);
+    --hero-network-node-border: rgba(182, 255, 0, 0.9);
     --hero-network-label: #F9FAFB;
     --hero-network-active: #B6FF00;
   }
@@ -69,10 +69,10 @@
     --primary-soft: rgba(182, 255, 0, 0.05);
 
     /* Hero Network Tokens (Light Mode) */
-    --hero-network-line: rgba(156, 163, 175, 0.45);
-    --hero-network-line-muted: rgba(156, 163, 175, 0.25);
-    --hero-network-node: rgba(156, 163, 175, 0.4);
-    --hero-network-node-border: rgba(156, 163, 175, 0.8);
+    --hero-network-line: rgba(156, 163, 175, 0.7);
+    --hero-network-line-muted: rgba(156, 163, 175, 0.4);
+    --hero-network-node: rgba(156, 163, 175, 0.6);
+    --hero-network-node-border: rgba(156, 163, 175, 0.9);
     --hero-network-label: #4B5563;
     --hero-network-active: #B6FF00;
   }
