@@ -30,7 +30,7 @@ const ParticipantDashboard = () => {
 
   if (loading) {
     return (
-      <div className="space-y-6">
+      <div className="min-h-screen bg-background text-foreground pt-24 pb-20 px-6 lg:px-12 max-w-7xl mx-auto space-y-6">
         <div className="h-40 rounded-2xl bg-surface animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[1, 2, 3].map(i => (
@@ -46,7 +46,7 @@ const ParticipantDashboard = () => {
   const submissionsCount = data?.mySubmissions?.length || 0;
 
   return (
-    <div className="space-y-8 pb-10">
+    <div className="min-h-screen bg-background text-foreground pt-24 pb-20 px-6 lg:px-12 max-w-7xl mx-auto space-y-8">
       {/* Welcome Header */}
       <div className="relative overflow-hidden rounded-[20px] bg-gradient-to-r from-primary/20 via-success/10 to-transparent border border-primary/20 p-8 shadow-2xl">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px]" />

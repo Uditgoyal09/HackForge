@@ -136,14 +136,23 @@ const getOrganizerAnalytics = asyncHandler(async (req, res) => {
 
   // 4. Needs Attention
   const needsAttention = [];
-  if (pendingRegistrations > 0) {
-    needsAttention.push({
-      id: 'pending-regs',
-      type: 'applications',
-      message: `${pendingRegistrations} applications awaiting review`,
-      actionUrl: '/organizer' // Base dashboard
-    });
-  }
+  
+  const pendingByHackathon = await Registration.aggregate([
+    { $match: { hackathon: { $in: hackathonIds }, status: 'pending' } },
+    { $group: { _id: '$hackathon', count: { $sum: 1 } } }
+  ]);
+
+  pendingByHackathon.forEach(group => {
+    const h = myHackathons.find(hack => hack._id.toString() === group._id.toString());
+    if (h) {
+      needsAttention.push({
+        id: `pending-${h._id}`,
+        type: 'applications',
+        message: `${group.count} application${group.count > 1 ? 's' : ''} awaiting review in ${h.title}`,
+        actionUrl: `/organizer/hackathons/${h._id}/registrations`
+      });
+    }
+  });
 
   res.status(200).json({
     success: true,

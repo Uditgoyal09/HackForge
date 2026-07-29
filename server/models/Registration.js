@@ -27,6 +27,12 @@ const registrationSchema = new mongoose.Schema(
       github: { type: String },
       linkedin: { type: String },
     },
+    teamMembers: [{
+      name: { type: String, required: true },
+      email: { type: String, required: true },
+      github: { type: String },
+      linkedin: { type: String }
+    }],
     reviewedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

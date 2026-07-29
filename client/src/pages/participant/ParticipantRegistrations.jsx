@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, CheckCircle2, Clock, XCircle, ArrowRight, Shield } from 'lucide-react';
+import PageHeader from '../../components/common/PageHeader';
 import { registrationService } from '../../services/registrationService';
 import { toast } from 'sonner';
 
@@ -41,19 +42,19 @@ const ParticipantRegistrations = () => {
   return (
     <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-extrabold tracking-tight">My Registrations</h1>
-            <p className="text-muted-foreground text-sm mt-1">Track application approval status and team formation eligibility.</p>
-          </div>
-
-          <Link
-            to="/hackathons"
-            className="px-5 py-2.5 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold transition-all shadow-lg shadow-primary/25 self-start sm:self-auto"
-          >
-            Explore More Hackathons
-          </Link>
-        </div>
+        <PageHeader 
+          showBack 
+          title="My Registrations"
+          description="Track application approval status and team formation eligibility."
+          actions={
+            <Link
+              to="/hackathons"
+              className="px-5 py-2.5 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold transition-all shadow-lg shadow-primary/25"
+            >
+              Explore More Hackathons
+            </Link>
+          }
+        />
 
         {loading ? (
           <div className="space-y-4">

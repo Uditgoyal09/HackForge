@@ -13,7 +13,7 @@ const QuickActions = () => {
   return (
     <div className="bg-surface rounded-[var(--radius-lg)] border border-border p-6 shadow-lg h-full flex flex-col">
       <h3 className="text-sm font-semibold text-foreground mb-6">Quick Actions</h3>
-      <div className="space-y-3 flex-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
         {actions.map((action) => (
           <Link
             key={action.id}

@@ -11,7 +11,7 @@ const hackathonSchema = new mongoose.Schema(
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true },
     theme: { type: String, trim: true },
-    mode: { type: String, enum: ['online', 'offline'], required: true },
+    mode: { type: String, enum: ['online', 'offline', 'hybrid'], required: true },
     venue: { type: String }, // Optional if online
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
@@ -23,6 +23,7 @@ const hackathonSchema = new mongoose.Schema(
     },
     prizePool: { type: Number, default: 0, min: 0 },
     maxTeamSize: { type: Number, default: 4, min: 1 },
+    participantCount: { type: Number, default: 0 },
     rules: { type: String },
     judgingCriteria: [criteriaSchema],
     organizer: {

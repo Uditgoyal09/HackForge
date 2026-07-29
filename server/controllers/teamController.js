@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const Team = require('../models/Team');
 const Hackathon = require('../models/Hackathon');
 const Registration = require('../models/Registration');
+const Invitation = require('../models/Invitation');
 const ActivityLog = require('../models/ActivityLog');
 const { asyncHandler } = require('../utils/asyncHandler');
 const { ApiError } = require('../utils/ApiError');
@@ -43,6 +44,37 @@ const createTeam = asyncHandler(async (req, res) => {
   // Link team to registration
   registration.team = team._id;
   await registration.save();
+
+  // Auto-invite members listed during registration
+  if (registration.teamMembers && registration.teamMembers.length > 0) {
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 3);
+    
+    const invitesToCreate = registration.teamMembers
+      .filter(member => member.email)
+      .map(member => ({
+        team: team._id,
+        hackathon: hackathonId,
+        invitedBy: participantId,
+        invitedEmail: member.email,
+        expiresAt
+      }));
+
+    if (invitesToCreate.length > 0) {
+      await Invitation.insertMany(invitesToCreate);
+      
+      // Log invitations
+      for (const invite of invitesToCreate) {
+        await ActivityLog.create({
+          user: participantId,
+          action: 'team_invitation_sent',
+          entityType: 'Team',
+          entityId: team._id,
+          metadata: { email: invite.invitedEmail, auto: true }
+        });
+      }
+    }
+  }
 
   await ActivityLog.create({
     user: participantId,

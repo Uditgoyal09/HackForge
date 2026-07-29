@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Trash2, ArrowRight, ArrowLeft, CheckCircle2, ShieldCheck, Trophy, Calendar } from 'lucide-react';
+import PageHeader from '../../components/common/PageHeader';
 import { hackathonService } from '../../services/hackathonService';
 import { toast } from 'sonner';
 
@@ -108,10 +109,12 @@ const CreateHackathon = () => {
     <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-3xl mx-auto px-6 lg:px-12">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-extrabold tracking-tight">Create New Hackathon</h1>
-          <p className="text-muted-foreground text-sm mt-1">Multi-step wizard to setup event details, deadlines, and criteria.</p>
-        </div>
+        <PageHeader 
+          showBack 
+          title="Create New Hackathon" 
+          description="Multi-step wizard to setup event details, deadlines, and criteria."
+          unsavedChanges={step > 1}
+        />
 
         {/* Wizard Steps Progress */}
         <div className="grid grid-cols-6 gap-2 mb-10 text-center text-xs">

@@ -1,6 +1,7 @@
 const Registration = require('../models/Registration');
 const Hackathon = require('../models/Hackathon');
 const ActivityLog = require('../models/ActivityLog');
+const { createNotification } = require('../services/notificationService');
 const { asyncHandler } = require('../utils/asyncHandler');
 const { ApiError } = require('../utils/ApiError');
 
@@ -11,7 +12,7 @@ const registerForHackathon = asyncHandler(async (req, res) => {
   const hackathonId = req.params.id;
   const participantId = req.user._id;
 
-  const { name, teamName, github, linkedin } = req.body;
+  const { name, teamName, github, linkedin, teamMembers } = req.body;
 
   if (!name || !name.trim()) {
     throw new ApiError(400, 'Name is required for registration');
@@ -34,6 +35,17 @@ const registerForHackathon = asyncHandler(async (req, res) => {
     throw new ApiError(409, 'You have already registered for this hackathon');
   }
 
+  if (teamMembers && Array.isArray(teamMembers)) {
+    if (teamMembers.length > (hackathon.maxTeamSize || 1) - 1) {
+      throw new ApiError(400, `Team size exceeds the maximum allowed limit of ${hackathon.maxTeamSize}`);
+    }
+    for (const member of teamMembers) {
+      if (!member.name || !member.email) {
+        throw new ApiError(400, 'Each team member must have a name and email');
+      }
+    }
+  }
+
   const registration = await Registration.create({
     hackathon: hackathonId,
     participant: participantId,
@@ -44,7 +56,13 @@ const registerForHackathon = asyncHandler(async (req, res) => {
       github: github ? github.trim() : '',
       linkedin: linkedin ? linkedin.trim() : '',
     },
+    teamMembers: teamMembers || [],
   });
+
+  // Increment participant count on Hackathon
+  const membersAdded = 1 + (teamMembers ? teamMembers.length : 0);
+  await Hackathon.findByIdAndUpdate(hackathonId, { $inc: { participantCount: membersAdded } });
+
 
   await ActivityLog.create({
     user: participantId,
@@ -74,6 +92,10 @@ const cancelRegistration = asyncHandler(async (req, res) => {
   // Let's just allow cancelling which might mark it as cancelled
   registration.status = 'cancelled';
   await registration.save();
+
+  // Decrement participant count
+  const membersRemoved = 1 + (registration.teamMembers ? registration.teamMembers.length : 0);
+  await Hackathon.findByIdAndUpdate(hackathonId, { $inc: { participantCount: -membersRemoved } });
 
   await ActivityLog.create({
     user: participantId,
@@ -138,6 +160,15 @@ const approveRegistration = asyncHandler(async (req, res) => {
     entityId: registration._id,
   });
 
+  await createNotification({
+    recipient: registration.participant,
+    type: 'registration_approved',
+    title: 'Registration Approved',
+    message: `Your registration for ${registration.hackathon.title} has been approved!`,
+    link: '/participant/hackathons',
+    metadata: { eventKey: `reg_apprv:${registration._id.toString()}` }
+  });
+
   res.status(200).json({ success: true, message: 'Registration approved', data: registration });
 });
 
@@ -165,6 +196,15 @@ const rejectRegistration = asyncHandler(async (req, res) => {
     action: 'registration_rejected',
     entityType: 'Registration',
     entityId: registration._id,
+  });
+
+  await createNotification({
+    recipient: registration.participant,
+    type: 'registration_rejected',
+    title: 'Registration Rejected',
+    message: `Your registration for ${registration.hackathon.title} was not approved.`,
+    link: '/participant/hackathons',
+    metadata: { eventKey: `reg_rej:${registration._id.toString()}` }
   });
 
   res.status(200).json({ success: true, message: 'Registration rejected', data: registration });

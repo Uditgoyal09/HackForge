@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Calendar, Trophy, Users, ShieldCheck, Clock, MapPin, ExternalLink, ArrowRight, CheckCircle2, X } from 'lucide-react';
+import BackButton from '../../components/common/BackButton';
 import { hackathonService } from '../../services/hackathonService';
 import { registrationService } from '../../services/registrationService';
 import { useAuth } from '../../context/AuthContext';
@@ -14,6 +15,7 @@ const HackathonDetails = () => {
   const [hackathon, setHackathon] = useState(null);
   const [loading, setLoading] = useState(true);
   const [registering, setRegistering] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [userRegistration, setUserRegistration] = useState(null);
   
   const [showRegModal, setShowRegModal] = useState(false);
@@ -21,7 +23,8 @@ const HackathonDetails = () => {
     name: user?.name || '',
     teamName: '',
     github: '',
-    linkedin: ''
+    linkedin: '',
+    teamMembers: []
   });
 
   // Countdown timer calculation
@@ -87,8 +90,29 @@ const HackathonDetails = () => {
       navigate('/login');
       return;
     }
-    setRegData(prev => ({ ...prev, name: user?.name || '' }));
+    setRegData({ name: user?.name || '', teamName: '', github: '', linkedin: '', teamMembers: [] });
     setShowRegModal(true);
+  };
+
+  const handleAddMember = () => {
+    if (regData.teamMembers.length < (hackathon.maxTeamSize - 1)) {
+      setRegData({
+        ...regData,
+        teamMembers: [...regData.teamMembers, { name: '', email: '', github: '', linkedin: '' }]
+      });
+    }
+  };
+
+  const handleRemoveMember = (index) => {
+    const updated = [...regData.teamMembers];
+    updated.splice(index, 1);
+    setRegData({ ...regData, teamMembers: updated });
+  };
+
+  const handleMemberChange = (index, field, value) => {
+    const updated = [...regData.teamMembers];
+    updated[index][field] = value;
+    setRegData({ ...regData, teamMembers: updated });
   };
 
   const submitRegistration = async (e) => {
@@ -105,6 +129,22 @@ const HackathonDetails = () => {
       toast.error(err.response?.data?.message || 'Registration failed');
     } finally {
       setRegistering(false);
+    }
+  };
+
+  const handleDeleteHackathon = async () => {
+    if (!window.confirm('Are you sure you want to delete this hackathon? This action cannot be undone.')) return;
+    setDeleting(true);
+    try {
+      const res = await hackathonService.deleteHackathon(id);
+      if (res.success) {
+        toast.success('Hackathon deleted successfully');
+        navigate(user?.role === 'admin' ? '/admin/dashboard' : '/organizer/dashboard');
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to delete hackathon');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -134,6 +174,11 @@ const HackathonDetails = () => {
   return (
     <div className="min-h-screen bg-background text-foreground pb-20 selection:bg-primary/30 selection:text-primary-foreground">
       
+      {/* Back Button */}
+      <div className="absolute top-24 left-6 lg:left-12 z-30">
+        <BackButton />
+      </div>
+
       {/* Cinematic Hero Section */}
       <div className="relative w-full h-[60vh] min-h-[400px] max-h-[600px] bg-surface border-b border-border overflow-hidden">
         {hackathon.bannerImageUrl ? (
@@ -175,6 +220,29 @@ const HackathonDetails = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-12 -mt-6 relative z-20">
         {/* Action Bar */}
         <div className="flex flex-wrap items-center gap-4 p-6 bg-surface-elevated/80 backdrop-blur-xl border border-border rounded-2xl shadow-xl mb-12">
+          
+          {user?.role === 'organizer' || user?.role === 'admin' ? (
+            <>
+              {isOrganizerOwner && (
+                <>
+                  <button
+                    onClick={handleDeleteHackathon}
+                    disabled={deleting}
+                    className="px-5 py-2.5 rounded-[var(--radius-md)] bg-error/10 hover:bg-error/20 text-error font-semibold text-sm transition-all disabled:opacity-50"
+                  >
+                    {deleting ? 'Deleting...' : 'Delete Event'}
+                  </button>
+                  <Link
+                    to={`/organizer/hackathons/${id}/edit`}
+                    className="px-5 py-2.5 rounded-[var(--radius-md)] bg-surface-elevated hover:bg-surface-hover text-foreground font-semibold text-sm transition-all"
+                  >
+                    Manage Event
+                  </Link>
+                </>
+              )}
+            </>
+          ) : (
+            <>
               {userRegistration ? (
                 <div className="flex items-center gap-3">
                   <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-success/10 text-success border border-success/30 text-xs font-semibold">
@@ -203,15 +271,8 @@ const HackathonDetails = () => {
                   Registration Closed
                 </span>
               )}
-
-              {isOrganizerOwner && (
-                <Link
-                  to={`/organizer/hackathons/${id}/edit`}
-                  className="px-5 py-2.5 rounded-[var(--radius-md)] bg-surface-elevated hover:bg-surface-hover text-foreground font-semibold text-xs transition-all"
-                >
-                  Manage Event
-                </Link>
-              )}
+            </>
+          )}
 
               {hackathon.resultsPublished && (
                 <Link
@@ -389,7 +450,78 @@ const HackathonDetails = () => {
                 />
               </div>
 
-              <div className="pt-4 flex justify-end gap-3">
+              {/* Dynamic Team Members */}
+              {hackathon?.maxTeamSize > 1 && (
+                <div className="pt-4 border-t border-border mt-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-bold text-foreground">Team Members (Optional)</h3>
+                    <button
+                      type="button"
+                      onClick={handleAddMember}
+                      disabled={regData.teamMembers.length >= (hackathon.maxTeamSize - 1)}
+                      className="px-3 py-1.5 rounded-[var(--radius-md)] bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      + Add Member
+                    </button>
+                  </div>
+                  
+                  {regData.teamMembers.length > 0 ? (
+                    <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
+                      {regData.teamMembers.map((member, index) => (
+                        <div key={index} className="p-4 rounded-[var(--radius-md)] bg-surface-elevated border border-border relative">
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveMember(index)}
+                            className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-error transition-colors"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                          <h4 className="text-xs font-semibold text-primary mb-3">Member {index + 2}</h4>
+                          <div className="space-y-3">
+                            <input
+                              type="text"
+                              required
+                              value={member.name}
+                              onChange={(e) => handleMemberChange(index, 'name', e.target.value)}
+                              className="w-full px-3 py-2 rounded-[var(--radius-md)] bg-background border border-input text-xs"
+                              placeholder="Full Name *"
+                            />
+                            <input
+                              type="email"
+                              required
+                              value={member.email}
+                              onChange={(e) => handleMemberChange(index, 'email', e.target.value)}
+                              className="w-full px-3 py-2 rounded-[var(--radius-md)] bg-background border border-input text-xs"
+                              placeholder="Email Address *"
+                            />
+                            <div className="grid grid-cols-2 gap-2">
+                              <input
+                                type="url"
+                                value={member.github}
+                                onChange={(e) => handleMemberChange(index, 'github', e.target.value)}
+                                className="w-full px-3 py-2 rounded-[var(--radius-md)] bg-background border border-input text-xs"
+                                placeholder="GitHub Link"
+                              />
+                              <input
+                                type="url"
+                                value={member.linkedin}
+                                onChange={(e) => handleMemberChange(index, 'linkedin', e.target.value)}
+                                className="w-full px-3 py-2 rounded-[var(--radius-md)] bg-background border border-input text-xs"
+                                placeholder="LinkedIn Link"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">You are registering alone. Add team members to register as a team.</p>
+                  )}
+                  <p className="text-[10px] text-muted-foreground mt-2">Max team size: {hackathon.maxTeamSize} (You + {hackathon.maxTeamSize - 1} members)</p>
+                </div>
+              )}
+
+              <div className="pt-4 flex justify-end gap-3 mt-4">
                 <button
                   type="button"
                   onClick={() => setShowRegModal(false)}

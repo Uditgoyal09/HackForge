@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, LogOut, LayoutDashboard, User, Moon, Sun, Hexagon, ArrowLeft } from 'lucide-react';
+import { Menu, X, LogOut, LayoutDashboard, User, Moon, Sun, Hexagon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import NotificationBell from './NotificationBell';
 import { Button } from '../ui/Button';
@@ -14,11 +14,6 @@ export const Navbar = () => {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [isDark, setIsDark] = useState(true);
   const location = useLocation();
-  const navigate = useNavigate();
-
-  const dashboardRoots = ['/admin/dashboard', '/organizer/dashboard', '/participant/dashboard', '/judge/dashboard'];
-  const isDashboardRoute = location.pathname.startsWith('/admin') || location.pathname.startsWith('/organizer') || location.pathname.startsWith('/participant') || location.pathname.startsWith('/judge');
-  const showBackButton = isDashboardRoute && !dashboardRoots.includes(location.pathname);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -71,11 +66,10 @@ export const Navbar = () => {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 h-[68px] z-50 transition-all duration-300 ${
-          scrolled
+        className={`fixed top-0 left-0 right-0 h-[68px] z-50 transition-all duration-300 ${scrolled
             ? 'bg-surface/90 backdrop-blur-md border-b border-border shadow-sm'
             : 'bg-transparent border-b border-transparent'
-        }`}
+          }`}
       >
         <div className="max-w-[1280px] mx-auto h-full px-6 lg:px-8 flex items-center justify-between">
           {/* Logo */}
@@ -88,16 +82,6 @@ export const Navbar = () => {
               Hack<span className="text-gradient-primary">Verse</span>
             </span>
           </Link>
-
-          {showBackButton && (
-            <button
-              onClick={() => navigate(-1)}
-              className="hidden md:flex ml-4 items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-surface-elevated rounded-lg transition-all border border-transparent hover:border-border"
-              title="Go Back"
-            >
-              <ArrowLeft className="w-4 h-4" /> Back
-            </button>
-          )}
 
           {/* Desktop Nav Links */}
           <div className="hidden md:flex items-center gap-2 text-sm font-medium text-muted-foreground">
@@ -183,11 +167,6 @@ export const Navbar = () => {
 
           {/* Mobile Toggle */}
           <div className="flex md:hidden items-center gap-3">
-            {showBackButton && (
-              <button onClick={() => navigate(-1)} className="p-2 text-muted-foreground hover:text-foreground">
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-            )}
             <button onClick={toggleTheme} className="p-2 text-muted-foreground hover:text-foreground">
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
@@ -214,7 +193,7 @@ export const Navbar = () => {
             <Link to="/leaderboard" onClick={() => setMobileMenuOpen(false)} className="hover:text-foreground">Leaderboard</Link>
             <Link to="/projects" onClick={() => setMobileMenuOpen(false)} className="hover:text-foreground">Projects</Link>
           </div>
-          
+
           <div className="mt-8 pt-8 border-t border-border">
             {isAuthenticated ? (
               <div className="space-y-4">

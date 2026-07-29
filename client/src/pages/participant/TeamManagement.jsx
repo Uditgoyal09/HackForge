@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Mail, UserPlus, LogOut, Trash2, Crown, Shield, CheckCircle2, XCircle } from 'lucide-react';
+import { Users, Mail, UserPlus, LogOut, Trash2, Crown, Shield, CheckCircle2, XCircle, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import PageHeader from '../../components/common/PageHeader';
 import { teamService } from '../../services/teamService';
 import { invitationService } from '../../services/invitationService';
 import { registrationService } from '../../services/registrationService';
@@ -168,10 +170,11 @@ const TeamManagement = () => {
     <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Header */}
-        <div className="mb-10">
-          <h1 className="text-3xl font-extrabold tracking-tight">Team & Invitations</h1>
-          <p className="text-muted-foreground text-sm mt-1">Form teams for approved hackathon registrations and manage member invites.</p>
-        </div>
+        <PageHeader 
+          showBack 
+          title="Team & Invitations"
+          description="Form teams for approved hackathon registrations and manage member invites."
+        />
 
         {/* Incoming Invitations Alert Section */}
         {myInvitations.length > 0 && (
@@ -255,14 +258,22 @@ const TeamManagement = () => {
                 <p className="text-xs text-muted-foreground mt-1">Leader: {myTeam.leader?.name}</p>
               </div>
 
-              {!isLeader && (
-                <button
-                  onClick={handleLeaveTeam}
-                  className="px-4 py-2 rounded-[var(--radius-md)] bg-error/10 border border-error/20 text-error hover:bg-error/20 text-xs font-semibold transition-all flex items-center gap-1.5 self-start sm:self-auto"
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/participant/submissions"
+                  className="px-4 py-2 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold transition-all flex items-center gap-1.5 shadow-lg shadow-primary/25"
                 >
-                  <LogOut className="w-4 h-4" /> Leave Team
-                </button>
-              )}
+                  Submit Project <ArrowRight className="w-4 h-4" />
+                </Link>
+                {!isLeader && (
+                  <button
+                    onClick={handleLeaveTeam}
+                    className="px-4 py-2 rounded-[var(--radius-md)] bg-error/10 border border-error/20 text-error hover:bg-error/20 text-xs font-semibold transition-all flex items-center gap-1.5 self-start sm:self-auto"
+                  >
+                    <LogOut className="w-4 h-4" /> Leave Team
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Members List */}

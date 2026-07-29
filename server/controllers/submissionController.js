@@ -2,6 +2,7 @@ const Submission = require('../models/Submission');
 const Hackathon = require('../models/Hackathon');
 const Team = require('../models/Team');
 const ActivityLog = require('../models/ActivityLog');
+const { createNotification } = require('../services/notificationService');
 const { asyncHandler } = require('../utils/asyncHandler');
 const { ApiError } = require('../utils/ApiError');
 const { uploadToCloudinary, deleteFromCloudinary } = require('../services/fileUploadService');
@@ -87,6 +88,15 @@ const createSubmission = asyncHandler(async (req, res) => {
     action: 'submission_created',
     entityType: 'Submission',
     entityId: submission._id,
+  });
+
+  await createNotification({
+    recipient: hackathon.organizer,
+    type: 'submission_received',
+    title: 'New Project Submission',
+    message: `${team.name} submitted their project for ${hackathon.title}.`,
+    link: `/organizer/hackathons/${hackathon._id}/submissions`,
+    metadata: { eventKey: `sub_rcvd:${submission._id.toString()}` }
   });
 
   res.status(201).json({ success: true, data: submission });
@@ -196,7 +206,14 @@ const getHackathonSubmissions = asyncHandler(async (req, res) => {
   const hackathon = await Hackathon.findById(req.params.id);
   if (!hackathon) throw new ApiError(404, 'Hackathon not found');
 
-  if (req.user.role !== 'admin' && hackathon.organizer.toString() !== req.user._id.toString()) {
+  if (req.user.role === 'participant') {
+    const team = await Team.findOne({ hackathon: req.params.id, members: req.user._id, status: 'active' });
+    if (!team) return res.status(200).json({ success: true, data: [] });
+    const submissions = await Submission.find({ hackathon: req.params.id, team: team._id }).populate('team', 'name status');
+    return res.status(200).json({ success: true, data: submissions });
+  }
+
+  if (req.user.role !== 'admin' && req.user.role !== 'judge' && hackathon.organizer.toString() !== req.user._id.toString()) {
     throw new ApiError(403, 'Unauthorized');
   }
 

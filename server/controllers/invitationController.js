@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 const Invitation = require('../models/Invitation');
 const Team = require('../models/Team');
 const Registration = require('../models/Registration');
+const User = require('../models/User');
 const ActivityLog = require('../models/ActivityLog');
+const { createNotification } = require('../services/notificationService');
 const { asyncHandler } = require('../utils/asyncHandler');
 const { ApiError } = require('../utils/ApiError');
 
@@ -49,6 +51,18 @@ const inviteMember = asyncHandler(async (req, res) => {
     entityId: invitation._id,
     metadata: { email: invitedEmail }
   });
+
+  const invitedUser = await User.findOne({ email: invitedEmail });
+  if (invitedUser) {
+    await createNotification({
+      recipient: invitedUser._id,
+      type: 'team_invitation',
+      title: 'Team Invitation',
+      message: `${req.user.name} invited you to join team ${team.name}.`,
+      link: '/participant/teams',
+      metadata: { eventKey: `team_inv:${invitation._id.toString()}` }
+    });
+  }
 
   res.status(201).json({ success: true, message: 'Invitation sent', data: invitation });
 });
@@ -125,6 +139,15 @@ const acceptInvitation = asyncHandler(async (req, res) => {
       entityType: 'Team',
       entityId: team._id,
     });
+
+    await createNotification({
+      recipient: team.leader,
+      type: 'invitation_accepted',
+      title: 'Invitation Accepted',
+      message: `${req.user.name} joined team ${team.name}.`,
+      link: '/participant/teams',
+      metadata: { eventKey: `inv_acc:${invitation._id.toString()}` }
+    }, opts ? opts.session : null);
   };
 
   try {

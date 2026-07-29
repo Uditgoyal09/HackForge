@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ShieldCheck, ExternalLink, ArrowLeft, Star } from 'lucide-react';
+import { ShieldCheck, ExternalLink, Star } from 'lucide-react';
+import PageHeader from '../../components/common/PageHeader';
 import { GithubIcon } from '../../components/common/SocialIcons';
 import { submissionService } from '../../services/submissionService';
 import { judgeService } from '../../services/judgeService';
@@ -103,15 +104,12 @@ const EvaluationInterface = () => {
   return (
     <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-5xl mx-auto px-6 lg:px-12">
-        <div className="mb-8">
-          <Link to="/judge/dashboard" className="text-xs text-primary hover:underline flex items-center gap-1 mb-2">
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Assignments
-          </Link>
-          <h1 className="text-3xl font-extrabold tracking-tight">
-            Evaluate: {submission.projectName}
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">Hackathon: {submission.hackathon?.title}</p>
-        </div>
+        <PageHeader 
+          showBack 
+          title={`Evaluate: ${submission.projectName}`}
+          description={`Hackathon: ${submission.hackathon?.title}`}
+          unsavedChanges={feedback.trim().length > 0}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Project Details Panel */}

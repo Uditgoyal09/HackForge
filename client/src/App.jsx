@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/layout/Navbar';
 import ErrorBoundary from './components/common/ErrorBoundary';
@@ -40,6 +40,9 @@ import AdminUserManagement from './pages/admin/AdminUserManagement';
 import ActivityLogViewer from './pages/admin/ActivityLogViewer';
 import AdminAccessCodes from './pages/admin/AdminAccessCodes';
 
+// Layouts
+import AdminLayout from './components/layout/AdminLayout';
+
 export default function App() {
   return (
     <Router>
@@ -62,12 +65,14 @@ export default function App() {
               <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>}/>
 
               {/* Participant Routes */}
+              <Route path="/participant" element={<Navigate to="/participant/dashboard" replace />} />
               <Route path="/participant/dashboard" element={<ProtectedRoute allowedRoles={['participant']}><ParticipantDashboard /></ProtectedRoute>}/>
               <Route path="/participant/registrations" element={<ProtectedRoute allowedRoles={['participant']}><ParticipantRegistrations /></ProtectedRoute>}/>
               <Route path="/participant/teams" element={<ProtectedRoute allowedRoles={['participant']}><TeamManagement /></ProtectedRoute>}/>
               <Route path="/participant/submissions" element={<ProtectedRoute allowedRoles={['participant']}><ProjectSubmission /></ProtectedRoute>}/>
 
               {/* Organizer Routes */}
+              <Route path="/organizer" element={<Navigate to="/organizer/dashboard" replace />} />
               <Route path="/organizer/dashboard" element={<ProtectedRoute allowedRoles={['organizer', 'admin']}><OrganizerDashboard /></ProtectedRoute>}/>
               <Route path="/organizer/hackathons/create" element={<ProtectedRoute allowedRoles={['organizer', 'admin']}><CreateHackathon /></ProtectedRoute>}/>
               <Route path="/organizer/hackathons/:id/edit" element={<ProtectedRoute allowedRoles={['organizer', 'admin']}><CreateHackathon /></ProtectedRoute>}/>
@@ -76,111 +81,20 @@ export default function App() {
               <Route path="/organizer/hackathons/:id/submissions" element={<ProtectedRoute allowedRoles={['organizer', 'admin']}><OrganizerSubmissions /></ProtectedRoute>}/>
 
               {/* Judge Routes */}
+              <Route path="/judge" element={<Navigate to="/judge/dashboard" replace />} />
               <Route path="/judge/dashboard" element={<ProtectedRoute allowedRoles={['judge', 'admin']}><JudgeDashboard /></ProtectedRoute>}/>
               <Route path="/judge/assignments" element={<ProtectedRoute allowedRoles={['judge', 'admin']}><JudgeDashboard /></ProtectedRoute>}/>
               <Route path="/judge/assignments/:id" element={<ProtectedRoute allowedRoles={['judge', 'admin']}><EvaluationInterface /></ProtectedRoute>}/>
 
-              {/* Admin Routes that resolve to Organizer */}
-              <Route
-                path="/organizer/hackathons/create"
-                element={
-                  <ProtectedRoute allowedRoles={['organizer', 'admin']}>
-                    <CreateHackathon />
-                  </ProtectedRoute> 
-                }
-              />
-              <Route
-                path="/organizer/hackathons/:id/edit"
-                element={
-                  <ProtectedRoute allowedRoles={['organizer', 'admin']}>
-                    <CreateHackathon />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/organizer/hackathons/:id/registrations"
-                element={
-                  <ProtectedRoute allowedRoles={['organizer', 'admin']}>
-                    <OrganizerRegistrations />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/organizer/hackathons/:id/teams"
-                element={
-                  <ProtectedRoute allowedRoles={['organizer', 'admin']}>
-                    <OrganizerTeams />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/organizer/hackathons/:id/submissions"
-                element={
-                  <ProtectedRoute allowedRoles={['organizer', 'admin']}>
-                    <OrganizerSubmissions />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* Judge Routes */}
-              <Route
-                path="/judge/dashboard"
-                element={
-                  <ProtectedRoute allowedRoles={['judge', 'admin']}>
-                    <JudgeDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/judge/assignments"
-                element={
-                  <ProtectedRoute allowedRoles={['judge', 'admin']}>
-                    <JudgeDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/judge/assignments/:id"
-                element={
-                  <ProtectedRoute allowedRoles={['judge', 'admin']}>
-                    <EvaluationInterface />
-                  </ProtectedRoute>
-                }
-              />
 
               {/* Admin Routes */}
-              <Route
-                path="/admin/dashboard"
-                element={
-                  <ProtectedRoute allowedRoles={['admin']}>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin/users"
-                element={
-                  <ProtectedRoute allowedRoles={['admin']}>
-                    <AdminUserManagement />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin/activity"
-                element={
-                  <ProtectedRoute allowedRoles={['admin']}>
-                    <ActivityLogViewer />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin/access-codes"
-                element={
-                  <ProtectedRoute allowedRoles={['admin']}>
-                    <AdminAccessCodes />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminLayout /></ProtectedRoute>}>
+                <Route index element={<Navigate to="/admin/dashboard" replace />} />
+                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="users" element={<AdminUserManagement />} />
+                <Route path="activity" element={<ActivityLogViewer />} />
+                <Route path="access-codes" element={<AdminAccessCodes />} />
+              </Route>
 
               {/* Fallback 404 Route */}
               <Route path="*" element={<NotFound404 />} />

@@ -56,7 +56,7 @@ router.route('/:id/submissions')
     validate(submitProjectSchema), 
     createSubmission
   )
-  .get(protect, authorize('admin', 'organizer'), validateObjectId('id'), getHackathonSubmissions);
+  .get(protect, authorize('admin', 'organizer', 'participant'), validateObjectId('id'), getHackathonSubmissions);
 
 // Leaderboard and Results
 router.get('/:id/leaderboard', validateObjectId('id'), getLeaderboard);

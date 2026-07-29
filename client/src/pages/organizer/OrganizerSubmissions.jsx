@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FolderGit2, UserPlus, Trophy, ArrowLeft, ExternalLink } from 'lucide-react';
+import { FolderGit2, UserPlus, Trophy, ExternalLink } from 'lucide-react';
+import PageHeader from '../../components/common/PageHeader';
 import { GithubIcon } from '../../components/common/SocialIcons';
 import { submissionService } from '../../services/submissionService';
 import { leaderboardService } from '../../services/leaderboardService';
@@ -66,31 +67,26 @@ const OrganizerSubmissions = () => {
   return (
     <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <Link to="/organizer/dashboard" className="text-xs text-primary hover:underline flex items-center gap-1 mb-2">
-              <ArrowLeft className="w-3.5 h-3.5" /> Back to Dashboard
-            </Link>
-            <h1 className="text-3xl font-extrabold tracking-tight">
-              Submissions & Judging — {hackathon?.title || 'Hackathon'}
-            </h1>
-            <p className="text-muted-foreground text-sm mt-1">Review team deliverables, assign judges, and publish final rankings.</p>
-          </div>
-
-          {!hackathon?.resultsPublished ? (
-            <button
-              onClick={handlePublishResults}
-              disabled={publishing}
-              className="px-6 py-3 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs transition-all shadow-xl shadow-primary/20 disabled:opacity-50 flex items-center gap-2"
-            >
-              <Trophy className="w-4 h-4" /> {publishing ? 'Publishing...' : 'Publish Leaderboard Results'}
-            </button>
-          ) : (
-            <span className="px-4 py-2 rounded-[var(--radius-md)] bg-success/10 border border-success/20 text-success text-xs font-bold font-mono uppercase">
-              Results Published
-            </span>
-          )}
-        </div>
+        <PageHeader 
+          showBack 
+          title={`Submissions & Judging — ${hackathon?.title || 'Hackathon'}`}
+          description="Review team deliverables, assign judges, and publish final rankings."
+          actions={
+            !hackathon?.resultsPublished ? (
+              <button
+                onClick={handlePublishResults}
+                disabled={publishing}
+                className="px-6 py-3 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs transition-all shadow-xl shadow-primary/20 disabled:opacity-50 flex items-center gap-2"
+              >
+                <Trophy className="w-4 h-4" /> {publishing ? 'Publishing...' : 'Publish Leaderboard Results'}
+              </button>
+            ) : (
+              <span className="px-4 py-2 rounded-[var(--radius-md)] bg-success/10 border border-success/20 text-success text-xs font-bold font-mono uppercase">
+                Results Published
+              </span>
+            )
+          }
+        />
 
         {/* Submissions Grid */}
         {loading ? (

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Key, Plus, Copy, Check, AlertTriangle, X } from 'lucide-react';
+import PageHeader from '../../components/common/PageHeader';
 import { adminService } from '../../services/adminService';
 import { toast } from 'sonner';
 
@@ -91,40 +92,37 @@ const AdminAccessCodes = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <span className="text-xs font-mono uppercase font-bold text-error px-3 py-1 rounded-[var(--radius-sm)] bg-error/10 border border-error/20 mb-3 inline-block">
-              Security Control
-            </span>
-            <h1 className="text-3xl font-extrabold tracking-tight">Role Verification Access Codes</h1>
-            <p className="text-muted-foreground text-sm mt-1">Generate and manage cryptographically hashed verification codes for Organizers and Judges.</p>
-          </div>
-
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="px-5 py-3 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs transition-all shadow-xl shadow-primary/20 flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" /> Generate Access Code
-          </button>
-        </div>
+    <div className="w-full">
+      <div className="w-full">
+        <PageHeader 
+          showBack 
+          title="Role Verification Access Codes" 
+          description="Generate and manage cryptographically hashed verification codes for Organizers and Judges."
+          actions={
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="px-5 py-3 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs transition-all shadow-xl shadow-primary/20 flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" /> Generate Access Code
+            </button>
+          }
+        />
 
         {/* Table */}
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-16 rounded-[var(--radius-lg)] bg-surface-elevated border border-border animate-pulse" />
+              <div key={i} className="h-16 rounded-[var(--radius-md)] bg-surface-elevated border border-border animate-pulse" />
             ))}
           </div>
         ) : codes.length === 0 ? (
-          <div className="text-center py-16 bg-surface border border-border rounded-[var(--radius-lg)] p-8">
+          <div className="text-center py-16 bg-surface border border-border rounded-[var(--radius-md)] p-8 shadow-sm">
             <Key className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
             <h3 className="font-bold text-foreground">No Access Codes Generated</h3>
             <p className="text-xs text-muted-foreground mt-1">Click above to generate verification codes for Organizers or Judges.</p>
           </div>
         ) : (
-          <div className="bg-surface border border-border rounded-[var(--radius-lg)] overflow-hidden">
+          <div className="bg-surface border border-border rounded-[var(--radius-md)] overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-background text-muted-foreground font-mono uppercase border-b border-border">
@@ -186,7 +184,7 @@ const AdminAccessCodes = () => {
         {/* Generate Code Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 max-w-md w-full text-foreground relative">
+            <div className="bg-surface border border-border rounded-[var(--radius-md)] p-6 max-w-md w-full text-foreground relative shadow-xl">
               <button onClick={() => setIsModalOpen(false)} className="absolute right-4 top-4 text-muted-foreground hover:text-foreground">
                 <X className="w-5 h-5" />
               </button>
@@ -268,7 +266,7 @@ const AdminAccessCodes = () => {
         {/* One-Time Reveal Modal */}
         {revealedCode && (
           <div className="fixed inset-0 bg-background/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-            <div className="bg-surface border-2 border-primary/40 rounded-[var(--radius-lg)] p-8 max-w-md w-full text-foreground text-center shadow-2xl shadow-primary/20 relative">
+            <div className="bg-surface border-2 border-primary/40 rounded-[var(--radius-md)] p-8 max-w-md w-full text-foreground text-center shadow-2xl shadow-primary/20 relative">
               <div className="w-12 h-12 rounded-[var(--radius-md)] bg-warning/10 border border-warning/20 text-warning flex items-center justify-center mx-auto mb-4">
                 <AlertTriangle className="w-6 h-6" />
               </div>

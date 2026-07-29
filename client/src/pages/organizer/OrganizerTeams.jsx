@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Users, Shield, ArrowLeft } from 'lucide-react';
+import { Users, Shield } from 'lucide-react';
+import PageHeader from '../../components/common/PageHeader';
 import api from '../../services/api';
 import { hackathonService } from '../../services/hackathonService';
 
@@ -32,15 +33,11 @@ const OrganizerTeams = () => {
   return (
     <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="mb-8">
-          <Link to="/organizer/dashboard" className="text-xs text-primary hover:underline flex items-center gap-1 mb-2">
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Dashboard
-          </Link>
-          <h1 className="text-3xl font-extrabold tracking-tight">
-            Formed Teams — {hackathon?.title || 'Hackathon'}
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">Review active participant teams and leaders.</p>
-        </div>
+        <PageHeader 
+          showBack 
+          title={`Formed Teams — ${hackathon?.title || 'Hackathon'}`}
+          description="Review active participant teams and leaders."
+        />
 
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

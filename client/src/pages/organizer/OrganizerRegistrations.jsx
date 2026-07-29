@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { CheckCircle2, XCircle, Search, Shield, ArrowLeft } from 'lucide-react';
+import { CheckCircle2, XCircle, Search, Shield } from 'lucide-react';
+import PageHeader from '../../components/common/PageHeader';
 import { registrationService } from '../../services/registrationService';
 import { hackathonService } from '../../services/hackathonService';
 import { toast } from 'sonner';
@@ -77,17 +78,11 @@ const OrganizerRegistrations = () => {
   return (
     <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <Link to="/organizer/dashboard" className="text-xs text-primary hover:underline flex items-center gap-1 mb-2">
-              <ArrowLeft className="w-3.5 h-3.5" /> Back to Dashboard
-            </Link>
-            <h1 className="text-3xl font-extrabold tracking-tight">
-              Applications — {hackathon?.title || 'Hackathon'}
-            </h1>
-            <p className="text-muted-foreground text-sm mt-1">Review participant registrations and approve eligibility.</p>
-          </div>
-        </div>
+        <PageHeader 
+          showBack 
+          title={`Applications — ${hackathon?.title || 'Hackathon'}`}
+          description="Review participant registrations and approve eligibility."
+        />
 
         {/* Filters */}
         <div className="bg-surface border border-border rounded-3xl p-4 sm:p-6 mb-8 flex flex-col sm:flex-row gap-4">
@@ -135,6 +130,7 @@ const OrganizerRegistrations = () => {
                     <th className="p-4">Participant</th>
                     <th className="p-4">Email</th>
                     <th className="p-4">Registered Date</th>
+                    <th className="p-4">Team Size</th>
                     <th className="p-4">Status</th>
                     <th className="p-4 text-right">Actions</th>
                   </tr>
@@ -147,6 +143,7 @@ const OrganizerRegistrations = () => {
                         <td className="p-4 font-semibold text-foreground">{p.name || 'Anonymous'}</td>
                         <td className="p-4 text-muted-foreground">{p.email}</td>
                         <td className="p-4 text-muted-foreground">{new Date(r.registeredAt || r.createdAt).toLocaleDateString()}</td>
+                        <td className="p-4 text-muted-foreground">{r.teamMembers?.length ? r.teamMembers.length + 1 : 1}</td>
                         <td className="p-4">
                           <span
                             className={`px-2.5 py-0.5 rounded-[var(--radius-sm)] text-[10px] font-mono font-bold uppercase ${

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Shield, Lock, Unlock, UserCheck, ArrowLeft } from 'lucide-react';
+import { Search, Shield, Lock, Unlock, UserCheck } from 'lucide-react';
+import PageHeader from '../../components/common/PageHeader';
 import { adminService } from '../../services/adminService';
 import { toast } from 'sonner';
 
@@ -76,12 +77,13 @@ const AdminUserManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="mb-8">
-          <h1 className="text-3xl font-extrabold tracking-tight">User Moderation & RBAC</h1>
-          <p className="text-muted-foreground text-sm mt-1">Manage system user roles, block malicious accounts, and audit permissions.</p>
-        </div>
+    <div className="w-full">
+      <div className="w-full">
+        <PageHeader 
+          showBack 
+          title="User Moderation & RBAC" 
+          description="Manage system user roles, block malicious accounts, and audit permissions."
+        />
 
         {/* Filters */}
         <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-4 sm:p-6 mb-8 flex flex-col sm:flex-row gap-4">
@@ -113,11 +115,11 @@ const AdminUserManagement = () => {
         {loading ? (
           <div className="space-y-4">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-16 rounded-[var(--radius-lg)] bg-surface-elevated border border-border animate-pulse" />
+              <div key={i} className="h-16 rounded-[var(--radius-md)] bg-surface-elevated border border-border animate-pulse" />
             ))}
           </div>
         ) : (
-          <div className="bg-surface border border-border rounded-[var(--radius-lg)] overflow-hidden">
+          <div className="bg-surface border border-border rounded-[var(--radius-md)] overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-background text-muted-foreground font-mono uppercase border-b border-border">
@@ -190,7 +192,7 @@ const AdminUserManagement = () => {
         {/* Change Role Modal */}
         {selectedUser && (
           <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 max-w-md w-full text-foreground">
+            <div className="bg-surface border border-border rounded-[var(--radius-md)] p-6 max-w-md w-full text-foreground shadow-xl">
               <h3 className="font-bold text-lg mb-1">Update User Role</h3>
               <p className="text-xs text-muted-foreground mb-4">User: <span className="text-foreground font-semibold">{selectedUser.name}</span> ({selectedUser.email})</p>
 

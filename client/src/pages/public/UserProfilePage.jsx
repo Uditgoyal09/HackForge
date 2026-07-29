@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { User, Lock, Mail, Globe, Shield, Save } from 'lucide-react';
-import { GithubIcon, LinkedinIcon } from '../../components/common/SocialIcons';
+import PageHeader from '../../components/common/PageHeader';
 import { useAuth } from '../../context/AuthContext';
 import { userService } from '../../services/userService';
 import { authService } from '../../services/authService';
@@ -73,10 +73,11 @@ const UserProfilePage = () => {
   return (
     <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
-        <div className="mb-8">
-          <h1 className="text-3xl font-extrabold tracking-tight">Account Settings & Profile</h1>
-          <p className="text-muted-foreground text-sm mt-1">Manage your public portfolio, developer skills, and security preferences.</p>
-        </div>
+        <PageHeader 
+          showBack 
+          title="Account Settings & Profile"
+          description="Manage your public portfolio, developer skills, and security preferences."
+        />
 
         <div className="space-y-8">
           {/* Profile Form */}

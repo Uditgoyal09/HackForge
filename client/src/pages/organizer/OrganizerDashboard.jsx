@@ -43,7 +43,7 @@ const OrganizerDashboard = () => {
 
   if (loading) {
     return (
-      <div className="pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="min-h-screen text-foreground pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <DashboardSkeleton />
       </div>
     );
@@ -74,7 +74,7 @@ const OrganizerDashboard = () => {
   const hasHackathons = data.myHackathons > 0;
 
   return (
-    <div className="min-h-screen text-foreground pb-20 pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto selection:bg-primary-soft selection:text-foreground relative">
+    <div className="min-h-screen text-foreground pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto selection:bg-primary-soft selection:text-foreground relative">
       {/* Background Ambience */}
       <div className="fixed inset-0 z-[-1] pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-soft rounded-full blur-[120px]" />
@@ -116,9 +116,13 @@ const OrganizerDashboard = () => {
             {/* Right Column */}
             <div className="space-y-8">
               <UpcomingDeadlines deadlines={data.upcomingDeadlines} />
-              <QuickActions />
-              <OrganizerActivity activity={data.recentActivity} />
             </div>
+          </div>
+
+          {/* Quick Actions & Activity Logs Horizontal Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <QuickActions />
+            <OrganizerActivity activity={data.recentActivity} />
           </div>
         </motion.div>
       )}
