@@ -6,6 +6,7 @@
 
 @layer base {
   :root {
+    color-scheme: dark;
     /* Radius System */
     --radius-sm: 8px;
     --radius-md: 12px;
@@ -41,6 +42,7 @@
   }
 
   .light {
+    color-scheme: light;
     --background: #FAFAFA;
     --background-secondary: #F3F4F6;
     --surface: #FFFFFF;

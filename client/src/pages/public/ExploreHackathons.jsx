@@ -103,10 +103,10 @@ const ExploreHackathons = () => {
                 }}
                 className="w-full px-4 py-2.5 bg-background/80 border border-input rounded-[var(--radius-md)] text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
               >
-                <option value="">All Modes</option>
-                <option value="online">Online</option>
-                <option value="offline">Offline / In-Person</option>
-                <option value="hybrid">Hybrid</option>
+                <option value="" className="bg-background text-foreground">All Modes</option>
+                <option value="online" className="bg-background text-foreground">Online</option>
+                <option value="offline" className="bg-background text-foreground">Offline / In-Person</option>
+                <option value="hybrid" className="bg-background text-foreground">Hybrid</option>
               </select>
             </div>
 
@@ -120,10 +120,10 @@ const ExploreHackathons = () => {
                 }}
                 className="w-full px-4 py-2.5 bg-background/80 border border-input rounded-[var(--radius-md)] text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
               >
-                <option value="">All Statuses</option>
-                <option value="upcoming">Upcoming</option>
-                <option value="ongoing">Ongoing</option>
-                <option value="completed">Completed</option>
+                <option value="" className="bg-background text-foreground">All Statuses</option>
+                <option value="upcoming" className="bg-background text-foreground">Upcoming</option>
+                <option value="ongoing" className="bg-background text-foreground">Ongoing</option>
+                <option value="completed" className="bg-background text-foreground">Completed</option>
               </select>
             </div>
           </div>
