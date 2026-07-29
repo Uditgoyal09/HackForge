@@ -80,13 +80,7 @@ export default function App() {
               <Route path="/judge/assignments" element={<ProtectedRoute allowedRoles={['judge', 'admin']}><JudgeDashboard /></ProtectedRoute>}/>
               <Route path="/judge/assignments/:id" element={<ProtectedRoute allowedRoles={['judge', 'admin']}><EvaluationInterface /></ProtectedRoute>}/>
 
-              {/* Admin Routes */}
-              <Route path="/admin/dashboard" element={
-                  <ProtectedRoute allowedRoles={['organizer', 'admin']}>
-                    <OrganizerDashboard />
-                  </ProtectedRoute>
-                }
-              />
+              {/* Admin Routes that resolve to Organizer */}
               <Route
                 path="/organizer/hackathons/create"
                 element={

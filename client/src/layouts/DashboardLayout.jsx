@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Sidebar } from '../components/layout/Sidebar';
-import { Menu, Search, Bell, User } from 'lucide-react';
+import { Menu, Search, Bell, User, ArrowLeft } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Badge } from '../components/ui/Badge';
@@ -11,6 +11,11 @@ import NotificationBell from '../components/layout/NotificationBell';
 export const DashboardLayout = () => {
   const [isMobileOpen, setMobileOpen] = useState(false);
   const { user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const rootPaths = ['/admin/dashboard', '/organizer/dashboard', '/participant/dashboard', '/judge/dashboard'];
+  const showBackButton = !rootPaths.includes(location.pathname);
 
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden selection:bg-purple/30">
@@ -30,6 +35,17 @@ export const DashboardLayout = () => {
             >
               <Menu className="h-5 w-5" />
             </button>
+            
+            {showBackButton && (
+              <button 
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-surface rounded-lg transition-colors border border-transparent hover:border-border"
+                title="Go Back"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="hidden sm:inline">Back</span>
+              </button>
+            )}
             
             <div className="hidden sm:flex items-center relative w-64 group">
               <Search className="h-4 w-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 group-focus-within:text-purple transition-colors" />
