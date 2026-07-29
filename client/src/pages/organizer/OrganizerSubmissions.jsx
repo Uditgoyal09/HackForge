@@ -64,29 +64,29 @@ const OrganizerSubmissions = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white pt-24 pb-20">
+    <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <Link to="/organizer/dashboard" className="text-xs text-indigo-400 hover:underline flex items-center gap-1 mb-2">
+            <Link to="/organizer/dashboard" className="text-xs text-primary hover:underline flex items-center gap-1 mb-2">
               <ArrowLeft className="w-3.5 h-3.5" /> Back to Dashboard
             </Link>
             <h1 className="text-3xl font-extrabold tracking-tight">
               Submissions & Judging — {hackathon?.title || 'Hackathon'}
             </h1>
-            <p className="text-slate-400 text-sm mt-1">Review team deliverables, assign judges, and publish final rankings.</p>
+            <p className="text-muted-foreground text-sm mt-1">Review team deliverables, assign judges, and publish final rankings.</p>
           </div>
 
           {!hackathon?.resultsPublished ? (
             <button
               onClick={handlePublishResults}
               disabled={publishing}
-              className="px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-all shadow-xl shadow-emerald-600/20 disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-3 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs transition-all shadow-xl shadow-primary/20 disabled:opacity-50 flex items-center gap-2"
             >
               <Trophy className="w-4 h-4" /> {publishing ? 'Publishing...' : 'Publish Leaderboard Results'}
             </button>
           ) : (
-            <span className="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold font-mono uppercase">
+            <span className="px-4 py-2 rounded-[var(--radius-md)] bg-success/10 border border-success/20 text-success text-xs font-bold font-mono uppercase">
               Results Published
             </span>
           )}
@@ -96,48 +96,48 @@ const OrganizerSubmissions = () => {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[1, 2].map(i => (
-              <div key={i} className="h-64 rounded-3xl bg-slate-900/60 border border-slate-800 animate-pulse" />
+              <div key={i} className="h-64 rounded-[var(--radius-lg)] bg-surface border border-border animate-pulse" />
             ))}
           </div>
         ) : submissions.length === 0 ? (
-          <div className="text-center py-16 bg-slate-900/30 border border-slate-800/50 rounded-3xl p-8">
-            <FolderGit2 className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-            <h3 className="font-bold text-slate-300">No Submissions Uploaded Yet</h3>
+          <div className="text-center py-16 bg-surface border border-border rounded-[var(--radius-lg)] p-8">
+            <FolderGit2 className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+            <h3 className="font-bold text-foreground">No Submissions Uploaded Yet</h3>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
             {submissions.map((sub) => (
-              <div key={sub._id} className="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6 flex flex-col justify-between">
+              <div key={sub._id} className="bg-surface-elevated border border-border rounded-[var(--radius-lg)] p-6 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-bold text-lg text-white">{sub.projectName}</h3>
-                    <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] font-mono">
+                    <h3 className="font-bold text-lg text-foreground">{sub.projectName}</h3>
+                    <span className="px-2.5 py-0.5 rounded-[var(--radius-sm)] bg-primary-soft text-foreground border border-primary/20 text-[10px] font-mono">
                       Team: {sub.team?.name || 'Team'}
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed mb-4">
+                  <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-4">
                     {sub.problemStatement}
                   </p>
 
                   <div className="flex flex-wrap gap-1.5 mb-4">
                     {sub.techStack?.map((t, idx) => (
-                      <span key={idx} className="px-2 py-0.5 rounded-md bg-slate-950 text-[10px] font-mono text-indigo-400">
+                      <span key={idx} className="px-2 py-0.5 rounded-[var(--radius-sm)] bg-background border border-border text-[10px] font-mono text-primary">
                         {t}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-slate-800/60 flex items-center justify-between">
+                <div className="pt-4 border-t border-border flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     {sub.githubRepository && (
-                      <a href={sub.githubRepository} target="_blank" rel="noopener noreferrer" className="text-xs text-slate-400 hover:text-white flex items-center gap-1">
+                      <a href={sub.githubRepository} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
                         <GithubIcon className="w-3.5 h-3.5" /> Repo
                       </a>
                     )}
                     {sub.liveDemoUrl && (
-                      <a href={sub.liveDemoUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-indigo-400 hover:underline flex items-center gap-1">
+                      <a href={sub.liveDemoUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
                         <ExternalLink className="w-3.5 h-3.5" /> Demo
                       </a>
                     )}
@@ -145,7 +145,7 @@ const OrganizerSubmissions = () => {
 
                   <button
                     onClick={() => setSelectedSubmission(sub)}
-                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1.5"
+                    className="px-4 py-2 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs transition-all shadow-md shadow-primary/20 flex items-center gap-1.5"
                   >
                     <UserPlus className="w-3.5 h-3.5" /> Assign Judge
                   </button>
@@ -157,14 +157,14 @@ const OrganizerSubmissions = () => {
 
         {/* Calculated Leaderboard Preview Section */}
         {leaderboard.length > 0 && (
-          <div className="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6 sm:p-8">
-            <h3 className="font-bold text-lg text-white mb-4 flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-amber-400" /> Leaderboard Ranking Preview
+          <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 sm:p-8">
+            <h3 className="font-bold text-lg text-foreground mb-4 flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-warning" /> Leaderboard Ranking Preview
             </h3>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-950 text-slate-400 font-mono uppercase">
+                <thead className="bg-surface-elevated text-muted-foreground font-mono uppercase">
                   <tr>
                     <th className="p-3">Rank</th>
                     <th className="p-3">Team</th>
@@ -173,14 +173,14 @@ const OrganizerSubmissions = () => {
                     <th className="p-3">Reviews</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60">
+                <tbody className="divide-y divide-border">
                   {leaderboard.map((item) => (
-                    <tr key={item.submissionId} className="hover:bg-slate-900/40">
-                      <td className="p-3 font-bold text-indigo-400">#{item.rank}</td>
-                      <td className="p-3 font-semibold text-white">{item.team?.name}</td>
-                      <td className="p-3 text-slate-300">{item.projectName}</td>
-                      <td className="p-3 font-bold text-emerald-400">{item.averageScore?.toFixed(2)} / 100</td>
-                      <td className="p-3 text-slate-400">{item.numberOfReviews} Submitted</td>
+                    <tr key={item.submissionId} className="hover:bg-surface-hover">
+                      <td className="p-3 font-bold text-primary">#{item.rank}</td>
+                      <td className="p-3 font-semibold text-foreground">{item.team?.name}</td>
+                      <td className="p-3 text-foreground">{item.projectName}</td>
+                      <td className="p-3 font-bold text-success">{item.averageScore?.toFixed(2)} / 100</td>
+                      <td className="p-3 text-muted-foreground">{item.numberOfReviews} Submitted</td>
                     </tr>
                   ))}
                 </tbody>

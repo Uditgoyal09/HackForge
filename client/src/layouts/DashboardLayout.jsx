@@ -1,48 +1,65 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from '../components/layout/Sidebar';
 import { Menu, Search, Bell, User } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Badge } from '../components/ui/Badge';
+import { useAuth } from '../context/AuthContext';
+import NotificationBell from '../components/layout/NotificationBell';
 
 export const DashboardLayout = () => {
   const [isMobileOpen, setMobileOpen] = useState(false);
+  const { user } = useAuth();
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-background text-foreground overflow-hidden selection:bg-purple/30">
+      
+      {/* Background glow for Dashboard */}
+      <div className="absolute top-0 left-64 w-[600px] h-[600px] bg-purple/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan/5 rounded-full blur-[100px] pointer-events-none" />
+
       <Sidebar isMobileOpen={isMobileOpen} setMobileOpen={setMobileOpen} />
       
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 flex items-center justify-between px-4 border-b border-border bg-surface/50 backdrop-blur-sm lg:px-8">
+      <div className="flex-1 flex flex-col min-w-0 relative z-10">
+        <header className="h-16 flex items-center justify-between px-4 border-b border-border bg-card/60 backdrop-blur-xl lg:px-8">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setMobileOpen(true)}
-              className="lg:hidden p-2 -ml-2 text-text-secondary hover:bg-background rounded-md"
+              className="lg:hidden p-2 -ml-2 text-muted-foreground hover:text-foreground hover:bg-surface rounded-md transition-colors"
             >
               <Menu className="h-5 w-5" />
             </button>
             
-            <div className="hidden sm:flex items-center bg-background border border-border rounded-md px-3 py-1.5 focus-within:ring-1 focus-within:ring-primary w-64">
-              <Search className="h-4 w-4 text-text-secondary mr-2" />
+            <div className="hidden sm:flex items-center relative w-64 group">
+              <Search className="h-4 w-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 group-focus-within:text-purple transition-colors" />
               <input 
                 type="text" 
-                placeholder="Search..." 
-                className="bg-transparent border-none focus:outline-none text-sm w-full text-text-primary placeholder:text-text-secondary"
+                placeholder="Search HackVerse..." 
+                className="w-full bg-surface border border-border rounded-xl pl-9 pr-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-purple focus:ring-1 focus:ring-purple/50 transition-all"
               />
             </div>
           </div>
 
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <Bell className="h-5 w-5" />
-            </Button>
-            <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center cursor-pointer border border-primary/30">
-              <User className="h-4 w-4 text-primary" />
+            <NotificationBell />
+            
+            <div className="flex items-center gap-3 pl-4 border-l border-border">
+              <div className="hidden md:flex flex-col items-end">
+                <span className="text-sm font-semibold">{user?.name || 'User'}</span>
+                <Badge variant="primary" className="text-[9px]">{user?.role || 'Guest'}</Badge>
+              </div>
+              <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-purple to-cyan flex items-center justify-center cursor-pointer shadow-md text-white font-bold text-sm">
+                {user?.name?.substring(0, 2).toUpperCase() || 'U'}
+              </div>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 overflow-auto p-4 lg:p-8">
-          <Outlet />
+        <main className="flex-1 overflow-auto p-4 lg:p-8 custom-scrollbar">
+          <div className="max-w-7xl mx-auto">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

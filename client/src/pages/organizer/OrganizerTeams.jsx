@@ -30,44 +30,44 @@ const OrganizerTeams = () => {
   }, [id]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white pt-24 pb-20">
+    <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="mb-8">
-          <Link to="/organizer/dashboard" className="text-xs text-indigo-400 hover:underline flex items-center gap-1 mb-2">
+          <Link to="/organizer/dashboard" className="text-xs text-primary hover:underline flex items-center gap-1 mb-2">
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Dashboard
           </Link>
           <h1 className="text-3xl font-extrabold tracking-tight">
             Formed Teams — {hackathon?.title || 'Hackathon'}
           </h1>
-          <p className="text-slate-400 text-sm mt-1">Review active participant teams and leaders.</p>
+          <p className="text-muted-foreground text-sm mt-1">Review active participant teams and leaders.</p>
         </div>
 
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-44 rounded-3xl bg-slate-900/60 border border-slate-800 animate-pulse" />
+              <div key={i} className="h-44 rounded-[var(--radius-lg)] bg-surface border border-border animate-pulse" />
             ))}
           </div>
         ) : teams.length === 0 ? (
-          <div className="text-center py-16 bg-slate-900/30 border border-slate-800/50 rounded-3xl p-8">
-            <Users className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-            <h3 className="font-bold text-slate-300">No Teams Formed Yet</h3>
+          <div className="text-center py-16 bg-surface border border-border rounded-[var(--radius-lg)] p-8">
+            <Users className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+            <h3 className="font-bold text-foreground">No Teams Formed Yet</h3>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {teams.map((t) => (
-              <div key={t._id} className="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6">
+              <div key={t._id} className="bg-surface-elevated border border-border rounded-[var(--radius-lg)] p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-bold text-lg text-white">{t.name}</h3>
-                  <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 text-[10px] font-mono">
+                  <h3 className="font-bold text-lg text-foreground">{t.name}</h3>
+                  <span className="px-2.5 py-0.5 rounded-[var(--radius-sm)] bg-primary-soft text-foreground text-[10px] font-mono">
                     {t.members?.length} Members
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 mb-4">Leader: {t.leader?.name || 'Unknown'}</p>
+                <p className="text-xs text-muted-foreground mb-4">Leader: {t.leader?.name || 'Unknown'}</p>
 
-                <div className="pt-4 border-t border-slate-800/60">
-                  <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2">Members</p>
-                  <div className="space-y-1 text-xs text-slate-300">
+                <div className="pt-4 border-t border-border">
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Members</p>
+                  <div className="space-y-1 text-xs text-foreground">
                     {t.members?.map((m) => (
                       <p key={m._id || m}>• {m.name || m.email || m}</p>
                     ))}

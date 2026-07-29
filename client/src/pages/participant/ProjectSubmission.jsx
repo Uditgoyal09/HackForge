@@ -143,22 +143,22 @@ const ProjectSubmission = () => {
   const isLeader = team && team.leader?._id === user?._id;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white pt-24 pb-20">
+    <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-3xl font-extrabold tracking-tight">Project Submission</h1>
-          <p className="text-slate-400 text-sm mt-1">Submit or edit your team's project repository and deliverables.</p>
+          <p className="text-muted-foreground text-sm mt-1">Submit or edit your team's project repository and deliverables.</p>
         </div>
 
         {/* Hackathon Selector */}
         {registrations.length > 0 && (
           <div className="mb-8 max-w-xs">
-            <label className="block text-xs font-semibold text-slate-400 mb-2">Select Hackathon</label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-2">Select Hackathon</label>
             <select
               value={selectedHackathon}
               onChange={(e) => setSelectedHackathon(e.target.value)}
-              className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-2xl text-sm text-white focus:outline-none focus:border-indigo-500"
+              className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground focus:outline-none focus:border-primary"
             >
               {registrations.map(r => (
                 <option key={r._id} value={r.hackathon?._id || r.hackathon}>
@@ -170,28 +170,30 @@ const ProjectSubmission = () => {
         )}
 
         {loading ? (
-          <div className="h-96 rounded-3xl bg-slate-900/60 border border-slate-800/80 animate-pulse" />
+          <div className="h-96 rounded-[var(--radius-lg)] bg-surface border border-border animate-pulse shadow-sm" />
         ) : !selectedHackathon || !team ? (
-          <div className="text-center py-20 bg-slate-900/30 border border-slate-800/50 rounded-3xl p-8">
-            <FolderGit2 className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-            <h3 className="font-bold text-lg text-slate-300">No Eligible Team Found</h3>
-            <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+          <div className="flex flex-col items-center justify-center py-20 bg-surface/50 border border-border border-dashed rounded-[var(--radius-xl)] text-center max-w-3xl mx-auto">
+            <div className="w-16 h-16 rounded-full bg-surface-elevated border border-border flex items-center justify-center mb-6">
+              <FolderGit2 className="w-8 h-8 text-muted-foreground" />
+            </div>
+            <h3 className="font-bold text-xl text-foreground mb-2">No Eligible Team Found</h3>
+            <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-6">
               You must belong to a team before submitting a project for a hackathon.
             </p>
           </div>
         ) : !isLeader ? (
-          <div className="p-6 rounded-3xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm flex items-center gap-3">
+          <div className="p-6 rounded-[var(--radius-lg)] bg-warning/10 border border-warning/20 text-warning text-sm flex items-center gap-3">
             <Lock className="w-6 h-6 shrink-0" />
             <p>Only the designated Team Leader ({team.leader?.name}) can submit or edit the project repository.</p>
           </div>
         ) : (
-          <div className="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6 sm:p-10 space-y-6">
+          <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 sm:p-10 space-y-6">
             {existingSubmission && (
-              <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center justify-between">
+              <div className="p-4 rounded-[var(--radius-md)] bg-success/10 border border-success/20 text-success text-xs flex items-center justify-between">
                 <span className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4" /> Project Submitted (Status: {existingSubmission.status?.toUpperCase()})
                 </span>
-                <span className="text-[11px] text-emerald-500/80">
+                <span className="text-[11px] text-success/80">
                   Last updated: {new Date(existingSubmission.updatedAt || existingSubmission.createdAt).toLocaleString()}
                 </span>
               </div>
@@ -200,68 +202,68 @@ const ProjectSubmission = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Project Name */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Project Title</label>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">Project Title</label>
                 <input
                   type="text"
                   placeholder="e.g. DeFi Swap Protocol"
                   {...register('projectName')}
-                  className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
                 />
-                {errors.projectName && <p className="text-xs text-rose-400 mt-1">{errors.projectName.message}</p>}
+                {errors.projectName && <p className="text-xs text-error mt-1">{errors.projectName.message}</p>}
               </div>
 
               {/* Problem Statement */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Problem Statement</label>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">Problem Statement</label>
                 <textarea
                   rows={3}
                   placeholder="What problem does your project solve?"
                   {...register('problemStatement')}
-                  className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
                 />
-                {errors.problemStatement && <p className="text-xs text-rose-400 mt-1">{errors.problemStatement.message}</p>}
+                {errors.problemStatement && <p className="text-xs text-error mt-1">{errors.problemStatement.message}</p>}
               </div>
 
               {/* Solution */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Solution & Architecture</label>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">Solution & Architecture</label>
                 <textarea
                   rows={3}
                   placeholder="Describe your technical implementation and architecture."
                   {...register('solution')}
-                  className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
                 />
-                {errors.solution && <p className="text-xs text-rose-400 mt-1">{errors.solution.message}</p>}
+                {errors.solution && <p className="text-xs text-error mt-1">{errors.solution.message}</p>}
               </div>
 
               {/* GitHub Repo & Live Demo */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">GitHub Repository URL</label>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">GitHub Repository URL</label>
                   <input
                     type="url"
                     placeholder="https://github.com/org/repo"
                     {...register('githubRepository')}
-                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
                   />
-                  {errors.githubRepository && <p className="text-xs text-rose-400 mt-1">{errors.githubRepository.message}</p>}
+                  {errors.githubRepository && <p className="text-xs text-error mt-1">{errors.githubRepository.message}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Live Demo URL (Optional)</label>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">Live Demo URL (Optional)</label>
                   <input
                     type="url"
                     placeholder="https://my-demo.app"
                     {...register('liveDemoUrl')}
-                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
                   />
-                  {errors.liveDemoUrl && <p className="text-xs text-rose-400 mt-1">{errors.liveDemoUrl.message}</p>}
+                  {errors.liveDemoUrl && <p className="text-xs text-error mt-1">{errors.liveDemoUrl.message}</p>}
                 </div>
               </div>
 
               {/* Tech Stack Chip Input */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Tech Stack Technologies</label>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">Tech Stack Technologies</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -269,12 +271,12 @@ const ProjectSubmission = () => {
                     value={techInput}
                     onChange={(e) => setTechInput(e.target.value)}
                     onKeyDown={handleAddTech}
-                    className="flex-1 px-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="flex-1 px-4 py-2 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
                   />
                   <button
                     type="button"
                     onClick={handleAddTech}
-                    className="px-4 py-2 rounded-xl bg-slate-800 text-xs text-white hover:bg-slate-700"
+                    className="px-4 py-2 rounded-[var(--radius-md)] bg-surface-elevated border border-border text-xs text-foreground hover:bg-surface-hover"
                   >
                     Add
                   </button>
@@ -282,9 +284,9 @@ const ProjectSubmission = () => {
 
                 <div className="flex flex-wrap gap-2">
                   {techStack.map((tech, i) => (
-                    <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono">
+                    <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[var(--radius-sm)] bg-primary/10 border border-primary/20 text-primary text-xs font-mono">
                       {tech}
-                      <button type="button" onClick={() => handleRemoveTech(tech)} className="hover:text-rose-400">
+                      <button type="button" onClick={() => handleRemoveTech(tech)} className="hover:text-error">
                         <X className="w-3.5 h-3.5" />
                       </button>
                     </span>
@@ -295,7 +297,7 @@ const ProjectSubmission = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all shadow-xl shadow-indigo-600/30 disabled:opacity-50"
+                className="w-full py-3.5 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-sm transition-all shadow-xl shadow-primary/20 disabled:opacity-50"
               >
                 {submitting ? 'Saving Submission...' : existingSubmission ? 'Update Project Submission' : 'Submit Project'}
               </button>

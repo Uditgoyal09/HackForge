@@ -91,20 +91,20 @@ const AdminAccessCodes = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white pt-24 pb-20">
+    <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
-            <span className="text-xs font-mono uppercase font-bold text-rose-400 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 mb-3 inline-block">
+            <span className="text-xs font-mono uppercase font-bold text-error px-3 py-1 rounded-[var(--radius-sm)] bg-error/10 border border-error/20 mb-3 inline-block">
               Security Control
             </span>
             <h1 className="text-3xl font-extrabold tracking-tight">Role Verification Access Codes</h1>
-            <p className="text-slate-400 text-sm mt-1">Generate and manage cryptographically hashed verification codes for Organizers and Judges.</p>
+            <p className="text-muted-foreground text-sm mt-1">Generate and manage cryptographically hashed verification codes for Organizers and Judges.</p>
           </div>
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-all shadow-xl shadow-indigo-600/20 flex items-center gap-2"
+            className="px-5 py-3 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs transition-all shadow-xl shadow-primary/20 flex items-center gap-2"
           >
             <Plus className="w-4 h-4" /> Generate Access Code
           </button>
@@ -114,20 +114,20 @@ const AdminAccessCodes = () => {
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-16 rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse" />
+              <div key={i} className="h-16 rounded-[var(--radius-lg)] bg-surface-elevated border border-border animate-pulse" />
             ))}
           </div>
         ) : codes.length === 0 ? (
-          <div className="text-center py-16 bg-slate-900/30 border border-slate-800/50 rounded-3xl p-8">
-            <Key className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-            <h3 className="font-bold text-slate-300">No Access Codes Generated</h3>
-            <p className="text-xs text-slate-500 mt-1">Click above to generate verification codes for Organizers or Judges.</p>
+          <div className="text-center py-16 bg-surface border border-border rounded-[var(--radius-lg)] p-8">
+            <Key className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+            <h3 className="font-bold text-foreground">No Access Codes Generated</h3>
+            <p className="text-xs text-muted-foreground mt-1">Click above to generate verification codes for Organizers or Judges.</p>
           </div>
         ) : (
-          <div className="bg-slate-900/50 border border-slate-800/80 rounded-3xl overflow-hidden">
+          <div className="bg-surface border border-border rounded-[var(--radius-lg)] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-950 text-slate-400 font-mono uppercase border-b border-slate-800">
+                <thead className="bg-background text-muted-foreground font-mono uppercase border-b border-border">
                   <tr>
                     <th className="p-4">Role Target</th>
                     <th className="p-4">Label / Description</th>
@@ -138,38 +138,38 @@ const AdminAccessCodes = () => {
                     <th className="p-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60">
+                <tbody className="divide-y divide-border">
                   {codes.map((c) => (
-                    <tr key={c._id} className="hover:bg-slate-900/40">
+                    <tr key={c._id} className="hover:bg-surface-hover">
                       <td className="p-4">
-                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono uppercase font-bold border ${
+                        <span className={`px-2.5 py-0.5 rounded-[var(--radius-sm)] text-[10px] font-mono uppercase font-bold border ${
                           c.role === 'organizer'
-                            ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
-                            : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'
+                            ? 'bg-primary/10 text-primary border-primary/20'
+                            : 'bg-primary/10 text-primary border-primary/20'
                         }`}>
                           {c.role}
                         </span>
                       </td>
-                      <td className="p-4 font-semibold text-white">{c.label}</td>
-                      <td className="p-4 font-mono text-slate-300">{c.usedCount} / {c.maxUses}</td>
-                      <td className="p-4 text-slate-400 font-mono">{new Date(c.expiresAt).toLocaleDateString()}</td>
+                      <td className="p-4 font-semibold text-foreground">{c.label}</td>
+                      <td className="p-4 font-mono text-foreground">{c.usedCount} / {c.maxUses}</td>
+                      <td className="p-4 text-muted-foreground font-mono">{new Date(c.expiresAt).toLocaleDateString()}</td>
                       <td className="p-4">
-                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono uppercase font-bold border ${
+                        <span className={`px-2.5 py-0.5 rounded-[var(--radius-sm)] text-[10px] font-mono uppercase font-bold border ${
                           c.status === 'ACTIVE'
-                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                            ? 'bg-success/10 text-success border-success/20'
                             : c.status === 'EXHAUSTED'
-                            ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                            : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                            ? 'bg-warning/10 text-warning border-warning/20'
+                            : 'bg-error/10 text-error border-error/20'
                         }`}>
                           {c.status}
                         </span>
                       </td>
-                      <td className="p-4 text-slate-400">{c.createdBy?.name || 'Admin'}</td>
+                      <td className="p-4 text-muted-foreground">{c.createdBy?.name || 'Admin'}</td>
                       <td className="p-4 text-right">
                         {c.status === 'ACTIVE' && (
                           <button
                             onClick={() => handleRevoke(c._id)}
-                            className="px-3 py-1.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 font-semibold"
+                            className="px-3 py-1.5 rounded-[var(--radius-sm)] bg-error/10 border border-error/20 text-error hover:bg-error/20 font-semibold"
                           >
                             Revoke
                           </button>
@@ -185,22 +185,22 @@ const AdminAccessCodes = () => {
 
         {/* Generate Code Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full text-white relative">
-              <button onClick={() => setIsModalOpen(false)} className="absolute right-4 top-4 text-slate-500 hover:text-white">
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 max-w-md w-full text-foreground relative">
+              <button onClick={() => setIsModalOpen(false)} className="absolute right-4 top-4 text-muted-foreground hover:text-foreground">
                 <X className="w-5 h-5" />
               </button>
 
               <h3 className="font-bold text-lg mb-1">Generate Role Access Code</h3>
-              <p className="text-xs text-slate-400 mb-6">Create a cryptographically hashed verification code for Organizer or Judge signup.</p>
+              <p className="text-xs text-muted-foreground mb-6">Create a cryptographically hashed verification code for Organizer or Judge signup.</p>
 
               <form onSubmit={handleCreateSubmit} className="space-y-4 text-xs">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1.5">Target Role</label>
+                  <label className="block font-semibold text-foreground mb-1.5">Target Role</label>
                   <select
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+                    className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-xs text-foreground focus:outline-none focus:border-primary"
                   >
                     <option value="organizer">Organizer</option>
                     <option value="judge">Judge</option>
@@ -208,38 +208,38 @@ const AdminAccessCodes = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1.5">Label / Description</label>
+                  <label className="block font-semibold text-foreground mb-1.5">Label / Description</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Stanford Partner Organizer Code"
                     value={label}
                     onChange={(e) => setLabel(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+                    className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-xs text-foreground focus:outline-none focus:border-primary"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-semibold text-slate-300 mb-1.5">Expiration Date</label>
+                    <label className="block font-semibold text-foreground mb-1.5">Expiration Date</label>
                     <input
                       type="date"
                       required
                       value={expiresAt}
                       onChange={(e) => setExpiresAt(e.target.value)}
-                      className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white font-mono"
+                      className="w-full px-3 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-xs text-foreground font-mono focus:outline-none focus:border-primary"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-slate-300 mb-1.5">Max Uses</label>
+                    <label className="block font-semibold text-foreground mb-1.5">Max Uses</label>
                     <input
                       type="number"
                       min={1}
                       required
                       value={maxUses}
                       onChange={(e) => setMaxUses(e.target.value)}
-                      className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white font-mono"
+                      className="w-full px-3 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-xs text-foreground font-mono focus:outline-none focus:border-primary"
                     />
                   </div>
                 </div>
@@ -248,14 +248,14 @@ const AdminAccessCodes = () => {
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold"
+                    className="px-4 py-2 rounded-[var(--radius-md)] bg-surface-elevated border border-border text-foreground hover:bg-surface-hover font-semibold"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={creating}
-                    className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold shadow-lg shadow-indigo-600/25"
+                    className="px-5 py-2.5 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold shadow-lg shadow-primary/25 disabled:opacity-50"
                   >
                     {creating ? 'Generating...' : 'Generate Code'}
                   </button>
@@ -267,22 +267,22 @@ const AdminAccessCodes = () => {
 
         {/* One-Time Reveal Modal */}
         {revealedCode && (
-          <div className="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-900 border-2 border-indigo-500/40 rounded-3xl p-8 max-w-md w-full text-white text-center shadow-2xl shadow-indigo-500/20 relative">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-4">
+          <div className="fixed inset-0 bg-background/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            <div className="bg-surface border-2 border-primary/40 rounded-[var(--radius-lg)] p-8 max-w-md w-full text-foreground text-center shadow-2xl shadow-primary/20 relative">
+              <div className="w-12 h-12 rounded-[var(--radius-md)] bg-warning/10 border border-warning/20 text-warning flex items-center justify-center mx-auto mb-4">
                 <AlertTriangle className="w-6 h-6" />
               </div>
 
               <h3 className="font-extrabold text-xl mb-2">Access Code Generated!</h3>
-              <p className="text-xs text-amber-300 font-semibold mb-6">
+              <p className="text-xs text-warning font-semibold mb-6">
                 Copy this code now. For security, only the cryptographic hash is stored in MongoDB and this raw code will NEVER be shown again!
               </p>
 
-              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-between font-mono text-lg font-extrabold text-indigo-400 mb-6">
+              <div className="p-4 rounded-[var(--radius-md)] bg-background border border-border flex items-center justify-between font-mono text-lg font-extrabold text-primary mb-6">
                 <span>{revealedCode}</span>
                 <button
                   onClick={handleCopyCode}
-                  className="p-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition-all flex items-center gap-1 text-xs font-sans font-semibold"
+                  className="p-2 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground transition-all flex items-center gap-1 text-xs font-sans font-semibold"
                 >
                   {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   {copied ? 'Copied' : 'Copy'}
@@ -291,7 +291,7 @@ const AdminAccessCodes = () => {
 
               <button
                 onClick={() => setRevealedCode(null)}
-                className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold"
+                className="w-full py-3 rounded-[var(--radius-md)] bg-surface-elevated border border-border hover:bg-surface-hover text-foreground text-xs font-semibold"
               >
                 I have securely saved this code
               </button>

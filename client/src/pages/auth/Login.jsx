@@ -5,38 +5,41 @@ import { Lock, Mail, ArrowRight, Eye, EyeOff, Loader2, Sparkles, Shield, User, A
 import { authService } from '../../services/authService';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'sonner';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Card } from '../../components/ui/Card';
 
 const roleOnboardingMessages = {
   participant: {
     welcome: 'Ready to build something amazing?',
     workspace: 'Opening your Participant Workspace...',
     icon: User,
-    color: 'text-indigo-400 border-indigo-500/30 bg-indigo-500/10',
-    bar: 'bg-indigo-500',
+    color: 'text-primary border-primary/30 bg-primary/10',
+    bar: 'bg-primary',
     route: '/participant/dashboard',
   },
   organizer: {
     welcome: "Let's create the next great hackathon.",
     workspace: 'Opening your Organizer Workspace...',
     icon: Shield,
-    color: 'text-purple-400 border-purple-500/30 bg-purple-500/10',
-    bar: 'bg-purple-500',
+    color: 'text-warning border-warning/30 bg-warning/10',
+    bar: 'bg-warning',
     route: '/organizer/dashboard',
   },
   judge: {
     welcome: 'Ready to discover the best innovations?',
     workspace: 'Opening your Judge Workspace...',
     icon: Award,
-    color: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10',
-    bar: 'bg-cyan-500',
+    color: 'text-success border-success/30 bg-success/10',
+    bar: 'bg-success',
     route: '/judge/dashboard',
   },
   admin: {
     welcome: 'Welcome back to HackVerse Control.',
     workspace: 'Opening your Admin Workspace...',
     icon: Crown,
-    color: 'text-rose-400 border-rose-500/30 bg-rose-500/10',
-    bar: 'bg-rose-500',
+    color: 'text-error border-error/30 bg-error/10',
+    bar: 'bg-error',
     route: '/admin/dashboard',
   },
 };
@@ -72,15 +75,10 @@ const Login = () => {
       if (res.success && res.data) {
         const user = res.data;
         setAuthUser(user);
-
-        // State 2: User Identified
         setAuthState('identified');
 
-        // State 3: Workspace Loading after 700ms
         setTimeout(() => {
           setAuthState('workspace_loading');
-
-          // Redirect to role dashboard after 700ms
           setTimeout(() => {
             setAuthSession(user, user.token);
             const targetRoute = roleOnboardingMessages[user.role]?.route || '/participant/dashboard';
@@ -104,14 +102,13 @@ const Login = () => {
   const RoleIcon = currentRoleConfig.icon;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center pt-24 pb-12 px-6 relative overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground flex items-center justify-center pt-24 pb-12 px-6 relative overflow-hidden">
       {/* Dynamic Background Effects */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-[300px] h-[300px] bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-md w-full relative z-10">
         <AnimatePresence mode="wait">
-          {/* LOGIN FORM (IDLE or AUTHENTICATING) */}
           {(authState === 'idle' || authState === 'authenticating') && (
             <motion.div
               key="login-form"
@@ -119,106 +116,102 @@ const Login = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-8 shadow-2xl shadow-indigo-950/20"
             >
-              {/* Header */}
-              <div className="text-center mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="w-6 h-6" />
-                </div>
-                <h1 className="text-2xl font-black tracking-tight text-white mb-1">WELCOME BACK</h1>
-                <p className="text-xs text-slate-400">Continue your HackVerse journey.</p>
-              </div>
-
-              {/* Form */}
-              <form onSubmit={handleLoginSubmit} className="space-y-4 text-xs">
-                <div>
-                  <label className="block font-semibold text-slate-300 mb-1.5">Email Address</label>
-                  <div className="relative">
-                    <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
-                    <input
-                      type="email"
-                      required
-                      placeholder="user@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      disabled={authState === 'authenticating'}
-                      className="w-full pl-10 pr-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors disabled:opacity-50"
-                    />
+              <Card className="p-8 shadow-2xl bg-card/60 backdrop-blur-xl border-border/80">
+                {/* Header */}
+                <div className="text-center mb-8">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto mb-4">
+                    <Sparkles className="w-6 h-6" />
                   </div>
+                  <h1 className="text-2xl font-black tracking-tight text-foreground mb-1">WELCOME BACK</h1>
+                  <p className="text-xs text-muted-foreground">Continue your HackVerse journey.</p>
                 </div>
 
-                <div>
-                  <label className="block font-semibold text-slate-300 mb-1.5">Password</label>
-                  <div className="relative">
-                    <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      required
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      disabled={authState === 'authenticating'}
-                      className="w-full pl-10 pr-10 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors disabled:opacity-50"
-                    />
+                {/* Form */}
+                <form onSubmit={handleLoginSubmit} className="space-y-5 text-sm">
+                  <div>
+                    <label className="block font-semibold text-foreground mb-1.5">Email Address</label>
+                    <div className="relative">
+                      <Mail className="w-4 h-4 text-muted-foreground absolute left-3.5 top-3.5" />
+                      <Input
+                        type="email"
+                        required
+                        placeholder="user@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        disabled={authState === 'authenticating'}
+                        className="pl-10"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-foreground mb-1.5">Password</label>
+                    <div className="relative">
+                      <Lock className="w-4 h-4 text-muted-foreground absolute left-3.5 top-3.5" />
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        required
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        disabled={authState === 'authenticating'}
+                        className="pl-10 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3.5 top-3.5 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Remember Me & Forgot Password */}
+                  <div className="flex items-center justify-between pt-1">
+                    <label className="flex items-center gap-2 cursor-pointer select-none text-muted-foreground hover:text-foreground text-xs">
+                      <input
+                        type="checkbox"
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                        className="rounded border-border text-primary focus:ring-primary/50 bg-surface"
+                      />
+                      <span>Remember me</span>
+                    </label>
+
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3.5 top-3.5 text-slate-500 hover:text-slate-300 transition-colors"
+                      onClick={() => toast.info('Password reset instructions will be sent to your registered email.')}
+                      className="text-primary hover:underline text-xs"
                     >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      Forgot Password?
                     </button>
                   </div>
-                </div>
 
-                {/* Remember Me & Forgot Password */}
-                <div className="flex items-center justify-between pt-1">
-                  <label className="flex items-center gap-2 cursor-pointer select-none text-slate-400 hover:text-slate-300">
-                    <input
-                      type="checkbox"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="rounded bg-slate-950 border-slate-800 text-indigo-500 focus:ring-indigo-500"
-                    />
-                    <span>Remember me</span>
-                  </label>
-
-                  <button
-                    type="button"
-                    onClick={() => toast.info('Password reset instructions will be sent to your registered email.')}
-                    className="text-indigo-400 hover:underline"
+                  {/* Submit Button */}
+                  <Button
+                    type="submit"
+                    isLoading={authState === 'authenticating'}
+                    className="w-full mt-6"
                   >
-                    Forgot Password?
-                  </button>
+                    {!authState === 'authenticating' && (
+                      <>
+                        <span>Login to HackVerse</span>
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </>
+                    )}
+                  </Button>
+                </form>
+
+                {/* Bottom Signup Link */}
+                <div className="text-center text-xs text-muted-foreground border-t border-border/50 pt-6 mt-6">
+                  New to HackVerse?{' '}
+                  <Link to="/signup" className="text-primary hover:underline font-semibold">
+                    Create Account
+                  </Link>
                 </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={authState === 'authenticating'}
-                  className="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-all shadow-xl shadow-indigo-600/25 flex items-center justify-center gap-2 mt-6 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {authState === 'authenticating' ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin text-white" />
-                      <span>Authenticating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Login to HackVerse</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
-              </form>
-
-              {/* Bottom Signup Link */}
-              <div className="text-center text-xs text-slate-500 border-t border-slate-800/60 pt-6 mt-6">
-                New to HackVerse?{' '}
-                <Link to="/signup" className="text-indigo-400 hover:underline font-semibold">
-                  Create Account
-                </Link>
-              </div>
+              </Card>
             </motion.div>
           )}
 
@@ -230,25 +223,24 @@ const Login = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className="bg-slate-900/80 backdrop-blur-2xl border border-slate-800 rounded-3xl p-10 text-center shadow-2xl space-y-6"
             >
-              <div className={`w-16 h-16 rounded-3xl border ${currentRoleConfig.color} flex items-center justify-center mx-auto shadow-lg`}>
-                <RoleIcon className="w-8 h-8" />
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-black text-white mb-2">
-                  Welcome back, {authUser.name} 👋
-                </h2>
-                <p className="text-sm font-medium text-slate-300">
-                  {currentRoleConfig.welcome}
-                </p>
-              </div>
-
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-950 border border-slate-800 text-[11px] font-mono uppercase text-indigo-400 font-bold">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                Authenticated as {authUser.role}
-              </div>
+              <Card className="p-10 text-center shadow-2xl bg-card/80 backdrop-blur-2xl">
+                <div className={`w-16 h-16 rounded-[20px] border ${currentRoleConfig.color} flex items-center justify-center mx-auto shadow-lg mb-6`}>
+                  <RoleIcon className="w-8 h-8" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black text-foreground mb-2">
+                    Welcome back, {authUser.name} 👋
+                  </h2>
+                  <p className="text-sm font-medium text-muted-foreground mb-6">
+                    {currentRoleConfig.welcome}
+                  </p>
+                </div>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface border border-border text-[11px] font-mono uppercase text-primary font-bold">
+                  <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                  Authenticated as {authUser.role}
+                </div>
+              </Card>
             </motion.div>
           )}
 
@@ -260,28 +252,27 @@ const Login = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="bg-slate-900/80 backdrop-blur-2xl border border-slate-800 rounded-3xl p-10 text-center shadow-2xl space-y-6"
             >
-              <div className={`w-16 h-16 rounded-3xl border ${currentRoleConfig.color} flex items-center justify-center mx-auto shadow-lg`}>
-                <Loader2 className="w-8 h-8 animate-spin" />
-              </div>
-
-              <div>
-                <h2 className="text-xl font-bold text-white mb-1">
-                  {currentRoleConfig.workspace}
-                </h2>
-                <p className="text-xs text-slate-400">Loading your live dashboard and MongoDB metrics...</p>
-              </div>
-
-              {/* Progress Bar */}
-              <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
-                <motion.div
-                  initial={{ width: '0%' }}
-                  animate={{ width: '100%' }}
-                  transition={{ duration: 0.6, ease: 'easeInOut' }}
-                  className={`h-full ${currentRoleConfig.bar}`}
-                />
-              </div>
+              <Card className="p-10 text-center shadow-2xl bg-card/80 backdrop-blur-2xl space-y-6">
+                <div className={`w-16 h-16 rounded-[20px] border ${currentRoleConfig.color} flex items-center justify-center mx-auto shadow-lg`}>
+                  <Loader2 className="w-8 h-8 animate-spin" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-foreground mb-1">
+                    {currentRoleConfig.workspace}
+                  </h2>
+                  <p className="text-xs text-muted-foreground">Loading your live dashboard and metrics...</p>
+                </div>
+                {/* Progress Bar */}
+                <div className="w-full bg-surface h-2 rounded-full overflow-hidden border border-border">
+                  <motion.div
+                    initial={{ width: '0%' }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: 0.6, ease: 'easeInOut' }}
+                    className={`h-full ${currentRoleConfig.bar}`}
+                  />
+                </div>
+              </Card>
             </motion.div>
           )}
         </AnimatePresence>

@@ -4,38 +4,45 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        background: '#0B0B13', // Deep navy/near-black
-        surface: '#151522',
+        background: 'var(--background)',
+        'background-secondary': 'var(--background-secondary)',
+        surface: 'var(--surface)',
+        'surface-hover': 'var(--surface-hover)',
+        'surface-elevated': 'var(--surface-elevated)',
+        card: 'var(--surface)', // Alias card to surface
+        
+        foreground: 'var(--foreground)',
+        'foreground-secondary': 'var(--foreground-secondary)',
+        muted: 'var(--foreground-muted)',
+        'muted-foreground': 'var(--foreground-muted)',
+        
+        border: 'var(--border)',
+        'border-hover': 'var(--border-hover)',
+        
         primary: {
-          DEFAULT: '#7C3AED', // Violet
-          hover: '#6D28D9'
+          DEFAULT: 'var(--primary)',
+          hover: 'var(--primary-hover)',
+          foreground: 'var(--primary-foreground)',
+          soft: 'var(--primary-soft)',
         },
-        secondary: {
-          DEFAULT: '#4F46E5', // Indigo
-          hover: '#4338CA'
-        },
-        accent: {
-          DEFAULT: '#06B6D4', // Cyan
-          hover: '#0891B2'
-        },
-        text: {
-          primary: '#F8FAFC',
-          secondary: '#94A3B8'
-        },
-        success: '#10B981',
-        warning: '#F59E0B',
-        error: '#EF4444',
-        border: '#2D2D3B'
+        
+        ring: 'var(--ring)',
+        
+        success: 'var(--success)',
+        warning: 'var(--warning)',
+        error: 'var(--error)',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       boxShadow: {
-        'glow-primary': '0 0 20px rgba(124, 58, 237, 0.5)',
-        'glow-accent': '0 0 20px rgba(6, 182, 212, 0.5)',
+        'glow-primary': '0 0 20px var(--primary-soft)',
+        'card-hover': '0 8px 30px rgba(0, 0, 0, 0.12)',
       }
     },
   },

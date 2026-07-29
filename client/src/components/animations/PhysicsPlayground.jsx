@@ -49,8 +49,8 @@ const PhysicsPlayground = () => {
         restitution: 0.6,
         friction: 0.1,
         render: {
-          fillStyle: '#1e1b4b',
-          strokeStyle: '#6366f1',
+          fillStyle: '#111111',
+          strokeStyle: '#B6FF00',
           lineWidth: 1.5,
         },
       });
@@ -86,18 +86,18 @@ const PhysicsPlayground = () => {
   }, []);
 
   return (
-    <div className="w-full bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6 relative overflow-hidden backdrop-blur-xl">
+    <div className="w-full bg-surface/50 border border-border/80 rounded-[var(--radius-lg)] p-6 relative overflow-hidden backdrop-blur-xl">
       <div className="flex items-center justify-between mb-4 z-10 relative">
         <div>
-          <h3 className="font-bold text-lg text-white">Interactive Tech Stack Playground</h3>
-          <p className="text-xs text-slate-400">Drag, toss, and collide tech badges powered by Matter.js 2D physics engine.</p>
+          <h3 className="font-bold text-lg text-foreground">Interactive Tech Stack Playground</h3>
+          <p className="text-xs text-muted-foreground">Drag, toss, and collide tech badges powered by Matter.js 2D physics engine.</p>
         </div>
-        <span className="px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs font-mono">
+        <span className="px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-mono">
           Matter.js Physics
         </span>
       </div>
 
-      <div ref={sceneRef} className="w-full h-[300px] relative rounded-2xl overflow-hidden bg-slate-950/60 border border-slate-800/50" />
+      <div ref={sceneRef} className="w-full h-[300px] relative rounded-[var(--radius-md)] overflow-hidden bg-background/60 border border-border/50" />
     </div>
   );
 };

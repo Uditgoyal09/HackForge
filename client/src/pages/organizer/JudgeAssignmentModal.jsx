@@ -41,32 +41,32 @@ const JudgeAssignmentModal = ({ submission, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full text-white relative">
-        <button onClick={onClose} className="absolute right-4 top-4 text-slate-500 hover:text-white">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 max-w-md w-full text-foreground relative">
+        <button onClick={onClose} className="absolute right-4 top-4 text-muted-foreground hover:text-foreground">
           <X className="w-5 h-5" />
         </button>
 
         <h3 className="font-bold text-lg mb-1">Assign Judge</h3>
-        <p className="text-xs text-slate-400 mb-4">Project: <span className="text-white font-semibold">{submission.projectName}</span></p>
+        <p className="text-xs text-muted-foreground mb-4">Project: <span className="text-foreground font-semibold">{submission.projectName}</span></p>
 
         {loading ? (
-          <p className="text-xs text-slate-500 text-center py-6">Loading judges list...</p>
+          <p className="text-xs text-muted-foreground text-center py-6">Loading judges list...</p>
         ) : judges.length === 0 ? (
-          <p className="text-xs text-slate-500 text-center py-6">No judge accounts found in system.</p>
+          <p className="text-xs text-muted-foreground text-center py-6">No judge accounts found in system.</p>
         ) : (
           <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
             {judges.map((j) => (
-              <div key={j._id} className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-center justify-between text-xs">
+              <div key={j._id} className="p-3 rounded-[var(--radius-md)] bg-background border border-border flex items-center justify-between text-xs">
                 <div>
-                  <p className="font-semibold text-white">{j.name}</p>
-                  <p className="text-[11px] text-slate-400">{j.email}</p>
+                  <p className="font-semibold text-foreground">{j.name}</p>
+                  <p className="text-[11px] text-muted-foreground">{j.email}</p>
                 </div>
 
                 <button
                   onClick={() => handleAssign(j._id)}
                   disabled={assigning}
-                  className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold flex items-center gap-1 disabled:opacity-50"
+                  className="px-3 py-1.5 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold flex items-center gap-1 disabled:opacity-50"
                 >
                   <UserCheck className="w-3.5 h-3.5" /> Assign
                 </button>

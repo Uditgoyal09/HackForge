@@ -165,28 +165,28 @@ const TeamManagement = () => {
   const isLeader = myTeam && myTeam.leader?._id === user?._id;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white pt-24 pb-20">
+    <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-3xl font-extrabold tracking-tight">Team & Invitations</h1>
-          <p className="text-slate-400 text-sm mt-1">Form teams for approved hackathon registrations and manage member invites.</p>
+          <p className="text-muted-foreground text-sm mt-1">Form teams for approved hackathon registrations and manage member invites.</p>
         </div>
 
         {/* Incoming Invitations Alert Section */}
         {myInvitations.length > 0 && (
-          <div className="mb-10 bg-indigo-950/40 border border-indigo-500/30 rounded-3xl p-6">
-            <h3 className="font-bold text-sm text-indigo-300 mb-4 flex items-center gap-2">
+          <div className="mb-10 bg-primary/10 border border-primary/20 rounded-[var(--radius-lg)] p-6">
+            <h3 className="font-bold text-sm text-primary mb-4 flex items-center gap-2">
               <Mail className="w-4 h-4" /> Pending Invitations ({myInvitations.length})
             </h3>
 
             <div className="space-y-3">
               {myInvitations.map((inv) => (
-                <div key={inv._id} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div key={inv._id} className="p-4 rounded-[var(--radius-md)] bg-surface border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                   <div>
-                    <span className="font-bold text-white text-sm">{inv.team?.name}</span>
-                    <p className="text-slate-400 mt-0.5">
-                      Hackathon: <span className="text-indigo-400">{inv.hackathon?.title}</span> • Invited by {inv.invitedBy?.name}
+                    <span className="font-bold text-foreground text-sm">{inv.team?.name}</span>
+                    <p className="text-muted-foreground mt-0.5">
+                      Hackathon: <span className="text-primary">{inv.hackathon?.title}</span> • Invited by {inv.invitedBy?.name}
                     </p>
                   </div>
 
@@ -194,13 +194,13 @@ const TeamManagement = () => {
                     <button
                       onClick={() => handleAcceptInvite(inv._id)}
                       disabled={actionLoading}
-                      className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition-all shadow-md shadow-emerald-600/20"
+                      className="px-4 py-2 rounded-[var(--radius-md)] bg-success hover:bg-success/90 text-success-foreground font-semibold transition-all shadow-md shadow-success/20"
                     >
                       Accept & Join
                     </button>
                     <button
                       onClick={() => handleRejectInvite(inv._id)}
-                      className="px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-rose-400 hover:bg-rose-500/10 font-semibold transition-all"
+                      className="px-4 py-2 rounded-[var(--radius-md)] bg-surface border border-border text-error hover:bg-error/10 font-semibold transition-all"
                     >
                       Reject
                     </button>
@@ -214,11 +214,11 @@ const TeamManagement = () => {
         {/* Hackathon Selector */}
         {registrations.length > 0 && (
           <div className="mb-8 max-w-xs">
-            <label className="block text-xs font-semibold text-slate-400 mb-2">Select Approved Hackathon</label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-2">Select Approved Hackathon</label>
             <select
               value={selectedHackathon}
               onChange={(e) => setSelectedHackathon(e.target.value)}
-              className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-2xl text-sm text-white focus:outline-none focus:border-indigo-500"
+              className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground focus:outline-none focus:border-primary"
             >
               {registrations.map(r => (
                 <option key={r._id} value={r.hackathon?._id || r.hackathon}>
@@ -230,33 +230,35 @@ const TeamManagement = () => {
         )}
 
         {loading ? (
-          <div className="h-64 rounded-3xl bg-slate-900/60 border border-slate-800/80 animate-pulse" />
+          <div className="h-64 rounded-[var(--radius-lg)] bg-surface border border-border animate-pulse shadow-sm" />
         ) : !selectedHackathon ? (
-          <div className="text-center py-20 bg-slate-900/30 border border-slate-800/50 rounded-3xl p-8 max-w-md mx-auto">
-            <Shield className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-            <h3 className="font-bold text-lg text-slate-300">No Approved Registrations</h3>
-            <p className="text-xs text-slate-500 mt-1">
+          <div className="flex flex-col items-center justify-center py-20 bg-surface/50 border border-border border-dashed rounded-[var(--radius-xl)] text-center max-w-3xl mx-auto">
+            <div className="w-16 h-16 rounded-full bg-surface-elevated border border-border flex items-center justify-center mb-6">
+              <Shield className="w-8 h-8 text-muted-foreground" />
+            </div>
+            <h3 className="font-bold text-xl text-foreground mb-2">No Approved Registrations</h3>
+            <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-6">
               You must have an approved registration for a hackathon before creating or joining a team.
             </p>
           </div>
         ) : myTeam ? (
           /* Active Team Details View */
-          <div className="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6 sm:p-8 space-y-8">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800/60">
+          <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 sm:p-8 space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-border">
               <div>
                 <div className="flex items-center gap-3">
-                  <h2 className="text-2xl font-extrabold text-white">{myTeam.name}</h2>
-                  <span className="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs font-mono">
+                  <h2 className="text-2xl font-extrabold text-foreground">{myTeam.name}</h2>
+                  <span className="px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-mono">
                     {myTeam.members?.length} Members
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 mt-1">Leader: {myTeam.leader?.name}</p>
+                <p className="text-xs text-muted-foreground mt-1">Leader: {myTeam.leader?.name}</p>
               </div>
 
               {!isLeader && (
                 <button
                   onClick={handleLeaveTeam}
-                  className="px-4 py-2 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 text-xs font-semibold transition-all flex items-center gap-1.5 self-start sm:self-auto"
+                  className="px-4 py-2 rounded-[var(--radius-md)] bg-error/10 border border-error/20 text-error hover:bg-error/20 text-xs font-semibold transition-all flex items-center gap-1.5 self-start sm:self-auto"
                 >
                   <LogOut className="w-4 h-4" /> Leave Team
                 </button>
@@ -265,28 +267,28 @@ const TeamManagement = () => {
 
             {/* Members List */}
             <div>
-              <h3 className="font-bold text-sm text-slate-300 mb-4 uppercase tracking-wider font-mono">Team Members</h3>
+              <h3 className="font-bold text-sm text-foreground mb-4 uppercase tracking-wider font-mono">Team Members</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {myTeam.members?.map((m) => {
                   const isMemberLeader = myTeam.leader?._id === m._id;
                   return (
-                    <div key={m._id} className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/60 flex items-center justify-between text-xs">
+                    <div key={m._id} className="p-4 rounded-[var(--radius-md)] bg-background border border-border flex items-center justify-between text-xs">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center font-bold text-indigo-300">
+                        <div className="w-9 h-9 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center font-bold text-primary">
                           {m.name?.substring(0, 2)}
                         </div>
                         <div>
-                          <p className="font-semibold text-white flex items-center gap-1.5">
-                            {m.name} {isMemberLeader && <Crown className="w-3.5 h-3.5 text-amber-400" />}
+                          <p className="font-semibold text-foreground flex items-center gap-1.5">
+                            {m.name} {isMemberLeader && <Crown className="w-3.5 h-3.5 text-warning" />}
                           </p>
-                          <p className="text-slate-400 text-[11px]">{m.email}</p>
+                          <p className="text-muted-foreground text-[11px]">{m.email}</p>
                         </div>
                       </div>
 
                       {isLeader && !isMemberLeader && (
                         <button
                           onClick={() => handleRemoveMember(m._id)}
-                          className="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
+                          className="p-2 text-muted-foreground hover:text-error hover:bg-error/10 rounded-lg transition-colors"
                           title="Remove Member"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -300,8 +302,8 @@ const TeamManagement = () => {
 
             {/* Invite Teammates (Leader Only) */}
             {isLeader && (
-              <div className="pt-6 border-t border-slate-800/60">
-                <h3 className="font-bold text-sm text-slate-300 mb-3 uppercase tracking-wider font-mono">
+              <div className="pt-6 border-t border-border">
+                <h3 className="font-bold text-sm text-foreground mb-3 uppercase tracking-wider font-mono">
                   Invite Member by Email
                 </h3>
 
@@ -312,12 +314,12 @@ const TeamManagement = () => {
                     placeholder="teammate@example.com"
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
-                    className="flex-1 px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="flex-1 px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
                   />
                   <button
                     type="submit"
                     disabled={actionLoading}
-                    className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-all shadow-lg shadow-indigo-600/25 disabled:opacity-50 flex items-center gap-1.5"
+                    className="px-5 py-2.5 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs transition-all shadow-lg shadow-primary/25 disabled:opacity-50 flex items-center gap-1.5"
                   >
                     <UserPlus className="w-4 h-4" /> Send Invite
                   </button>
@@ -327,27 +329,27 @@ const TeamManagement = () => {
           </div>
         ) : (
           /* Create Team View */
-          <div className="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-8 max-w-md">
-            <h2 className="text-xl font-extrabold text-white mb-2">Create a New Team</h2>
-            <p className="text-xs text-slate-400 mb-6">You are not in a team for this hackathon yet. Create a team as leader.</p>
+          <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-8 max-w-md">
+            <h2 className="text-xl font-extrabold text-foreground mb-2">Create a New Team</h2>
+            <p className="text-xs text-muted-foreground mb-6">You are not in a team for this hackathon yet. Create a team as leader.</p>
 
             <form onSubmit={handleCreateTeam} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Team Name</label>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">Team Name</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Crypto Coders"
                   value={createTeamName}
                   onChange={(e) => setCreateTeamName(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={actionLoading}
-                className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all shadow-lg shadow-indigo-600/25 disabled:opacity-50"
+                className="w-full py-3 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-sm transition-all shadow-lg shadow-primary/25 disabled:opacity-50"
               >
                 {actionLoading ? 'Creating...' : 'Create Team'}
               </button>

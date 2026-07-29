@@ -1,22 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { LayoutDashboard, Calendar, Users, Trophy, FolderGit2, Plus, ShieldCheck, ArrowRight } from 'lucide-react';
 import { dashboardService } from '../../services/dashboardService';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+// Components
+import OrganizerDashboardHeader from '../../components/organizer/OrganizerDashboardHeader';
+import DashboardAnalytics from '../../components/organizer/DashboardAnalytics';
+import PerformanceChart from '../../components/organizer/PerformanceChart';
+import HackathonManagementCard from '../../components/organizer/HackathonManagementCard';
+import DashboardEmptyState from '../../components/organizer/DashboardEmptyState';
+import OrganizerActivity from '../../components/organizer/OrganizerActivity';
+import UpcomingDeadlines from '../../components/organizer/UpcomingDeadlines';
+import QuickActions from '../../components/organizer/QuickActions';
+import AttentionPanel from '../../components/organizer/AttentionPanel';
+import DashboardSkeleton from '../../components/organizer/DashboardSkeleton';
 
 const OrganizerDashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
       setLoading(true);
+      setError(false);
       try {
         const res = await dashboardService.getOrganizerAnalytics();
         if (res.success && res.data) {
           setData(res.data);
+        } else {
+          setError(true);
         }
-      } catch {
-        setData(null);
+      } catch (err) {
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -26,116 +43,85 @@ const OrganizerDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white pt-24 p-6 max-w-7xl mx-auto space-y-6">
-        <div className="h-40 rounded-3xl bg-slate-900/60 border border-slate-800/80 animate-pulse" />
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-36 rounded-3xl bg-slate-900/60 border border-slate-800/80 animate-pulse" />
-          ))}
-        </div>
+      <div className="pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <DashboardSkeleton />
       </div>
     );
   }
 
-  const hackathonsCount = data?.myHackathons?.length || 0;
-  const totalRegistrations = data?.totalRegistrations || 0;
-  const totalTeams = data?.totalTeams || 0;
-  const totalSubmissions = data?.totalSubmissions || 0;
+  if (error || !data) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 px-4 text-center h-[60vh]">
+        <div className="w-16 h-16 rounded-full bg-error/10 text-error flex items-center justify-center mb-6">
+          <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-bold text-foreground mb-2">Unable to load analytics</h3>
+        <p className="text-muted-foreground mb-6 max-w-sm">
+          We encountered an issue while retrieving your dashboard data. Please check your connection and try again.
+        </p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="px-6 py-2.5 rounded-[var(--radius-md)] bg-surface border border-border hover:bg-surface-hover text-foreground font-semibold transition-colors"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
+  const hasHackathons = data.myHackathons > 0;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white pt-24 pb-20">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-slate-800/80 rounded-3xl p-8 mb-10 shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div>
-            <span className="text-xs font-mono uppercase font-bold text-indigo-400 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-3 inline-block">
-              Organizer Portal
-            </span>
-            <h1 className="text-3xl font-extrabold tracking-tight">Organizer Dashboard</h1>
-            <p className="text-slate-400 text-sm mt-1">Manage competitions, review applications, assign judges, and publish rankings.</p>
-          </div>
-
-          <Link
-            to="/organizer/hackathons/create"
-            className="px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-all shadow-xl shadow-indigo-600/30 flex items-center gap-2 self-start sm:self-auto"
-          >
-            <Plus className="w-4 h-4" /> Create Hackathon
-          </Link>
-        </div>
-
-        {/* Analytics Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-10">
-          <div className="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6">
-            <p className="text-xs text-slate-400 font-semibold mb-1">My Events</p>
-            <h3 className="text-3xl font-extrabold text-white">{hackathonsCount}</h3>
-          </div>
-
-          <div className="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6">
-            <p className="text-xs text-slate-400 font-semibold mb-1">Total Registrations</p>
-            <h3 className="text-3xl font-extrabold text-white">{totalRegistrations}</h3>
-          </div>
-
-          <div className="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6">
-            <p className="text-xs text-slate-400 font-semibold mb-1">Formed Teams</p>
-            <h3 className="text-3xl font-extrabold text-white">{totalTeams}</h3>
-          </div>
-
-          <div className="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6">
-            <p className="text-xs text-slate-400 font-semibold mb-1">Project Submissions</p>
-            <h3 className="text-3xl font-extrabold text-white">{totalSubmissions}</h3>
-          </div>
-        </div>
-
-        {/* Hackathon Management List */}
-        <div className="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6 sm:p-8">
-          <h3 className="font-bold text-lg text-white mb-6">Hosted Hackathons</h3>
-
-          {hackathonsCount === 0 ? (
-            <div className="text-center py-12 text-slate-500 text-xs">
-              You haven't created any hackathons yet. Click "Create Hackathon" to get started.
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {data.myHackathons.map((h) => (
-                <div key={h._id} className="p-6 rounded-2xl bg-slate-950/60 border border-slate-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-3 mb-1">
-                      <h4 className="font-bold text-base text-white">{h.title}</h4>
-                      <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] font-mono uppercase">
-                        {h.status}
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-400">
-                      Prize Pool: ${h.prizePool?.toLocaleString()} • Mode: {h.mode}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Link
-                      to={`/organizer/hackathons/${h._id}/registrations`}
-                      className="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-xs font-semibold text-slate-300"
-                    >
-                      Applications
-                    </Link>
-                    <Link
-                      to={`/organizer/hackathons/${h._id}/teams`}
-                      className="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-xs font-semibold text-slate-300"
-                    >
-                      Teams
-                    </Link>
-                    <Link
-                      to={`/organizer/hackathons/${h._id}/submissions`}
-                      className="px-3.5 py-2 rounded-xl bg-indigo-600/10 border border-indigo-500/20 hover:bg-indigo-600/20 text-xs font-semibold text-indigo-300"
-                    >
-                      Submissions & Judging
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+    <div className="min-h-screen text-foreground pb-20 pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto selection:bg-primary-soft selection:text-foreground relative">
+      {/* Background Ambience */}
+      <div className="fixed inset-0 z-[-1] pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-soft rounded-full blur-[120px]" />
       </div>
+
+      {!hasHackathons ? (
+        <DashboardEmptyState />
+      ) : (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="space-y-8 relative z-10"
+        >
+          <OrganizerDashboardHeader />
+          <AttentionPanel items={data.needsAttention} />
+          <DashboardAnalytics analytics={data} />
+
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
+            {/* Main Left Column */}
+            <div className="xl:col-span-2 space-y-8">
+              <PerformanceChart trendData={data.registrationTrend} />
+              
+              <div className="bg-transparent">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-foreground tracking-tight">Your Hackathons</h3>
+                  <Link to="/organizer/hackathons" className="text-sm font-semibold text-primary hover:text-primary-hover flex items-center gap-1 transition-colors">
+                    View All <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+                <div className="space-y-4">
+                  {data.hackathons?.slice(0, 3).map((hackathon) => (
+                    <HackathonManagementCard key={hackathon._id} hackathon={hackathon} />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column */}
+            <div className="space-y-8">
+              <UpcomingDeadlines deadlines={data.upcomingDeadlines} />
+              <QuickActions />
+              <OrganizerActivity activity={data.recentActivity} />
+            </div>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 };

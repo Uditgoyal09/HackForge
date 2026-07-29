@@ -45,7 +45,7 @@ export default function App() {
     <Router>
       <AuthProvider>
         <ErrorBoundary>
-          <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-indigo-500 selection:text-white">
+          <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
             <Navbar />
             <Routes>
               {/* Public Routes */}

@@ -5,6 +5,10 @@ import { User, Shield, Award, Lock, Mail, ArrowRight, ArrowLeft, Key, CheckCircl
 import { authService } from '../../services/authService';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'sonner';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Badge } from '../../components/ui/Badge';
 
 const rolesConfig = [
   {
@@ -13,7 +17,7 @@ const rolesConfig = [
     description: 'Join hackathons, create teams, and build innovative projects.',
     icon: User,
     badge: 'Public Access',
-    color: 'border-indigo-500/40 text-indigo-400 bg-indigo-500/10',
+    color: 'border-primary/40 text-primary bg-primary/10',
   },
   {
     id: 'organizer',
@@ -21,7 +25,7 @@ const rolesConfig = [
     description: 'Host, manage, review applications, and judge hackathons.',
     icon: Shield,
     badge: 'Verification Required',
-    color: 'border-purple-500/40 text-purple-400 bg-purple-500/10',
+    color: 'border-warning/40 text-warning bg-warning/10',
   },
   {
     id: 'judge',
@@ -29,7 +33,7 @@ const rolesConfig = [
     description: 'Evaluate submissions, score criteria, and select winners.',
     icon: Award,
     badge: 'Verification Required',
-    color: 'border-cyan-500/40 text-cyan-400 bg-cyan-500/10',
+    color: 'border-success/40 text-success bg-success/10',
   },
 ];
 
@@ -57,9 +61,7 @@ const Signup = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const handleNextStep1 = () => {
-    setStep(2);
-  };
+  const handleNextStep1 = () => setStep(2);
 
   const handleNextStep2 = (e) => {
     e.preventDefault();
@@ -110,366 +112,271 @@ const Signup = () => {
       if (res.success && res.data) {
         toast.success(`${role.toUpperCase()} account created successfully!`);
         setAuthSession(res.data, res.data.token);
-        
-        // Redirect to matching portal
         if (role === 'organizer') navigate('/organizer/dashboard');
         else if (role === 'judge') navigate('/judge/dashboard');
         else navigate('/participant/dashboard');
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registration failed');
-      setStep(3); // Return to verification step on failure
+      setStep(3);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center pt-24 pb-12 px-6">
-      <div className="max-w-xl w-full">
+    <div className="min-h-screen bg-background text-foreground flex items-center justify-center pt-24 pb-12 px-6 relative overflow-hidden">
+      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="max-w-xl w-full relative z-10">
         {/* Progress Bar */}
-        <div className="mb-8 flex items-center justify-between text-xs font-mono text-slate-400">
-          <span>STEP {step} OF 4</span>
+        <div className="mb-8 flex items-center justify-between text-xs font-mono text-muted-foreground">
+          <span>STEP {step > 4 ? 4 : step} OF 4</span>
           <span>{step === 1 ? 'ROLE' : step === 2 ? 'ACCOUNT' : step === 3 ? 'VERIFY / PROFILE' : 'REVIEW'}</span>
         </div>
-        <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden mb-8">
+        <div className="w-full bg-surface h-1.5 rounded-full overflow-hidden mb-8">
           <div
-            className="bg-indigo-500 h-full transition-all duration-300"
-            style={{ width: `${(step / 4) * 100}%` }}
+            className="bg-primary h-full transition-all duration-300"
+            style={{ width: `${(Math.min(step, 4) / 4) * 100}%` }}
           />
         </div>
 
         <AnimatePresence mode="wait">
           {/* STEP 1: ROLE SELECTION */}
           {step === 1 && (
-            <motion.div
-              key="step1"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 shadow-2xl"
-            >
-              <h2 className="text-2xl font-extrabold mb-2 text-center">How will you use HackVerse?</h2>
-              <p className="text-xs text-slate-400 text-center mb-8">Select your primary portal account type to begin onboarding.</p>
+            <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+              <Card className="p-8 shadow-2xl bg-card/60 backdrop-blur-xl">
+                <h2 className="text-2xl font-extrabold mb-2 text-center text-foreground">How will you use HackVerse?</h2>
+                <p className="text-xs text-muted-foreground text-center mb-8">Select your primary portal account type to begin onboarding.</p>
 
-              <div className="space-y-4 mb-8">
-                {rolesConfig.map((r) => {
-                  const Icon = r.icon;
-                  const isSelected = role === r.id;
-                  return (
-                    <div
-                      key={r.id}
-                      onClick={() => setRole(r.id)}
-                      className={`p-5 rounded-2xl border cursor-pointer transition-all flex items-start gap-4 ${
-                        isSelected
-                          ? 'bg-indigo-950/40 border-indigo-500 shadow-lg shadow-indigo-500/10'
-                          : 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700'
-                      }`}
-                    >
-                      <div className={`p-3 rounded-xl ${r.color} shrink-0`}>
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-bold text-sm text-white">{r.title}</h3>
-                          <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${r.color}`}>
-                            {r.badge}
-                          </span>
+                <div className="space-y-4 mb-8">
+                  {rolesConfig.map((r) => {
+                    const Icon = r.icon;
+                    const isSelected = role === r.id;
+                    return (
+                      <div
+                        key={r.id}
+                        onClick={() => setRole(r.id)}
+                        className={`p-5 rounded-[14px] border cursor-pointer transition-all duration-300 flex items-start gap-4 group ${
+                          isSelected
+                            ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(182,255,0,0.15)] ring-1 ring-primary'
+                            : 'bg-surface border-border hover:border-primary/60 hover:-translate-y-1 hover:shadow-lg'
+                        }`}
+                      >
+                        <div className={`p-3 rounded-xl border transition-colors duration-300 shrink-0 ${isSelected ? 'border-primary bg-primary text-primary-foreground' : r.color}`}>
+                          <Icon className="w-5 h-5" />
                         </div>
-                        <p className="text-xs text-slate-400 leading-relaxed">{r.description}</p>
+                        <div className="flex-1 relative">
+                          <div className="flex items-center justify-between mb-1">
+                            <h3 className={`font-bold text-sm transition-colors duration-300 ${isSelected ? 'text-primary' : 'text-foreground'}`}>{r.title}</h3>
+                            <Badge variant={isSelected ? 'primary' : 'outline'} className="text-[9px]">{r.badge}</Badge>
+                          </div>
+                          <p className="text-xs text-muted-foreground leading-relaxed pr-6">{r.description}</p>
+                          {isSelected && (
+                            <div className="absolute right-0 bottom-0 text-primary">
+                              <CheckCircle2 className="w-4 h-4" />
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
 
-              <button
-                onClick={handleNextStep1}
-                className="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-all shadow-xl shadow-indigo-600/25 flex items-center justify-center gap-2"
-              >
-                Continue to Account Setup <ArrowRight className="w-4 h-4" />
-              </button>
+                <Button className="w-full" onClick={handleNextStep1}>
+                  Continue to Account Setup <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Card>
             </motion.div>
           )}
 
           {/* STEP 2: ACCOUNT DETAILS */}
           {step === 2 && (
-            <motion.div
-              key="step2"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 shadow-2xl"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <button onClick={() => setStep(1)} className="text-xs text-indigo-400 hover:underline flex items-center gap-1">
-                  <ArrowLeft className="w-3.5 h-3.5" /> Back to Roles
-                </button>
-                <span className="text-[10px] font-mono font-bold uppercase px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                  {role} Account
-                </span>
-              </div>
-
-              <h2 className="text-2xl font-extrabold mb-1">Account Credentials</h2>
-              <p className="text-xs text-slate-400 mb-6">Enter your details to create your HackVerse user identity.</p>
-
-              <form onSubmit={handleNextStep2} className="space-y-4 text-xs">
-                <div>
-                  <label className="block font-semibold text-slate-300 mb-1.5">Full Name</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="John Doe"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-                  />
+            <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+              <Card className="p-8 shadow-2xl bg-card/60 backdrop-blur-xl">
+                <div className="flex items-center justify-between mb-4">
+                  <button onClick={() => setStep(1)} className="text-xs text-primary hover:underline flex items-center gap-1">
+                    <ArrowLeft className="w-3.5 h-3.5" /> Back to Roles
+                  </button>
+                  <Badge variant="primary" className="text-[10px]">{role} Account</Badge>
                 </div>
 
-                <div>
-                  <label className="block font-semibold text-slate-300 mb-1.5">Email Address</label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="john@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-                  />
-                </div>
+                <h2 className="text-2xl font-extrabold mb-1">Account Credentials</h2>
+                <p className="text-xs text-muted-foreground mb-6">Enter your details to create your HackVerse user identity.</p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <form onSubmit={handleNextStep2} className="space-y-4 text-sm">
                   <div>
-                    <label className="block font-semibold text-slate-300 mb-1.5">Password</label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        required
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-3.5 text-slate-500 hover:text-slate-300"
-                      >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </div>
+                    <label className="block font-semibold text-foreground mb-1.5">Full Name</label>
+                    <Input required placeholder="John Doe" value={name} onChange={(e) => setName(e.target.value)} />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-slate-300 mb-1.5">Confirm Password</label>
-                    <div className="relative">
-                      <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        required
-                        placeholder="••••••••"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3.5 top-3.5 text-slate-500 hover:text-slate-300"
-                      >
-                        {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
+                    <label className="block font-semibold text-foreground mb-1.5">Email Address</label>
+                    <Input type="email" required placeholder="john@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-semibold text-foreground mb-1.5">Password</label>
+                      <div className="relative">
+                        <Input type={showPassword ? 'text' : 'password'} required placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="pr-10" />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-3.5 text-muted-foreground hover:text-foreground">
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block font-semibold text-foreground mb-1.5">Confirm Password</label>
+                      <div className="relative">
+                        <Input type={showConfirmPassword ? 'text' : 'password'} required placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="pr-10" />
+                        <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3.5 top-3.5 text-muted-foreground hover:text-foreground">
+                          {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <button
-                  type="submit"
-                  className="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-all shadow-xl shadow-indigo-600/25 flex items-center justify-center gap-2 mt-6"
-                >
-                  Next: {role === 'participant' ? 'Profile Details' : 'Verification'} <ArrowRight className="w-4 h-4" />
-                </button>
-              </form>
+                  <Button type="submit" className="w-full mt-6">
+                    Next: {role === 'participant' ? 'Profile Details' : 'Verification'} <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </form>
+              </Card>
             </motion.div>
           )}
 
-          {/* STEP 3: ROLE-SPECIFIC VERIFICATION / ONBOARDING */}
+          {/* STEP 3: ROLE-SPECIFIC */}
           {step === 3 && (
-            <motion.div
-              key="step3"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 shadow-2xl"
-            >
-              <button onClick={() => setStep(2)} className="text-xs text-indigo-400 hover:underline flex items-center gap-1 mb-4">
-                <ArrowLeft className="w-3.5 h-3.5" /> Back to Credentials
-              </button>
-
-              <h2 className="text-2xl font-extrabold mb-1">
-                {role === 'participant' ? 'Developer Profile' : `${role.toUpperCase()} Verification`}
-              </h2>
-              <p className="text-xs text-slate-400 mb-6">
-                {role === 'participant'
-                  ? 'Tell us about your developer skills and academic institution.'
-                  : `${role.toUpperCase()} accounts require a cryptographically issued HackVerse verification code.`}
-              </p>
-
-              <form onSubmit={handleNextStep3} className="space-y-4 text-xs">
-                {(role === 'organizer' || role === 'judge') && (
-                  <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 mb-4">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <label className="font-bold text-amber-300 flex items-center gap-1.5">
-                        <Key className="w-4 h-4 text-amber-400" /> {role.toUpperCase()} Access Verification Code *
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => setVerificationCode(role === 'organizer' ? 'ORG-HACKVERSE-2026' : 'JDG-HACKVERSE-2026')}
-                        className="text-[10px] font-mono font-bold text-indigo-400 hover:underline"
-                      >
-                        Auto-fill Default Code
-                      </button>
-                    </div>
-                    <input
-                      type="text"
-                      required
-                      placeholder={role === 'organizer' ? 'ORG-HACKVERSE-2026' : 'JDG-HACKVERSE-2026'}
-                      value={verificationCode}
-                      onChange={(e) => setVerificationCode(e.target.value.toUpperCase())}
-                      className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white font-mono text-sm placeholder-slate-600 focus:outline-none focus:border-amber-500"
-                    />
-                    <p className="text-[11px] text-amber-400/80 mt-1.5">
-                      Default Code: <code className="font-mono font-bold text-white bg-slate-900 px-1.5 py-0.5 rounded">{role === 'organizer' ? 'ORG-HACKVERSE-2026' : 'JDG-HACKVERSE-2026'}</code>
-                    </p>
-                  </div>
-                )}
-
-                {role === 'participant' && (
-                  <>
-                    <div>
-                      <label className="block font-semibold text-slate-300 mb-1.5">College / University</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Stanford University"
-                        value={college}
-                        onChange={(e) => setCollege(e.target.value)}
-                        className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block font-semibold text-slate-300 mb-1.5">Primary Skills (Comma-separated)</label>
-                      <input
-                        type="text"
-                        placeholder="React, Node.js, Solidity, Python"
-                        value={skills}
-                        onChange={(e) => setSkills(e.target.value)}
-                        className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white font-mono placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-                      />
-                    </div>
-                  </>
-                )}
-
-                {role === 'organizer' && (
-                  <div>
-                    <label className="block font-semibold text-slate-300 mb-1.5">Organization / Host Name</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. LPU Developer Club"
-                      value={organizationName}
-                      onChange={(e) => setOrganizationName(e.target.value)}
-                      className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-                    />
-                  </div>
-                )}
-
-                {role === 'judge' && (
-                  <div>
-                    <label className="block font-semibold text-slate-300 mb-1.5">Expertise / Specialization</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. AI Systems & Smart Contracts"
-                      value={expertise}
-                      onChange={(e) => setExpertise(e.target.value)}
-                      className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-                    />
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  className="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-all shadow-xl shadow-indigo-600/25 flex items-center justify-center gap-2 mt-6"
-                >
-                  Review Onboarding <ArrowRight className="w-4 h-4" />
+            <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+              <Card className="p-8 shadow-2xl bg-card/60 backdrop-blur-xl">
+                <button onClick={() => setStep(2)} className="text-xs text-primary hover:underline flex items-center gap-1 mb-4">
+                  <ArrowLeft className="w-3.5 h-3.5" /> Back to Credentials
                 </button>
-              </form>
+
+                <h2 className="text-2xl font-extrabold mb-1">
+                  {role === 'participant' ? 'Developer Profile' : `${role.toUpperCase()} Verification`}
+                </h2>
+                <p className="text-xs text-muted-foreground mb-6">
+                  {role === 'participant'
+                    ? 'Tell us about your developer skills and academic institution.'
+                    : `${role.toUpperCase()} accounts require a cryptographically issued HackVerse verification code.`}
+                </p>
+
+                <form onSubmit={handleNextStep3} className="space-y-4 text-sm">
+                  {(role === 'organizer' || role === 'judge') && (
+                    <div className="p-4 rounded-2xl bg-warning/10 border border-warning/20 mb-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="font-bold text-warning flex items-center gap-1.5 text-xs">
+                          <Key className="w-4 h-4" /> Access Verification Code *
+                        </label>
+                        <button type="button" onClick={() => setVerificationCode(role === 'organizer' ? 'ORG-HACKVERSE-2026' : 'JDG-HACKVERSE-2026')} className="text-[10px] font-mono font-bold text-primary hover:underline">
+                          Auto-fill Default
+                        </button>
+                      </div>
+                      <Input
+                        required
+                        placeholder={role === 'organizer' ? 'ORG-HACKVERSE-2026' : 'JDG-HACKVERSE-2026'}
+                        value={verificationCode}
+                        onChange={(e) => setVerificationCode(e.target.value.toUpperCase())}
+                        className="font-mono text-sm uppercase"
+                      />
+                      <p className="text-[11px] text-warning/80 mt-2">
+                        Default Code: <code className="font-mono font-bold text-foreground bg-surface px-1.5 py-0.5 rounded">{role === 'organizer' ? 'ORG-HACKVERSE-2026' : 'JDG-HACKVERSE-2026'}</code>
+                      </p>
+                    </div>
+                  )}
+
+                  {role === 'participant' && (
+                    <>
+                      <div>
+                        <label className="block font-semibold text-foreground mb-1.5">College / University</label>
+                        <Input placeholder="e.g. Stanford University" value={college} onChange={(e) => setCollege(e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="block font-semibold text-foreground mb-1.5">Primary Skills (Comma-separated)</label>
+                        <Input placeholder="React, Node.js, Solidity, Python" value={skills} onChange={(e) => setSkills(e.target.value)} className="font-mono" />
+                      </div>
+                    </>
+                  )}
+
+                  {role === 'organizer' && (
+                    <div>
+                      <label className="block font-semibold text-foreground mb-1.5">Organization / Host Name</label>
+                      <Input placeholder="e.g. Developer Club" value={organizationName} onChange={(e) => setOrganizationName(e.target.value)} />
+                    </div>
+                  )}
+
+                  {role === 'judge' && (
+                    <div>
+                      <label className="block font-semibold text-foreground mb-1.5">Expertise / Specialization</label>
+                      <Input placeholder="e.g. AI Systems & Smart Contracts" value={expertise} onChange={(e) => setExpertise(e.target.value)} />
+                    </div>
+                  )}
+
+                  <Button type="submit" className="w-full mt-6">
+                    Review Onboarding <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </form>
+              </Card>
             </motion.div>
           )}
 
-          {/* STEP 4: REVIEW & SUBMIT */}
+          {/* STEP 4: REVIEW */}
           {step === 4 && (
-            <motion.div
-              key="step4"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 shadow-2xl"
-            >
-              <button onClick={() => setStep(3)} className="text-xs text-indigo-400 hover:underline flex items-center gap-1 mb-4">
-                <ArrowLeft className="w-3.5 h-3.5" /> Back to Verification
-              </button>
+            <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+              <Card className="p-8 shadow-2xl bg-card/60 backdrop-blur-xl">
+                <button onClick={() => setStep(3)} className="text-xs text-primary hover:underline flex items-center gap-1 mb-4">
+                  <ArrowLeft className="w-3.5 h-3.5" /> Back to Verification
+                </button>
 
-              <h2 className="text-2xl font-extrabold mb-1">Review Registration</h2>
-              <p className="text-xs text-slate-400 mb-6">Confirm your details before creating your HackVerse account.</p>
+                <h2 className="text-2xl font-extrabold mb-1">Review Registration</h2>
+                <p className="text-xs text-muted-foreground mb-6">Confirm your details before creating your HackVerse account.</p>
 
-              <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 space-y-3 text-xs mb-6">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Account Type:</span>
-                  <span className="font-bold text-indigo-400 uppercase font-mono">{role}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Full Name:</span>
-                  <span className="font-semibold text-white">{name}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Email:</span>
-                  <span className="font-semibold text-white">{email}</span>
-                </div>
-                {(role === 'organizer' || role === 'judge') && (
-                  <div className="flex justify-between pt-2 border-t border-slate-800/60">
-                    <span className="text-slate-400">Access Code:</span>
-                    <span className="font-mono text-amber-400 font-bold">••••••••</span>
+                <div className="bg-surface border border-border rounded-2xl p-4 space-y-3 text-sm mb-6">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Account Type:</span>
+                    <span className="font-bold text-primary uppercase font-mono">{role}</span>
                   </div>
-                )}
-              </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Full Name:</span>
+                    <span className="font-semibold text-foreground">{name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Email:</span>
+                    <span className="font-semibold text-foreground">{email}</span>
+                  </div>
+                  {(role === 'organizer' || role === 'judge') && (
+                    <div className="flex justify-between pt-2 border-t border-border/60">
+                      <span className="text-muted-foreground">Access Code:</span>
+                      <span className="font-mono text-warning font-bold">••••••••</span>
+                    </div>
+                  )}
+                </div>
 
-              <button
-                onClick={handleFinalSubmit}
-                className="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-all shadow-xl shadow-emerald-600/25 flex items-center justify-center gap-2"
-              >
-                <CheckCircle2 className="w-4 h-4" /> Create {role.toUpperCase()} Account
-              </button>
+                <Button variant="primary" onClick={handleFinalSubmit} className="w-full bg-gradient-to-r from-success to-success-hover hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] border-success/50">
+                  <CheckCircle2 className="w-4 h-4 mr-2" /> Create {role.toUpperCase()} Account
+                </Button>
+              </Card>
             </motion.div>
           )}
 
           {/* STEP 5: LOADING TRANSITION */}
           {step === 5 && (
-            <motion.div
-              key="step5"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-slate-900/60 border border-slate-800 rounded-3xl p-12 text-center shadow-2xl space-y-4"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto animate-spin">
-                <Shield className="w-6 h-6" />
-              </div>
-              <h3 className="font-extrabold text-xl">Creating Your {role.toUpperCase()} Account...</h3>
-              <p className="text-xs text-slate-400">Verifying code and establishing MongoDB user record.</p>
+            <motion.div key="step5" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
+              <Card className="p-12 text-center shadow-2xl bg-card/80 backdrop-blur-2xl space-y-4">
+                <div className="w-16 h-16 rounded-[20px] bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(182,255,0,0.2)]">
+                  <Shield className="w-8 h-8 animate-pulse" />
+                </div>
+                <h3 className="font-extrabold text-xl">Creating Your {role.toUpperCase()} Account...</h3>
+                <p className="text-xs text-muted-foreground">Verifying and establishing user record in the Verse.</p>
+              </Card>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <p className="text-center text-xs text-slate-500 mt-6">
+        <p className="text-center text-xs text-muted-foreground mt-6">
           Already have an account?{' '}
-          <Link to="/login" className="text-indigo-400 hover:underline font-semibold">
+          <Link to="/login" className="text-primary hover:underline font-semibold">
             Log in to Portal
           </Link>
         </p>

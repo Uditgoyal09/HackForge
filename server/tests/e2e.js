@@ -330,16 +330,16 @@ async function runE2ETests() {
     // 8. Registrations
     {
       // Participant 1 Register
-      const resReg1 = await request(`/hackathons/${hackathonId}/register`, { method: 'POST', token: partToken });
+      const resReg1 = await request(`/hackathons/${hackathonId}/register`, { method: 'POST', token: partToken, body: { name: 'E2E Participant 1' } });
       logTest('Registrations', 'Participant Register for Hackathon', resReg1.status === 201 || resReg1.status === 200);
       if (resReg1.data?.data?._id) registrationId = resReg1.data.data._id;
 
       // Duplicate Registration Test
-      const resDupReg = await request(`/hackathons/${hackathonId}/register`, { method: 'POST', token: partToken });
+      const resDupReg = await request(`/hackathons/${hackathonId}/register`, { method: 'POST', token: partToken, body: { name: 'E2E Participant 1' } });
       logTest('Registrations', 'Duplicate Registration Rejected with 409', resDupReg.status === 409);
 
       // Participant 2 Register
-      await request(`/hackathons/${hackathonId}/register`, { method: 'POST', token: part2Token });
+      await request(`/hackathons/${hackathonId}/register`, { method: 'POST', token: part2Token, body: { name: 'E2E Participant 2' } });
 
       // My Registrations
       const resMyReg = await request('/registrations/me', { token: partToken });

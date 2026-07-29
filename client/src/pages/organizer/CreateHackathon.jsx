@@ -105,12 +105,12 @@ const CreateHackathon = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white pt-24 pb-20">
+    <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-3xl mx-auto px-6 lg:px-12">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-extrabold tracking-tight">Create New Hackathon</h1>
-          <p className="text-slate-400 text-sm mt-1">Multi-step wizard to setup event details, deadlines, and criteria.</p>
+          <p className="text-muted-foreground text-sm mt-1">Multi-step wizard to setup event details, deadlines, and criteria.</p>
         </div>
 
         {/* Wizard Steps Progress */}
@@ -118,12 +118,12 @@ const CreateHackathon = () => {
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className={`p-2.5 rounded-xl border transition-all ${
+              className={`p-2.5 rounded-[var(--radius-md)] border transition-all ${
                 step === i
-                  ? 'bg-indigo-600 text-white font-bold border-indigo-500 shadow-md shadow-indigo-600/20'
+                  ? 'bg-primary text-primary-foreground font-bold border-primary shadow-md shadow-primary/20'
                   : step > i
-                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-                  : 'bg-slate-900/60 border-slate-800 text-slate-500'
+                  ? 'bg-success/20 text-success border-success/30'
+                  : 'bg-surface border-border text-muted-foreground'
               }`}
             >
               Step {i}
@@ -132,14 +132,14 @@ const CreateHackathon = () => {
         </div>
 
         {/* Form Container */}
-        <div className="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6 sm:p-10">
+        <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 sm:p-10">
           {/* STEP 1: Basic Info */}
           {step === 1 && (
             <div className="space-y-4">
-              <h3 className="font-bold text-lg text-white mb-4">Step 1: Event Details</h3>
+              <h3 className="font-bold text-lg text-foreground mb-4">Step 1: Event Details</h3>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Hackathon Title</label>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">Hackathon Title</label>
                 <input
                   type="text"
                   name="title"
@@ -147,12 +147,12 @@ const CreateHackathon = () => {
                   placeholder="e.g. AI Agents Global Hackathon"
                   value={formData.title}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Description & Objective</label>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">Description & Objective</label>
                 <textarea
                   rows={4}
                   name="description"
@@ -160,17 +160,17 @@ const CreateHackathon = () => {
                   placeholder="Explain the theme, challenge, and goals..."
                   value={formData.description}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Event Mode</label>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">Event Mode</label>
                 <select
                   name="mode"
                   value={formData.mode}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground focus:outline-none focus:border-primary"
                 >
                   <option value="online">Online</option>
                   <option value="offline">Offline / In-Person</option>
@@ -183,50 +183,50 @@ const CreateHackathon = () => {
           {/* STEP 2: Timeline */}
           {step === 2 && (
             <div className="space-y-4">
-              <h3 className="font-bold text-lg text-white mb-4">Step 2: Schedule & Deadlines</h3>
+              <h3 className="font-bold text-lg text-foreground mb-4">Step 2: Schedule & Deadlines</h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Registration Deadline</label>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">Registration Deadline</label>
                   <input
                     type="datetime-local"
                     name="registrationDeadline"
                     value={formData.registrationDeadline}
                     onChange={handleChange}
-                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground focus:outline-none focus:border-primary"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Event Start Date</label>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">Event Start Date</label>
                   <input
                     type="datetime-local"
                     name="startDate"
                     value={formData.startDate}
                     onChange={handleChange}
-                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground focus:outline-none focus:border-primary"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Submission Deadline</label>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">Submission Deadline</label>
                   <input
                     type="datetime-local"
                     name="submissionDeadline"
                     value={formData.submissionDeadline}
                     onChange={handleChange}
-                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground focus:outline-none focus:border-primary"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Event End Date</label>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">Event End Date</label>
                   <input
                     type="datetime-local"
                     name="endDate"
                     value={formData.endDate}
                     onChange={handleChange}
-                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground focus:outline-none focus:border-primary"
                   />
                 </div>
               </div>
@@ -236,22 +236,22 @@ const CreateHackathon = () => {
           {/* STEP 3: Participation */}
           {step === 3 && (
             <div className="space-y-4">
-              <h3 className="font-bold text-lg text-white mb-4">Step 3: Prize Pool & Team Size</h3>
+              <h3 className="font-bold text-lg text-foreground mb-4">Step 3: Prize Pool & Team Size</h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Prize Pool ($ USD)</label>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">Prize Pool ($ USD)</label>
                   <input
                     type="number"
                     name="prizePool"
                     value={formData.prizePool}
                     onChange={handleChange}
-                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground focus:outline-none focus:border-primary"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Maximum Team Size</label>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">Maximum Team Size</label>
                   <input
                     type="number"
                     name="maxTeamSize"
@@ -259,7 +259,7 @@ const CreateHackathon = () => {
                     max={10}
                     value={formData.maxTeamSize}
                     onChange={handleChange}
-                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground focus:outline-none focus:border-primary"
                   />
                 </div>
               </div>
@@ -270,11 +270,11 @@ const CreateHackathon = () => {
           {step === 4 && (
             <div className="space-y-4">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-lg text-white">Step 4: Dynamic Judging Criteria</h3>
+                <h3 className="font-bold text-lg text-foreground">Step 4: Dynamic Judging Criteria</h3>
                 <button
                   type="button"
                   onClick={handleAddCriterion}
-                  className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center gap-1"
+                  className="px-3 py-1.5 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold flex items-center gap-1"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add Criterion
                 </button>
@@ -282,26 +282,26 @@ const CreateHackathon = () => {
 
               <div className="space-y-3">
                 {criteria.map((c, i) => (
-                  <div key={i} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+                  <div key={i} className="p-4 rounded-[var(--radius-md)] bg-background border border-border space-y-2">
                     <div className="flex items-center justify-between gap-2">
                       <input
                         type="text"
                         placeholder="Criterion Name (e.g. Innovation)"
                         value={c.name}
                         onChange={(e) => handleCriterionChange(i, 'name', e.target.value)}
-                        className="flex-1 px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white"
+                        className="flex-1 px-3 py-2 bg-surface border border-input rounded-[var(--radius-md)] text-xs text-foreground"
                       />
                       <input
                         type="number"
                         placeholder="Max Score"
                         value={c.maxScore}
                         onChange={(e) => handleCriterionChange(i, 'maxScore', e.target.value)}
-                        className="w-24 px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white"
+                        className="w-24 px-3 py-2 bg-surface border border-input rounded-[var(--radius-md)] text-xs text-foreground"
                       />
                       <button
                         type="button"
                         onClick={() => handleRemoveCriterion(i)}
-                        className="p-2 text-slate-500 hover:text-rose-400"
+                        className="p-2 text-muted-foreground hover:text-error"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -312,7 +312,7 @@ const CreateHackathon = () => {
                       placeholder="Criterion Description"
                       value={c.description}
                       onChange={(e) => handleCriterionChange(i, 'description', e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-300"
+                      className="w-full px-3 py-2 bg-surface border border-input rounded-[var(--radius-md)] text-xs text-foreground"
                     />
                   </div>
                 ))}
@@ -323,17 +323,17 @@ const CreateHackathon = () => {
           {/* STEP 5: Rules */}
           {step === 5 && (
             <div className="space-y-4">
-              <h3 className="font-bold text-lg text-white mb-4">Step 5: Code of Conduct & Rules</h3>
+              <h3 className="font-bold text-lg text-foreground mb-4">Step 5: Code of Conduct & Rules</h3>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Rules & Guidelines</label>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">Rules & Guidelines</label>
                 <textarea
                   rows={5}
                   name="rules"
                   placeholder="Specify submission rules, code of conduct, plagiarism policies..."
                   value={formData.rules}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full px-4 py-2.5 bg-background border border-input rounded-[var(--radius-md)] text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
                 />
               </div>
             </div>
@@ -342,17 +342,17 @@ const CreateHackathon = () => {
           {/* STEP 6: Review & Publish */}
           {step === 6 && (
             <div className="space-y-4 text-xs">
-              <h3 className="font-bold text-lg text-white mb-4">Step 6: Review Event Summary</h3>
+              <h3 className="font-bold text-lg text-foreground mb-4">Step 6: Review Event Summary</h3>
 
-              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-                <p className="font-bold text-sm text-white">{formData.title}</p>
-                <p className="text-slate-400">{formData.description}</p>
-                <p className="text-indigo-400 font-semibold">Prize Pool: ${formData.prizePool?.toLocaleString()} • Max Team: {formData.maxTeamSize}</p>
+              <div className="p-4 rounded-[var(--radius-md)] bg-background border border-border space-y-2">
+                <p className="font-bold text-sm text-foreground">{formData.title}</p>
+                <p className="text-muted-foreground">{formData.description}</p>
+                <p className="text-primary font-semibold">Prize Pool: ${formData.prizePool?.toLocaleString()} • Max Team: {formData.maxTeamSize}</p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800">
-                <p className="font-semibold text-slate-300 mb-2">Configured Judging Criteria ({criteria.length})</p>
-                <ul className="list-disc list-inside text-slate-400">
+              <div className="p-4 rounded-[var(--radius-md)] bg-background border border-border">
+                <p className="font-semibold text-foreground mb-2">Configured Judging Criteria ({criteria.length})</p>
+                <ul className="list-disc list-inside text-muted-foreground">
                   {criteria.map((c, i) => (
                     <li key={i}>{c.name} ({c.maxScore} Pts)</li>
                   ))}
@@ -362,12 +362,12 @@ const CreateHackathon = () => {
           )}
 
           {/* Wizard Controls */}
-          <div className="flex items-center justify-between pt-8 border-t border-slate-800/60 mt-8">
+          <div className="flex items-center justify-between pt-8 border-t border-border mt-8">
             {step > 1 ? (
               <button
                 type="button"
                 onClick={handleBack}
-                className="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-800 flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-[var(--radius-md)] bg-surface border border-border text-foreground text-xs font-semibold hover:bg-surface-hover flex items-center gap-1.5"
               >
                 <ArrowLeft className="w-4 h-4" /> Back
               </button>
@@ -377,7 +377,7 @@ const CreateHackathon = () => {
               <button
                 type="button"
                 onClick={handleNext}
-                className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-lg shadow-indigo-600/25"
+                className="px-6 py-2.5 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold flex items-center gap-1.5 shadow-lg shadow-primary/25"
               >
                 Next Step <ArrowRight className="w-4 h-4" />
               </button>
@@ -386,7 +386,7 @@ const CreateHackathon = () => {
                 type="button"
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="px-8 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-all shadow-xl shadow-emerald-600/20 disabled:opacity-50"
+                className="px-8 py-3 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs transition-all shadow-xl shadow-primary/20 disabled:opacity-50"
               >
                 {submitting ? 'Creating...' : 'Publish Hackathon'}
               </button>
