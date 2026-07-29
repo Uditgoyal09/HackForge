@@ -69,11 +69,11 @@
     --primary-soft: rgba(182, 255, 0, 0.05);
 
     /* Hero Network Tokens (Light Mode) */
-    --hero-network-line: rgba(156, 163, 175, 0.7);
-    --hero-network-line-muted: rgba(156, 163, 175, 0.4);
-    --hero-network-node: rgba(156, 163, 175, 0.6);
-    --hero-network-node-border: rgba(156, 163, 175, 0.9);
-    --hero-network-label: #4B5563;
+    --hero-network-line: rgba(107, 114, 128, 0.95); /* darker grey */
+    --hero-network-line-muted: rgba(107, 114, 128, 0.6);
+    --hero-network-node: rgba(107, 114, 128, 0.8);
+    --hero-network-node-border: rgba(75, 85, 99, 0.9); /* even darker for node borders */
+    --hero-network-label: #374151; /* darker label */
     --hero-network-active: #B6FF00;
   }
 
