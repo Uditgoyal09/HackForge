@@ -9,12 +9,23 @@ const NotificationBell = () => {
   const [notifications, setNotifications] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const initialLoadDone = React.useRef(false);
 
   const fetchUnreadCount = async () => {
     try {
       const res = await notificationService.getUnreadCount();
       if (res.success) {
-        setUnreadCount(res.data.unreadCount || 0);
+        const newCount = res.data.unreadCount || 0;
+        setUnreadCount(prev => {
+          if (initialLoadDone.current && newCount > prev) {
+            toast.info('You have a new notification!', { 
+              icon: '🔔',
+              duration: 4000
+            });
+          }
+          return newCount;
+        });
+        initialLoadDone.current = true;
       }
     } catch {
       // Ignore notification fetch errors silently
@@ -37,7 +48,7 @@ const NotificationBell = () => {
 
   useEffect(() => {
     fetchUnreadCount();
-    const interval = setInterval(fetchUnreadCount, 30000); // Poll every 30s as REST fallback
+    const interval = setInterval(fetchUnreadCount, 15000); // Poll every 15s for better responsiveness
     return () => clearInterval(interval);
   }, []);
 

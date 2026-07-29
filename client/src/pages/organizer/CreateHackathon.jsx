@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Plus, Trash2, ArrowRight, ArrowLeft, CheckCircle2, ShieldCheck, Trophy, Calendar } from 'lucide-react';
 import PageHeader from '../../components/common/PageHeader';
 import { hackathonService } from '../../services/hackathonService';
@@ -7,8 +7,10 @@ import { toast } from 'sonner';
 
 const CreateHackathon = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [loadingInitial, setLoadingInitial] = useState(!!id);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -30,6 +32,51 @@ const CreateHackathon = () => {
     { name: 'Innovation', description: 'Novelty of problem statement and solution', maxScore: 50 },
     { name: 'Technical Execution', description: 'Quality of code and architecture', maxScore: 50 },
   ]);
+
+  useEffect(() => {
+    const fetchHackathon = async () => {
+      if (!id) return;
+      try {
+        const res = await hackathonService.getHackathonById(id);
+        if (res.success && res.data) {
+          const h = res.data;
+          
+          const toLocalDatetime = (dateStr) => {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            const pad = (n) => n.toString().padStart(2, '0');
+            return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+          };
+
+          setFormData({
+            title: h.title || '',
+            description: h.description || '',
+            mode: h.mode || 'online',
+            venue: h.venue || '',
+            startDate: toLocalDatetime(h.startDate),
+            endDate: toLocalDatetime(h.endDate),
+            registrationDeadline: toLocalDatetime(h.registrationDeadline),
+            submissionDeadline: toLocalDatetime(h.submissionDeadline),
+            prizePool: h.prizePool || 10000,
+            maxTeamSize: h.maxTeamSize || 4,
+            rules: h.rules || '',
+          });
+          if (h.judgingCriteria && h.judgingCriteria.length > 0) {
+            setCriteria(h.judgingCriteria.map(c => ({
+              name: c.name,
+              description: c.description || '',
+              maxScore: c.maxScore
+            })));
+          }
+        }
+      } catch (err) {
+        toast.error('Failed to load hackathon details');
+      } finally {
+        setLoadingInitial(false);
+      }
+    };
+    fetchHackathon();
+  }, [id]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -84,9 +131,14 @@ const CreateHackathon = () => {
 
     setSubmitting(true);
     try {
-      const res = await hackathonService.createHackathon(payload);
+      let res;
+      if (id) {
+        res = await hackathonService.updateHackathon(id, payload);
+      } else {
+        res = await hackathonService.createHackathon(payload);
+      }
       if (res.success) {
-        toast.success('Hackathon created successfully!');
+        toast.success(id ? 'Hackathon updated successfully!' : 'Hackathon created successfully!');
         navigate('/organizer/dashboard');
       }
     } catch (err) {
@@ -105,13 +157,21 @@ const CreateHackathon = () => {
     }
   };
 
+  if (loadingInitial) {
+    return (
+      <div className="min-h-screen bg-background text-foreground pt-24 pb-20 flex justify-center items-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground pt-24 pb-20">
       <div className="max-w-3xl mx-auto px-6 lg:px-12">
         {/* Header */}
         <PageHeader 
           showBack 
-          title="Create New Hackathon" 
+          title={id ? "Edit Hackathon" : "Create New Hackathon"}
           description="Multi-step wizard to setup event details, deadlines, and criteria."
           unsavedChanges={step > 1}
         />
@@ -391,7 +451,7 @@ const CreateHackathon = () => {
                 disabled={submitting}
                 className="px-8 py-3 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs transition-all shadow-xl shadow-primary/20 disabled:opacity-50"
               >
-                {submitting ? 'Creating...' : 'Publish Hackathon'}
+                {submitting ? (id ? 'Updating...' : 'Creating...') : (id ? 'Update Hackathon' : 'Publish Hackathon')}
               </button>
             )}
           </div>

@@ -11,6 +11,7 @@ import LandingPage from './pages/public/LandingPage';
 import ExploreHackathons from './pages/public/ExploreHackathons';
 import HackathonDetails from './pages/public/HackathonDetails';
 import PublicProjects from './pages/public/PublicProjects';
+import GlobalLeaderboards from './pages/public/GlobalLeaderboards';
 import LeaderboardView from './components/leaderboard/LeaderboardView';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
@@ -55,6 +56,7 @@ export default function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/hackathons" element={<ExploreHackathons />} />
               <Route path="/hackathons/:id" element={<HackathonDetails />} />
+              <Route path="/leaderboard" element={<GlobalLeaderboards />} />
               <Route path="/hackathons/:id/leaderboard" element={<LeaderboardView />} />
               <Route path="/projects" element={<PublicProjects />} />
               <Route path="/login" element={<Login />} />

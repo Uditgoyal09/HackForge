@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Invitation = require('../models/Invitation');
 const Team = require('../models/Team');
 const Registration = require('../models/Registration');
+const Hackathon = require('../models/Hackathon');
 const User = require('../models/User');
 const ActivityLog = require('../models/ActivityLog');
 const { createNotification } = require('../services/notificationService');
@@ -116,18 +117,36 @@ const acceptInvitation = asyncHandler(async (req, res) => {
       throw new ApiError(400, 'Team is already full');
     }
 
-    const registration = await Registration.findOne({ hackathon: team.hackathon._id, participant: participantId }, null, opts);
-    if (!registration) throw new ApiError(403, 'You must register for the hackathon first');
-    if (registration.status === 'rejected') throw new ApiError(403, 'Your registration was rejected');
+    let registration = await Registration.findOne({ hackathon: team.hackathon._id, participant: participantId }, null, opts);
+    if (registration && registration.status === 'rejected') {
+      throw new ApiError(403, 'Your registration was rejected');
+    }
 
     const existingTeam = await Team.findOne({ hackathon: team.hackathon._id, members: participantId, status: 'active' }, null, opts);
     if (existingTeam) throw new ApiError(409, 'You are already in a team for this hackathon');
 
+    if (!registration) {
+      // Auto-register and approve the invited user
+      const regArr = await Registration.create([{
+        hackathon: team.hackathon._id,
+        participant: participantId,
+        status: 'approved',
+        participantDetails: {
+          name: req.user.name || req.user.email.split('@')[0],
+        },
+        team: team._id,
+      }], opts);
+      registration = regArr[0];
+
+      // Increment Hackathon participant count since this is a new registration
+      await Hackathon.findByIdAndUpdate(team.hackathon._id, { $inc: { participantCount: 1 } }, opts);
+    } else {
+      registration.team = team._id;
+      await registration.save(opts);
+    }
+
     team.members.push(participantId);
     await team.save(opts);
-
-    registration.team = team._id;
-    await registration.save(opts);
 
     invitation.status = 'accepted';
     invitation.invitedUser = participantId;

@@ -2,6 +2,7 @@ const JudgeAssignment = require('../models/JudgeAssignment');
 const Submission = require('../models/Submission');
 const Hackathon = require('../models/Hackathon');
 const ActivityLog = require('../models/ActivityLog');
+const { createNotification } = require('../services/notificationService');
 const { asyncHandler } = require('../utils/asyncHandler');
 const { ApiError } = require('../utils/ApiError');
 
@@ -36,6 +37,15 @@ const assignJudge = asyncHandler(async (req, res) => {
     action: 'judge_assigned',
     entityType: 'JudgeAssignment',
     entityId: assignment._id,
+  });
+
+  await createNotification({
+    recipient: judgeId,
+    type: 'judge_assigned',
+    title: 'New Judging Assignment',
+    message: `You have been assigned to evaluate a project for ${submission.hackathon.title}.`,
+    link: '/judge/dashboard',
+    metadata: { eventKey: `judge_assgn:${assignment._id.toString()}` }
   });
 
   res.status(201).json({ success: true, message: 'Judge assigned successfully', data: assignment });

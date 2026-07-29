@@ -107,6 +107,7 @@ const TeamManagement = () => {
       if (res.success) {
         toast.success(`Invitation sent to ${inviteEmail}`);
         setInviteEmail('');
+        fetchTeamForHackathon(selectedHackathon);
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to send invitation');
@@ -308,6 +309,23 @@ const TeamManagement = () => {
                     </div>
                   );
                 })}
+                
+                {/* Pending Invitations */}
+                {myTeam.pendingInvitations?.map((inv) => (
+                  <div key={inv._id} className="p-4 rounded-[var(--radius-md)] bg-background/50 border border-border border-dashed flex items-center justify-between text-xs opacity-75">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-surface-elevated border border-border flex items-center justify-center font-bold text-muted-foreground uppercase">
+                        {inv.invitedEmail.substring(0, 2)}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-foreground flex items-center gap-1.5">
+                          Pending Invite <span className="px-1.5 py-0.5 rounded bg-warning/10 text-warning text-[9px] uppercase tracking-wider font-bold">Sent</span>
+                        </p>
+                        <p className="text-muted-foreground text-[11px]">{inv.invitedEmail}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 

@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FolderGit2, Search } from 'lucide-react';
 import { submissionService } from '../../services/submissionService';

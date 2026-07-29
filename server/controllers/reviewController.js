@@ -2,6 +2,7 @@ const Review = require('../models/Review');
 const Submission = require('../models/Submission');
 const JudgeAssignment = require('../models/JudgeAssignment');
 const ActivityLog = require('../models/ActivityLog');
+const { createNotification } = require('../services/notificationService');
 const { asyncHandler } = require('../utils/asyncHandler');
 const { ApiError } = require('../utils/ApiError');
 
@@ -17,7 +18,7 @@ const createReview = asyncHandler(async (req, res) => {
   const assignment = await JudgeAssignment.findOne({ submission: submissionId, judge: judgeId })
     .populate({
       path: 'hackathon',
-      select: 'judgingCriteria resultsPublished'
+      select: 'judgingCriteria resultsPublished organizer title'
     });
 
   if (!assignment) {
@@ -84,6 +85,15 @@ const createReview = asyncHandler(async (req, res) => {
       entityType: 'Review',
       entityId: review._id,
     });
+
+    await createNotification({
+      recipient: assignment.hackathon.organizer,
+      type: 'evaluation_completed',
+      title: 'Evaluation Completed',
+      message: `A judge has submitted an evaluation for a project in ${assignment.hackathon.title}.`,
+      link: `/organizer/hackathons/${assignment.hackathon._id}/submissions`,
+      metadata: { eventKey: `eval_comp:${review._id.toString()}` }
+    });
   }
 
   res.status(201).json({ success: true, data: review });
@@ -96,7 +106,7 @@ const updateReview = asyncHandler(async (req, res) => {
   const review = await Review.findById(req.params.id)
     .populate({
       path: 'submission',
-      populate: { path: 'hackathon', select: 'judgingCriteria resultsPublished' }
+      populate: { path: 'hackathon', select: 'judgingCriteria resultsPublished organizer title' }
     });
 
   if (!review) throw new ApiError(404, 'Review not found');
@@ -150,6 +160,15 @@ const updateReview = asyncHandler(async (req, res) => {
       { submission: review.submission._id, judge: req.user._id },
       { status: 'reviewed' }
     );
+
+    await createNotification({
+      recipient: review.submission.hackathon.organizer,
+      type: 'evaluation_completed',
+      title: 'Evaluation Completed',
+      message: `A judge has submitted an evaluation for a project in ${review.submission.hackathon.title}.`,
+      link: `/organizer/hackathons/${review.submission.hackathon._id}/submissions`,
+      metadata: { eventKey: `eval_comp:${review._id.toString()}` }
+    });
   }
 
   await review.save();

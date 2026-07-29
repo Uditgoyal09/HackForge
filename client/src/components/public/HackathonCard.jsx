@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Users, ArrowRight } from 'lucide-react';
+import { Calendar, Users, UsersRound, ArrowRight } from 'lucide-react';
 import { Badge } from '../ui/Badge';
 
 const StatusIndicator = ({ status }) => {
@@ -107,9 +107,13 @@ const HackathonCard = ({ hackathon }) => {
               <Calendar className="w-3.5 h-3.5" /> 
               {new Date(hackathon.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
             </span>
-            <span className="flex items-center gap-1.5" title="Participants">
+            <span className="flex items-center gap-1.5" title="Registered Participants">
               <Users className="w-3.5 h-3.5" /> 
               {hackathon.participantCount || 0}
+            </span>
+            <span className="flex items-center gap-1.5" title={`Max Team Size: ${hackathon.maxTeamSize || 4}`}>
+              <UsersRound className="w-3.5 h-3.5" /> 
+              Max {hackathon.maxTeamSize || 4}
             </span>
           </div>
           

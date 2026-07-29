@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 const Hackathon = require('../models/Hackathon');
 const Submission = require('../models/Submission');
 const Review = require('../models/Review');
+const Registration = require('../models/Registration');
 const ActivityLog = require('../models/ActivityLog');
+const { createManyNotifications } = require('../services/notificationService');
 const { ApiError } = require('../utils/ApiError');
 const { asyncHandler } = require('../utils/asyncHandler');
 
@@ -131,6 +133,20 @@ const publishResults = asyncHandler(async (req, res) => {
       entityType: 'Hackathon',
       entityId: hackathon._id,
     });
+
+    const registrations = await Registration.find({ hackathon: hackathonId, status: 'approved' }, 'participant', opts);
+    const notifications = registrations.map(reg => ({
+      recipient: reg.participant,
+      type: 'results_published',
+      title: 'Results Published',
+      message: `The results for ${hackathon.title} are now live!`,
+      link: `/hackathons/${hackathon._id}/leaderboard`,
+      metadata: { eventKey: `res_pub:${hackathon._id.toString()}` }
+    }));
+
+    if (notifications.length > 0) {
+      await createManyNotifications(notifications, opts ? opts.session : null);
+    }
   };
 
   try {

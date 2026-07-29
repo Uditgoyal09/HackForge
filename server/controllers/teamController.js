@@ -4,6 +4,8 @@ const Hackathon = require('../models/Hackathon');
 const Registration = require('../models/Registration');
 const Invitation = require('../models/Invitation');
 const ActivityLog = require('../models/ActivityLog');
+const User = require('../models/User');
+const { createNotification } = require('../services/notificationService');
 const { asyncHandler } = require('../utils/asyncHandler');
 const { ApiError } = require('../utils/ApiError');
 
@@ -63,7 +65,7 @@ const createTeam = asyncHandler(async (req, res) => {
     if (invitesToCreate.length > 0) {
       await Invitation.insertMany(invitesToCreate);
       
-      // Log invitations
+      // Log invitations and send notifications
       for (const invite of invitesToCreate) {
         await ActivityLog.create({
           user: participantId,
@@ -72,6 +74,28 @@ const createTeam = asyncHandler(async (req, res) => {
           entityId: team._id,
           metadata: { email: invite.invitedEmail, auto: true }
         });
+        
+        // Find the user by email to send notification
+        const invitedUser = await User.findOne({ email: invite.invitedEmail });
+        if (invitedUser) {
+          // Find the exact invite created to get its ID
+          const createdInvite = await Invitation.findOne({ 
+            team: team._id, 
+            invitedEmail: invite.invitedEmail,
+            status: 'pending' 
+          });
+          
+          if (createdInvite) {
+            await createNotification({
+              recipient: invitedUser._id,
+              type: 'team_invitation',
+              title: 'Team Invitation',
+              message: `${req.user.name} invited you to join team ${team.name}.`,
+              link: '/participant/teams',
+              metadata: { eventKey: `team_inv:${createdInvite._id.toString()}` }
+            });
+          }
+        }
       }
     }
   }
@@ -100,7 +124,12 @@ const getTeam = asyncHandler(async (req, res) => {
 
   if (!team) throw new ApiError(404, 'Team not found');
 
-  res.status(200).json({ success: true, data: team });
+  const pendingInvitations = await Invitation.find({ team: team._id, status: 'pending' }, 'invitedEmail expiresAt');
+  
+  const teamData = team.toObject();
+  teamData.pendingInvitations = pendingInvitations;
+
+  res.status(200).json({ success: true, data: teamData });
 });
 
 // @desc    Leave team
