@@ -39,27 +39,42 @@
     --success: #10B981;
     --warning: #F59E0B;
     --error: #EF4444;
+    /* Hero Network Tokens (Dark Mode Default) */
+    --hero-network-line: rgba(182, 255, 0, 0.25);
+    --hero-network-line-muted: rgba(182, 255, 0, 0.12);
+    --hero-network-node: rgba(182, 255, 0, 0.4);
+    --hero-network-node-border: rgba(182, 255, 0, 0.8);
+    --hero-network-label: #F9FAFB;
+    --hero-network-active: #B6FF00;
   }
 
   .light {
     color-scheme: light;
-    --background: #FAFAFA;
-    --background-secondary: #F3F4F6;
+    --background: #F7F8F6;
+    --background-secondary: #F0F1EF;
     --surface: #FFFFFF;
-    --surface-hover: #F3F4F6; /* Better separation from surface */
+    --surface-hover: #F8F9F6;
     --surface-elevated: #FFFFFF;
     
     --foreground: #111318;
-    --foreground-secondary: #1F2937; /* Darker secondary text (gray-800) */
-    --foreground-muted: #4B5563; /* Darker muted text (gray-600) for readability */
+    --foreground-secondary: #374151; /* gray-700 */
+    --foreground-muted: #4B5563; /* gray-600 */
     
-    --border: rgba(17, 19, 24, 0.20); /* Stronger base border */
-    --border-hover: rgba(17, 19, 24, 0.30); /* Stronger hover border */
+    --border: rgba(15, 18, 20, 0.12);
+    --border-hover: rgba(15, 18, 20, 0.22);
     
     --primary: #B6FF00;
     --primary-hover: #A3E633;
     --primary-foreground: #111318;
-    --primary-soft: rgba(182, 255, 0, 0.08); /* Reduced glow haziness in light mode */
+    --primary-soft: rgba(182, 255, 0, 0.05);
+
+    /* Hero Network Tokens (Light Mode) */
+    --hero-network-line: rgba(156, 163, 175, 0.45);
+    --hero-network-line-muted: rgba(156, 163, 175, 0.25);
+    --hero-network-node: rgba(156, 163, 175, 0.4);
+    --hero-network-node-border: rgba(156, 163, 175, 0.8);
+    --hero-network-label: #4B5563;
+    --hero-network-active: #B6FF00;
   }
 
   * {

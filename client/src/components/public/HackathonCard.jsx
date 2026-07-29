@@ -40,7 +40,7 @@ const HackathonCard = ({ hackathon }) => {
   const imageToUse = hackathon.imageUrl || fallbackImage;
 
   return (
-    <div className="group relative flex flex-col h-full bg-surface/50 backdrop-blur-sm border border-border hover:border-primary/50 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_15px_rgba(182,255,0,0.15)]">
+    <div className="group relative flex flex-col h-full bg-surface border border-border hover:border-border-hover rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
       
       {/* Image Container with Zoom Effect */}
       <div className="relative h-48 w-full overflow-hidden bg-surface-elevated">

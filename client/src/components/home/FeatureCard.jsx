@@ -29,7 +29,7 @@ const FeatureCard = ({ icon: Icon, title, description, index }) => {
       onMouseLeave={() => setIsHovered(false)}
       className="h-full"
     >
-      <Card ref={cardRef} className="h-full relative group overflow-hidden bg-gradient-to-b from-white/[0.035] to-white/[0.015] border-white/5 hover:border-primary/45 transition-colors duration-300">
+      <Card ref={cardRef} className="h-full relative group overflow-hidden bg-surface hover:bg-surface-hover border border-border hover:border-border-hover shadow-sm hover:shadow-md hover:-translate-y-[2px] transition-all duration-300">
         {/* Spotlight Effect */}
         <motion.div
           className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -43,10 +43,10 @@ const FeatureCard = ({ icon: Icon, title, description, index }) => {
             <div className="absolute inset-0 bg-primary/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <Icon className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors duration-300 relative z-10" />
           </div>
-          <CardTitle className="text-foreground group-hover:text-white transition-colors">{title}</CardTitle>
+          <CardTitle className="text-foreground transition-colors">{title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+          <p className="text-sm text-foreground-secondary leading-relaxed">{description}</p>
         </CardContent>
       </Card>
     </motion.div>

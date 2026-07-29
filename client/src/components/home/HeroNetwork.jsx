@@ -136,13 +136,13 @@ const HeroNetwork = () => {
       >
         <defs>
           <linearGradient id="primaryGrad" x1="0" y1="0" x2="1000" y2="800" gradientUnits="userSpaceOnUse">
-            <stop stopColor="var(--primary)" stopOpacity="0.8" />
-            <stop offset="1" stopColor="var(--primary)" stopOpacity="0.1" />
+            <stop stopColor="var(--hero-network-line)" stopOpacity="1" />
+            <stop offset="1" stopColor="var(--hero-network-line-muted)" stopOpacity="1" />
           </linearGradient>
           
           <linearGradient id="activeGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop stopColor="var(--primary)" stopOpacity="1" />
-            <stop offset="1" stopColor="var(--primary)" stopOpacity="0.8" />
+            <stop stopColor="var(--hero-network-active)" stopOpacity="1" />
+            <stop offset="1" stopColor="var(--hero-network-active)" stopOpacity="0.8" />
           </linearGradient>
         </defs>
 
@@ -199,10 +199,10 @@ const HeroNetwork = () => {
             <motion.circle
               key={`particle-${idx}`}
               r="1.5"
-              fill="var(--primary)"
+              fill="var(--hero-network-active)"
               cx={particleCx}
               cy={particleCy}
-              style={{ opacity: particleOpacity, filter: 'drop-shadow(0 0 4px var(--primary))' }}
+              style={{ opacity: particleOpacity, filter: 'drop-shadow(0 0 4px var(--hero-network-active))' }}
             />
           );
         })}
@@ -240,14 +240,14 @@ const HeroNetwork = () => {
                 height={20}
                 rx={10}
                 fill="var(--surface)"
-                stroke={hoveredNode === node.id ? "var(--primary)" : "rgba(182, 255, 0, 0.3)"}
+                stroke={hoveredNode === node.id ? "var(--hero-network-active)" : "var(--hero-network-node-border)"}
                 strokeWidth={hoveredNode === node.id ? "1.5" : "1"}
-                style={{ filter: hoveredNode === node.id ? 'drop-shadow(0 0 6px rgba(182, 255, 0, 0.4))' : 'none' }}
+                style={{ filter: hoveredNode === node.id ? 'drop-shadow(0 0 6px var(--hero-network-active))' : 'none' }}
               />
               <motion.text
                 x={pos.x}
                 y={useTransform(pos.y, y => y + 3)}
-                fill={hoveredNode === node.id ? "var(--foreground)" : "var(--foreground-muted)"}
+                fill={hoveredNode === node.id ? "var(--foreground)" : "var(--hero-network-label)"}
                 fontSize="9"
                 fontFamily="JetBrains Mono"
                 textAnchor="middle"

@@ -88,7 +88,7 @@ const TimelineStep = ({ step }) => {
         className={`relative z-30 ml-16 md:ml-0 w-[calc(100%-4.5rem)] md:w-[40%] ${isRight ? 'md:ml-24' : 'md:mr-24'}`}
         style={{ opacity: contentOpacity, x: contentX }}
       >
-        <Card className="border-border/60 hover:border-border transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 overflow-hidden backdrop-blur-sm bg-card/95">
+        <Card className="border border-border hover:border-border-hover transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1 overflow-hidden bg-surface">
           <CardHeader className="pb-3">
             <motion.div 
               className="font-mono font-bold text-sm mb-2"
@@ -101,7 +101,7 @@ const TimelineStep = ({ step }) => {
             <CardTitle className="text-xl md:text-2xl text-foreground">{step.title}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm md:text-base leading-relaxed">{step.desc}</p>
+            <p className="text-foreground-secondary text-sm md:text-base leading-relaxed">{step.desc}</p>
           </CardContent>
         </Card>
       </motion.div>
