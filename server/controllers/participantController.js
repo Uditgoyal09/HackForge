@@ -36,9 +36,12 @@ const getParticipantDashboard = asyncHandler(async (req, res) => {
     success: true,
     data: {
       registrations,
-      registeredHackathonIds,
+      myRegistrations: registrations,
+      registeredHackathonIds: (registrations || []).map(r => r.hackathon?._id).filter(Boolean),
       currentTeams,
+      myTeams: currentTeams,
       submissionStatuses,
+      mySubmissions: submissionStatuses,
       upcomingDeadlines,
     }
   });

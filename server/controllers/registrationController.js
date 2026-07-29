@@ -11,6 +11,12 @@ const registerForHackathon = asyncHandler(async (req, res) => {
   const hackathonId = req.params.id;
   const participantId = req.user._id;
 
+  const { name, teamName, github, linkedin } = req.body;
+
+  if (!name || !name.trim()) {
+    throw new ApiError(400, 'Name is required for registration');
+  }
+
   const hackathon = await Hackathon.findById(hackathonId);
   if (!hackathon) throw new ApiError(404, 'Hackathon not found');
 
@@ -32,6 +38,12 @@ const registerForHackathon = asyncHandler(async (req, res) => {
     hackathon: hackathonId,
     participant: participantId,
     status: 'pending', // Requires organizer approval
+    participantDetails: {
+      name: name.trim(),
+      teamName: teamName ? teamName.trim() : '',
+      github: github ? github.trim() : '',
+      linkedin: linkedin ? linkedin.trim() : '',
+    },
   });
 
   await ActivityLog.create({

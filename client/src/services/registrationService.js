@@ -1,8 +1,8 @@
 import api from './api';
 
 export const registrationService = {
-  async registerForHackathon(hackathonId) {
-    const res = await api.post(`/hackathons/${hackathonId}/register`);
+  async registerForHackathon(hackathonId, data) {
+    const res = await api.post(`/hackathons/${hackathonId}/register`, data);
     return res.data;
   },
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Calendar, Trophy, Users, ShieldCheck, Clock, MapPin, ExternalLink, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Calendar, Trophy, Users, ShieldCheck, Clock, MapPin, ExternalLink, ArrowRight, CheckCircle2, X } from 'lucide-react';
 import { hackathonService } from '../../services/hackathonService';
 import { registrationService } from '../../services/registrationService';
 import { useAuth } from '../../context/AuthContext';
@@ -15,6 +15,14 @@ const HackathonDetails = () => {
   const [loading, setLoading] = useState(true);
   const [registering, setRegistering] = useState(false);
   const [userRegistration, setUserRegistration] = useState(null);
+  
+  const [showRegModal, setShowRegModal] = useState(false);
+  const [regData, setRegData] = useState({
+    name: user?.name || '',
+    teamName: '',
+    github: '',
+    linkedin: ''
+  });
 
   // Countdown timer calculation
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -74,18 +82,24 @@ const HackathonDetails = () => {
     return () => clearInterval(interval);
   }, [hackathon]);
 
-  const handleRegister = async () => {
+  const handleRegisterClick = () => {
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
+    setRegData(prev => ({ ...prev, name: user?.name || '' }));
+    setShowRegModal(true);
+  };
 
+  const submitRegistration = async (e) => {
+    e.preventDefault();
     setRegistering(true);
     try {
-      const res = await registrationService.registerForHackathon(id);
+      const res = await registrationService.registerForHackathon(id, regData);
       if (res.success) {
         toast.success('Successfully registered for hackathon!');
         fetchUserRegistration();
+        setShowRegModal(false);
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registration failed');
@@ -161,11 +175,11 @@ const HackathonDetails = () => {
                 </div>
               ) : isRegOpen ? (
                 <button
-                  onClick={handleRegister}
+                  onClick={handleRegisterClick}
                   disabled={registering}
                   className="px-8 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all shadow-xl shadow-indigo-600/30 disabled:opacity-50"
                 >
-                  {registering ? 'Registering...' : 'Register for Hackathon'}
+                  {registering ? 'Processing...' : 'Register for Hackathon'}
                 </button>
               ) : (
                 <span className="px-4 py-2 rounded-xl bg-slate-800 text-slate-400 text-xs font-semibold">
@@ -300,6 +314,86 @@ const HackathonDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* Registration Modal */}
+      {showRegModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative">
+            <button
+              onClick={() => setShowRegModal(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h2 className="text-2xl font-bold text-white mb-2">Registration Form</h2>
+            <p className="text-sm text-slate-400 mb-6">Please provide your details to apply for this hackathon.</p>
+            
+            <form onSubmit={submitRegistration} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Full Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={regData.name}
+                  onChange={(e) => setRegData({...regData, name: e.target.value})}
+                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm"
+                  placeholder="John Doe"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Intended Team Name (Optional)</label>
+                <input
+                  type="text"
+                  value={regData.teamName}
+                  onChange={(e) => setRegData({...regData, teamName: e.target.value})}
+                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm"
+                  placeholder="e.g. Code Ninjas"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">GitHub Profile Link (Optional)</label>
+                <input
+                  type="url"
+                  value={regData.github}
+                  onChange={(e) => setRegData({...regData, github: e.target.value})}
+                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm"
+                  placeholder="https://github.com/username"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">LinkedIn Profile Link (Optional)</label>
+                <input
+                  type="url"
+                  value={regData.linkedin}
+                  onChange={(e) => setRegData({...regData, linkedin: e.target.value})}
+                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm"
+                  placeholder="https://linkedin.com/in/username"
+                />
+              </div>
+
+              <div className="pt-4 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowRegModal(false)}
+                  className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={registering}
+                  className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all disabled:opacity-50 flex items-center gap-2"
+                >
+                  {registering ? 'Submitting...' : 'Submit Registration'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

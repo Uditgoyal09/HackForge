@@ -21,6 +21,12 @@ const registrationSchema = new mongoose.Schema(
       enum: ['pending', 'approved', 'rejected', 'cancelled'],
       default: 'pending',
     },
+    participantDetails: {
+      name: { type: String, required: true },
+      teamName: { type: String },
+      github: { type: String },
+      linkedin: { type: String },
+    },
     reviewedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
