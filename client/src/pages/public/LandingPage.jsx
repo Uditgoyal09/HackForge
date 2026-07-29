@@ -48,13 +48,15 @@ const LandingPage = () => {
     }
   };
 
-  // Animations based on scroll
-  const heroY = useTransform(scrollYProgress, [0, 0.15], [0, -80]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.15], [1, 0.96]);
+  const { scrollY } = useScroll();
+
+  // Animations based on scroll (using pixel offsets, not page progress)
+  const heroY = useTransform(scrollY, [0, 600], [0, 40]);
+  const heroOpacity = useTransform(scrollY, [0, 600], [1, 0.6]);
   
-  const descY = useTransform(scrollYProgress, [0, 0.15], [0, -60]);
-  const btnsY = useTransform(scrollYProgress, [0, 0.15], [0, -40]);
+  const descY = useTransform(scrollY, [0, 600], [0, 20]);
+  const btnsY = useTransform(scrollY, [0, 600], [0, 10]);
+  const chevronOpacity = useTransform(scrollY, [0, 100], [1, 0]);
 
   return (
     <div ref={containerRef} className="min-h-screen bg-background text-foreground relative overflow-x-hidden selection:bg-primary/30 selection:text-primary-foreground">
@@ -79,14 +81,14 @@ const LandingPage = () => {
         <HeroNetwork />
         
         <motion.div 
-          style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
-          className="relative z-10 flex flex-col items-center text-center px-6"
+          style={{ y: heroY, opacity: heroOpacity }}
+          className="relative z-10 flex flex-col items-center text-center px-6 pointer-events-none"
         >
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.25 }}
-            className="mb-8"
+            className="mb-8 pointer-events-auto"
           >
             <Badge variant="outline" className="border-primary/30 bg-background/50 backdrop-blur-md px-4 py-1.5 gap-2 text-[11px] text-foreground">
               <Zap className="w-3.5 h-3.5 text-primary" /> BUILD • COMPETE • INNOVATE
@@ -114,7 +116,7 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-8 text-muted-foreground text-[16px] sm:text-[18px] max-w-[640px] mx-auto leading-[1.65]"
+              className="mt-8 text-foreground-secondary text-[16px] sm:text-[18px] max-w-[640px] mx-auto leading-[1.65]"
             >
               Discover hackathons, build teams, ship projects and compete with developers around the world.
             </motion.p>
@@ -124,7 +126,7 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
+            className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 pointer-events-auto"
             style={{ y: btnsY }}
           >
             <MagneticWrapper>
@@ -170,14 +172,13 @@ const LandingPage = () => {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 1 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-muted-foreground"
+          style={{ opacity: chevronOpacity }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-foreground-secondary cursor-pointer hover:text-foreground transition-colors z-20"
+          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
         >
           <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
           >
             <ChevronDown className="w-5 h-5" />
           </motion.div>

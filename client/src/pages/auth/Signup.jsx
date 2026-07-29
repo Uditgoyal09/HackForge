@@ -17,7 +17,7 @@ const rolesConfig = [
     description: 'Join hackathons, create teams, and build innovative projects.',
     icon: User,
     badge: 'Public Access',
-    color: 'border-primary/40 text-primary bg-primary/10',
+    color: 'border-primary/60 text-primary bg-primary/10',
   },
   {
     id: 'organizer',
@@ -25,7 +25,7 @@ const rolesConfig = [
     description: 'Host, manage, review applications, and judge hackathons.',
     icon: Shield,
     badge: 'Verification Required',
-    color: 'border-warning/40 text-warning bg-warning/10',
+    color: 'border-warning/60 text-warning bg-warning/10',
   },
   {
     id: 'judge',
@@ -33,7 +33,7 @@ const rolesConfig = [
     description: 'Evaluate submissions, score criteria, and select winners.',
     icon: Award,
     badge: 'Verification Required',
-    color: 'border-success/40 text-success bg-success/10',
+    color: 'border-success/60 text-success bg-success/10',
   },
 ];
 
@@ -131,13 +131,13 @@ const Signup = () => {
 
       <div className="max-w-xl w-full relative z-10">
         {/* Progress Bar */}
-        <div className="mb-8 flex items-center justify-between text-xs font-mono text-muted-foreground">
+        <div className="mb-8 flex items-center justify-between text-xs font-mono font-bold text-foreground">
           <span>STEP {step > 4 ? 4 : step} OF 4</span>
-          <span>{step === 1 ? 'ROLE' : step === 2 ? 'ACCOUNT' : step === 3 ? 'VERIFY / PROFILE' : 'REVIEW'}</span>
+          <span className="text-foreground-secondary">{step === 1 ? 'ROLE' : step === 2 ? 'ACCOUNT' : step === 3 ? 'VERIFY / PROFILE' : 'REVIEW'}</span>
         </div>
-        <div className="w-full bg-surface h-1.5 rounded-full overflow-hidden mb-8">
+        <div className="w-full bg-surface-hover border border-border h-2 rounded-full overflow-hidden mb-8">
           <div
-            className="bg-primary h-full transition-all duration-300"
+            className="bg-primary h-full transition-all duration-500 ease-out shadow-[0_0_10px_rgba(182,255,0,0.4)]"
             style={{ width: `${(Math.min(step, 4) / 4) * 100}%` }}
           />
         </div>
@@ -145,23 +145,24 @@ const Signup = () => {
         <AnimatePresence mode="wait">
           {/* STEP 1: ROLE SELECTION */}
           {step === 1 && (
-            <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <motion.div key="step1" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }}>
               <Card className="p-8 shadow-2xl bg-card/60 backdrop-blur-xl">
                 <h2 className="text-2xl font-extrabold mb-2 text-center text-foreground">How will you use HackVerse?</h2>
-                <p className="text-xs text-muted-foreground text-center mb-8">Select your primary portal account type to begin onboarding.</p>
+                <p className="text-sm text-foreground-secondary text-center mb-8">Select your primary portal account type to begin onboarding.</p>
 
                 <div className="space-y-4 mb-8">
                   {rolesConfig.map((r) => {
                     const Icon = r.icon;
                     const isSelected = role === r.id;
                     return (
-                      <div
+                      <button
                         key={r.id}
                         onClick={() => setRole(r.id)}
-                        className={`p-5 rounded-[14px] border cursor-pointer transition-all duration-300 flex items-start gap-4 group ${
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setRole(r.id); } }}
+                        className={`w-full text-left p-5 rounded-[14px] border cursor-pointer transition-all duration-300 flex items-start gap-4 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                           isSelected
-                            ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(182,255,0,0.15)] ring-1 ring-primary'
-                            : 'bg-surface border-border hover:border-primary/60 hover:-translate-y-1 hover:shadow-lg'
+                            ? 'bg-primary/5 border-primary shadow-[0_0_15px_rgba(182,255,0,0.15)] ring-1 ring-primary'
+                            : 'bg-surface border-border hover:bg-surface-hover hover:border-primary/50 hover:-translate-y-0.5 hover:shadow-lg'
                         }`}
                       >
                         <div className={`p-3 rounded-xl border transition-colors duration-300 shrink-0 ${isSelected ? 'border-primary bg-primary text-primary-foreground' : r.color}`}>
@@ -172,14 +173,14 @@ const Signup = () => {
                             <h3 className={`font-bold text-sm transition-colors duration-300 ${isSelected ? 'text-primary' : 'text-foreground'}`}>{r.title}</h3>
                             <Badge variant={isSelected ? 'primary' : 'outline'} className="text-[9px]">{r.badge}</Badge>
                           </div>
-                          <p className="text-xs text-muted-foreground leading-relaxed pr-6">{r.description}</p>
+                          <p className={`text-sm leading-relaxed pr-6 ${isSelected ? 'text-foreground-secondary' : 'text-foreground-muted'}`}>{r.description}</p>
                           {isSelected && (
-                            <div className="absolute right-0 bottom-0 text-primary">
-                              <CheckCircle2 className="w-4 h-4" />
-                            </div>
+                            <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="absolute right-0 bottom-0 text-primary">
+                              <CheckCircle2 className="w-5 h-5" />
+                            </motion.div>
                           )}
                         </div>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
@@ -193,17 +194,17 @@ const Signup = () => {
 
           {/* STEP 2: ACCOUNT DETAILS */}
           {step === 2 && (
-            <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <motion.div key="step2" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.2 }}>
               <Card className="p-8 shadow-2xl bg-card/60 backdrop-blur-xl">
                 <div className="flex items-center justify-between mb-4">
-                  <button onClick={() => setStep(1)} className="text-xs text-primary hover:underline flex items-center gap-1">
+                  <button onClick={() => setStep(1)} className="text-xs font-semibold text-primary hover:underline flex items-center gap-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded">
                     <ArrowLeft className="w-3.5 h-3.5" /> Back to Roles
                   </button>
                   <Badge variant="primary" className="text-[10px]">{role} Account</Badge>
                 </div>
 
                 <h2 className="text-2xl font-extrabold mb-1">Account Credentials</h2>
-                <p className="text-xs text-muted-foreground mb-6">Enter your details to create your HackVerse user identity.</p>
+                <p className="text-sm text-foreground-secondary mb-6">Enter your details to create your HackVerse user identity.</p>
 
                 <form onSubmit={handleNextStep2} className="space-y-4 text-sm">
                   <div>
@@ -247,16 +248,16 @@ const Signup = () => {
 
           {/* STEP 3: ROLE-SPECIFIC */}
           {step === 3 && (
-            <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <motion.div key="step3" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.2 }}>
               <Card className="p-8 shadow-2xl bg-card/60 backdrop-blur-xl">
-                <button onClick={() => setStep(2)} className="text-xs text-primary hover:underline flex items-center gap-1 mb-4">
+                <button onClick={() => setStep(2)} className="text-xs font-semibold text-primary hover:underline flex items-center gap-1 mb-4 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded">
                   <ArrowLeft className="w-3.5 h-3.5" /> Back to Credentials
                 </button>
 
                 <h2 className="text-2xl font-extrabold mb-1">
                   {role === 'participant' ? 'Developer Profile' : `${role.toUpperCase()} Verification`}
                 </h2>
-                <p className="text-xs text-muted-foreground mb-6">
+                <p className="text-sm text-foreground-secondary mb-6">
                   {role === 'participant'
                     ? 'Tell us about your developer skills and academic institution.'
                     : `${role.toUpperCase()} accounts require a cryptographically issued HackVerse verification code.`}
@@ -323,38 +324,38 @@ const Signup = () => {
 
           {/* STEP 4: REVIEW */}
           {step === 4 && (
-            <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <motion.div key="step4" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.2 }}>
               <Card className="p-8 shadow-2xl bg-card/60 backdrop-blur-xl">
-                <button onClick={() => setStep(3)} className="text-xs text-primary hover:underline flex items-center gap-1 mb-4">
+                <button onClick={() => setStep(3)} className="text-xs font-semibold text-primary hover:underline flex items-center gap-1 mb-4 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded">
                   <ArrowLeft className="w-3.5 h-3.5" /> Back to Verification
                 </button>
 
                 <h2 className="text-2xl font-extrabold mb-1">Review Registration</h2>
-                <p className="text-xs text-muted-foreground mb-6">Confirm your details before creating your HackVerse account.</p>
+                <p className="text-sm text-foreground-secondary mb-6">Confirm your details before creating your HackVerse account.</p>
 
-                <div className="bg-surface border border-border rounded-2xl p-4 space-y-3 text-sm mb-6">
+                <div className="bg-surface border border-border rounded-2xl p-4 space-y-3 text-sm mb-6 shadow-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Account Type:</span>
+                    <span className="text-foreground-secondary">Account Type:</span>
                     <span className="font-bold text-primary uppercase font-mono">{role}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Full Name:</span>
+                    <span className="text-foreground-secondary">Full Name:</span>
                     <span className="font-semibold text-foreground">{name}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Email:</span>
+                    <span className="text-foreground-secondary">Email:</span>
                     <span className="font-semibold text-foreground">{email}</span>
                   </div>
                   {(role === 'organizer' || role === 'judge') && (
-                    <div className="flex justify-between pt-2 border-t border-border/60">
-                      <span className="text-muted-foreground">Access Code:</span>
+                    <div className="flex justify-between pt-2 border-t border-border">
+                      <span className="text-foreground-secondary">Access Code:</span>
                       <span className="font-mono text-warning font-bold">••••••••</span>
                     </div>
                   )}
                 </div>
 
-                <Button variant="primary" onClick={handleFinalSubmit} className="w-full bg-gradient-to-r from-success to-success-hover hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] border-success/50">
-                  <CheckCircle2 className="w-4 h-4 mr-2" /> Create {role.toUpperCase()} Account
+                <Button variant="primary" disabled={loading} onClick={handleFinalSubmit} className="w-full bg-gradient-to-r from-success to-success-hover hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] border-success/50 transition-all">
+                  {loading ? <span className="flex items-center gap-2"><div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> Creating Account...</span> : <span className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2" /> Create {role.toUpperCase()} Account</span>}
                 </Button>
               </Card>
             </motion.div>
@@ -367,8 +368,8 @@ const Signup = () => {
                 <div className="w-16 h-16 rounded-[20px] bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(182,255,0,0.2)]">
                   <Shield className="w-8 h-8 animate-pulse" />
                 </div>
-                <h3 className="font-extrabold text-xl">Creating Your {role.toUpperCase()} Account...</h3>
-                <p className="text-xs text-muted-foreground">Verifying and establishing user record in the Verse.</p>
+                <h3 className="font-extrabold text-xl text-foreground">Creating Your {role.toUpperCase()} Account...</h3>
+                <p className="text-sm text-foreground-secondary">Verifying and establishing user record in the Verse.</p>
               </Card>
             </motion.div>
           )}

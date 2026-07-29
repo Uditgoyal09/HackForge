@@ -58,61 +58,30 @@ export default function App() {
               <Route path="/signup" element={<Signup />} />
 
               {/* Authenticated Shared Routes */}
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <UserProfilePage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/notifications"
-                element={
-                  <ProtectedRoute>
-                    <NotificationsPage />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/profile" element={<ProtectedRoute><UserProfilePage /></ProtectedRoute>}/>
+              <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>}/>
 
               {/* Participant Routes */}
-              <Route
-                path="/participant/dashboard"
-                element={
-                  <ProtectedRoute allowedRoles={['participant']}>
-                    <ParticipantDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/participant/registrations"
-                element={
-                  <ProtectedRoute allowedRoles={['participant']}>
-                    <ParticipantRegistrations />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/participant/teams"
-                element={
-                  <ProtectedRoute allowedRoles={['participant']}>
-                    <TeamManagement />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/participant/submissions"
-                element={
-                  <ProtectedRoute allowedRoles={['participant']}>
-                    <ProjectSubmission />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/participant/dashboard" element={<ProtectedRoute allowedRoles={['participant']}><ParticipantDashboard /></ProtectedRoute>}/>
+              <Route path="/participant/registrations" element={<ProtectedRoute allowedRoles={['participant']}><ParticipantRegistrations /></ProtectedRoute>}/>
+              <Route path="/participant/teams" element={<ProtectedRoute allowedRoles={['participant']}><TeamManagement /></ProtectedRoute>}/>
+              <Route path="/participant/submissions" element={<ProtectedRoute allowedRoles={['participant']}><ProjectSubmission /></ProtectedRoute>}/>
 
               {/* Organizer Routes */}
-              <Route
-                path="/organizer/dashboard"
-                element={
+              <Route path="/organizer/dashboard" element={<ProtectedRoute allowedRoles={['organizer', 'admin']}><OrganizerDashboard /></ProtectedRoute>}/>
+              <Route path="/organizer/hackathons/create" element={<ProtectedRoute allowedRoles={['organizer', 'admin']}><CreateHackathon /></ProtectedRoute>}/>
+              <Route path="/organizer/hackathons/:id/edit" element={<ProtectedRoute allowedRoles={['organizer', 'admin']}><CreateHackathon /></ProtectedRoute>}/>
+              <Route path="/organizer/hackathons/:id/registrations" element={<ProtectedRoute allowedRoles={['organizer', 'admin']}><OrganizerRegistrations /></ProtectedRoute>}/>
+              <Route path="/organizer/hackathons/:id/teams" element={<ProtectedRoute allowedRoles={['organizer', 'admin']}><OrganizerTeams /></ProtectedRoute>}/>
+              <Route path="/organizer/hackathons/:id/submissions" element={<ProtectedRoute allowedRoles={['organizer', 'admin']}><OrganizerSubmissions /></ProtectedRoute>}/>
+
+              {/* Judge Routes */}
+              <Route path="/judge/dashboard" element={<ProtectedRoute allowedRoles={['judge', 'admin']}><JudgeDashboard /></ProtectedRoute>}/>
+              <Route path="/judge/assignments" element={<ProtectedRoute allowedRoles={['judge', 'admin']}><JudgeDashboard /></ProtectedRoute>}/>
+              <Route path="/judge/assignments/:id" element={<ProtectedRoute allowedRoles={['judge', 'admin']}><EvaluationInterface /></ProtectedRoute>}/>
+
+              {/* Admin Routes */}
+              <Route path="/admin/dashboard" element={
                   <ProtectedRoute allowedRoles={['organizer', 'admin']}>
                     <OrganizerDashboard />
                   </ProtectedRoute>
@@ -123,7 +92,7 @@ export default function App() {
                 element={
                   <ProtectedRoute allowedRoles={['organizer', 'admin']}>
                     <CreateHackathon />
-                  </ProtectedRoute>
+                  </ProtectedRoute> 
                 }
               />
               <Route

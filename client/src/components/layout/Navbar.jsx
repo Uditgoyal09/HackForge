@@ -68,7 +68,7 @@ export const Navbar = () => {
       <nav
         className={`fixed top-0 left-0 right-0 h-[68px] z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-background/65 backdrop-blur-xl border-b border-border shadow-2xl'
+            ? 'bg-surface/90 backdrop-blur-md border-b border-border shadow-sm'
             : 'bg-transparent border-b border-transparent'
         }`}
       >
@@ -97,7 +97,7 @@ export const Navbar = () => {
                   {isActive && (
                     <motion.div
                       layoutId="navbar-active-indicator"
-                      className="absolute inset-0 bg-surface-hover border border-border/50 rounded-md -z-10"
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-primary rounded-full"
                       transition={{ type: "spring", stiffness: 400, damping: 30 }}
                     />
                   )}

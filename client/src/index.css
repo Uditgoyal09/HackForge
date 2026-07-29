@@ -20,11 +20,11 @@
     --surface-elevated: #1E212B;
     
     --foreground: #F9FAFB;
-    --foreground-secondary: #E5E7EB; /* Lighter for better contrast */
-    --foreground-muted: #9CA3AF; /* Brighter muted text */
+    --foreground-secondary: #F3F4F6; /* Lighter for better contrast (gray-100) */
+    --foreground-muted: #D1D5DB; /* Brighter muted text (gray-300) for readability */
     
-    --border: rgba(255, 255, 255, 0.12); /* Slightly stronger */
-    --border-hover: rgba(255, 255, 255, 0.20);
+    --border: rgba(255, 255, 255, 0.18); /* Stronger base border */
+    --border-hover: rgba(255, 255, 255, 0.25);
     
     /* Brand Accent */
     --primary: #B6FF00;
@@ -48,11 +48,11 @@
     --surface-elevated: #FFFFFF;
     
     --foreground: #111318;
-    --foreground-secondary: #374151; /* Darker secondary text */
-    --foreground-muted: #6B7280; /* Darker muted text for readability */
+    --foreground-secondary: #1F2937; /* Darker secondary text (gray-800) */
+    --foreground-muted: #4B5563; /* Darker muted text (gray-600) for readability */
     
-    --border: rgba(17, 19, 24, 0.15); /* Stronger base border */
-    --border-hover: rgba(17, 19, 24, 0.25); /* Stronger hover border */
+    --border: rgba(17, 19, 24, 0.20); /* Stronger base border */
+    --border-hover: rgba(17, 19, 24, 0.30); /* Stronger hover border */
     
     --primary: #B6FF00;
     --primary-hover: #A3E633;
@@ -60,10 +60,23 @@
     --primary-soft: rgba(182, 255, 0, 0.08); /* Reduced glow haziness in light mode */
   }
 
+  * {
+    @apply border-border;
+  }
+  
+  html, body {
+    @apply bg-background text-foreground antialiased;
+    /* Theme toggle smooth transition */
+    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+  }
+
+  /* Global focus-visible accessibility */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background rounded-sm;
+  }
+
   body {
-    @apply font-sans antialiased;
-    background-color: var(--background);
-    color: var(--foreground);
+    @apply font-sans;
     /* Removed heavy glowing radial backgrounds per instructions */
   }
 
