@@ -76,7 +76,7 @@ const LandingPage = () => {
         }}
       />
 
-      {/* PHASE 01 — ENTER THE VERSE */}
+      {/* PHASE 01 — ENTER THE Forge */}
       <section className="relative min-h-[100vh] flex flex-col items-center justify-center pt-16 z-10">
         <HeroNetwork />
         
@@ -319,11 +319,11 @@ const LandingPage = () => {
           className="relative z-10 text-center flex flex-col items-center"
         >
           <div className="w-[1px] h-24 bg-gradient-to-b from-transparent to-primary mb-8" />
-          <Badge variant="outline" className="border-primary/30 bg-primary/5 mb-6 text-primary">YOU'VE SEEN THE VERSE</Badge>
+          <Badge variant="outline" className="border-primary/30 bg-primary/5 mb-6 text-primary">YOU'VE SEEN THE Verse</Badge>
           
           <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
             Ready to build <br className="hidden md:block"/>something worth shipping?
-          </h2>
+          </h2> 
           
           <p className="text-muted-foreground text-lg mb-10 max-w-2xl mx-auto">
             Join developers building, competing, and turning ideas into real products. 

@@ -79,7 +79,7 @@ export const Navbar = () => {
               <div className="absolute inset-0 bg-primary opacity-10 blur-md group-hover:opacity-30 transition-opacity" />
             </div>
             <span className="font-extrabold text-xl tracking-tight text-foreground">
-              Hack<span className="text-gradient-primary">Verse</span>
+              Hack<span className="text-gradient-primary">Forge</span>
             </span>
           </Link>
 

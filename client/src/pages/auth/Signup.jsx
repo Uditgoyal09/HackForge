@@ -369,7 +369,7 @@ const Signup = () => {
                   <Shield className="w-8 h-8 animate-pulse" />
                 </div>
                 <h3 className="font-extrabold text-xl text-foreground">Creating Your {role.toUpperCase()} Account...</h3>
-                <p className="text-sm text-foreground-secondary">Verifying and establishing user record in the Verse.</p>
+                <p className="text-sm text-foreground-secondary">Verifying and establishing user record in the Forge.</p>
               </Card>
             </motion.div>
           )}

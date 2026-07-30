@@ -54,7 +54,7 @@ export const Sidebar = ({ isMobileOpen, setMobileOpen }) => {
           <Hexagon className="w-8 h-8 text-foreground shrink-0" />
           {!isCollapsed && (
             <span className="font-extrabold text-lg tracking-tight text-foreground whitespace-nowrap">
-              Hack<span className="text-gradient-primary">Verse</span>
+              Hack<span className="text-gradient-primary">Forge</span>
             </span>
           )}
         </Link>
@@ -136,7 +136,7 @@ export const Sidebar = ({ isMobileOpen, setMobileOpen }) => {
               <Link to="/" className="flex items-center gap-2">
                 <Hexagon className="w-7 h-7 text-foreground" />
                 <span className="font-extrabold text-lg tracking-tight text-foreground">
-                  Hack<span className="text-gradient-primary">Verse</span>
+                  Hack<span className="text-gradient-primary">Forge</span>
                 </span>
               </Link>
               <button onClick={() => setMobileOpen(false)} className="p-2 -mr-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-surface">

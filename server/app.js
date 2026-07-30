@@ -20,10 +20,21 @@ const organizerRoutes = require('./routes/organizerRoutes');
 
 const app = express();
 
+
 // Middleware
 app.use(helmet());
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://hackforge-sigma.vercel.app',
+];
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'https://hackforge-frontend.vercel.app',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS blocked for origin: ${origin}`));
+    }
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: '16kb' }));
