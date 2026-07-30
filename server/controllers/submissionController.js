@@ -57,12 +57,12 @@ const createSubmission = asyncHandler(async (req, res) => {
 
   if (req.files) {
     if (req.files.presentation && req.files.presentation[0]) {
-      presentationData = await uploadToCloudinary(req.files.presentation[0].buffer, 'hackverse/presentations');
+      presentationData = await uploadToCloudinary(req.files.presentation[0].buffer, 'hackforge/presentations');
     }
 
     if (req.files.screenshots) {
       for (const file of req.files.screenshots) {
-        const result = await uploadToCloudinary(file.buffer, 'hackverse/screenshots');
+        const result = await uploadToCloudinary(file.buffer, 'hackforge/screenshots');
         screenshotData.push(result);
       }
     }
@@ -136,7 +136,7 @@ const updateSubmission = asyncHandler(async (req, res) => {
       if (submission.presentation && submission.presentation.publicId) {
         await deleteFromCloudinary(submission.presentation.publicId);
       }
-      submission.presentation = await uploadToCloudinary(req.files.presentation[0].buffer, 'hackverse/presentations');
+      submission.presentation = await uploadToCloudinary(req.files.presentation[0].buffer, 'hackforge/presentations');
     }
 
     if (req.files.screenshots && req.files.screenshots.length > 0) {
@@ -148,7 +148,7 @@ const updateSubmission = asyncHandler(async (req, res) => {
       }
       submission.screenshots = [];
       for (const file of req.files.screenshots) {
-        const result = await uploadToCloudinary(file.buffer, 'hackverse/screenshots');
+        const result = await uploadToCloudinary(file.buffer, 'hackforge/screenshots');
         submission.screenshots.push(result);
       }
     }

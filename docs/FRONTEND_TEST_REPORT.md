@@ -1,4 +1,4 @@
-# HackVerse Frontend Quality Assurance & Verification Report
+# HackForge Frontend Quality Assurance & Verification Report
 
 **Execution Date:** 2026-07-28  
 **Environment:** Local Development (Vite, React 19, Express, MongoDB)  
@@ -53,4 +53,4 @@
 ---
 
 ## Conclusion
-The HackVerse frontend has been fully built, integrated with the REST API backend, styled with responsive glassmorphism, animated, and verified end-to-end.
+The HackForge frontend has been fully built, integrated with the REST API backend, styled with responsive glassmorphism, animated, and verified end-to-end.

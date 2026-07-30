@@ -11,7 +11,7 @@ const api = axios.create({
 // Request Interceptor: Attach JWT Token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('hackverse_token');
+    const token = localStorage.getItem('hackforge_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -33,14 +33,14 @@ api.interceptors.response.use(
 
     if (status === 401) {
       // Clear invalid session
-      localStorage.removeItem('hackverse_token');
-      localStorage.removeItem('hackverse_user');
+      localStorage.removeItem('hackforge_token');
+      localStorage.removeItem('hackforge_user');
       if (!window.location.pathname.includes('/login')) {
         window.location.href = '/login?expired=true';
       }
     } else if (status === 403 && message.toLowerCase().includes('blocked')) {
-      localStorage.removeItem('hackverse_token');
-      localStorage.removeItem('hackverse_user');
+      localStorage.removeItem('hackforge_token');
+      localStorage.removeItem('hackforge_user');
       window.location.href = '/login?blocked=true';
     }
 

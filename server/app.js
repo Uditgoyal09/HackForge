@@ -32,15 +32,15 @@ app.use(morgan('dev'));
 
 // Health check route
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'ok', message: 'HackVerse API is running!' });
+  res.status(200).json({ status: 'ok', message: 'HackForge API is running!' });
 });
 
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok', message: 'HackVerse Backend is running!' });
+  res.status(200).json({ status: 'ok', message: 'HackForge Backend is running!' });
 });
 
 app.get('/', (req, res) => {
-  res.send('HackVerse API Server is running. Access APIs via /api/*');
+  res.send('HackForge API Server is running. Access APIs via /api/*');
 });
 
 // API Routes

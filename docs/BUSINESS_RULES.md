@@ -1,4 +1,4 @@
-# HackVerse Business Rules & Security Directives
+# HackForge Business Rules & Security Directives
 
 ## 1. Authentication & Security Directives
 1. **Public Signup Roles:** Public signup allows selecting `Participant`, `Organizer` (requires valid code), or `Judge` (requires valid code). Public `Admin` signup attempts are rejected with `400 Bad Request`.

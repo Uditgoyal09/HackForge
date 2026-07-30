@@ -1,4 +1,4 @@
-# HackVerse Capstone Screenshots & Media Checklist
+# HackForge Capstone Screenshots & Media Checklist
 
 Capture and include the following key application screenshots for your capstone project report and viva presentation:
 

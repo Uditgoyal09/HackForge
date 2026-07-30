@@ -37,15 +37,15 @@ const signup = asyncHandler(async (req, res) => {
 
     const inputCode = verificationCode.trim().toUpperCase();
     const validOrgCodes = [
-      (process.env.ORGANIZER_ACCESS_CODE || 'ORG-HACKVERSE-2026').toUpperCase(),
-      'ORG-HACKVERSE-2026',
+      (process.env.ORGANIZER_ACCESS_CODE || 'ORG-HACKFORGE-2026').toUpperCase(),
+      'ORG-HACKFORGE-2026',
       'ORG-2026',
       'ORG123',
       'ORG-DEMO2026',
     ];
     const validJudgeCodes = [
-      (process.env.JUDGE_ACCESS_CODE || 'JDG-HACKVERSE-2026').toUpperCase(),
-      'JDG-HACKVERSE-2026',
+      (process.env.JUDGE_ACCESS_CODE || 'JDG-HACKFORGE-2026').toUpperCase(),
+      'JDG-HACKFORGE-2026',
       'JDG-2026',
       'JUDGE123',
       'JDG-DEMO2026',

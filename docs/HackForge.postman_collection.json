@@ -1,8 +1,8 @@
 {
   "info": {
-    "_postman_id": "hackverse-api-collection-2026",
-    "name": "HackVerse Backend API",
-    "description": "Complete REST API Collection for HackVerse Hackathon Management Platform",
+    "_postman_id": "hackforge-api-collection-2026",
+    "name": "HackForge Backend API",
+    "description": "Complete REST API Collection for HackForge Hackathon Management Platform",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -45,7 +45,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"organizer@hackverse.com\",\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"email\": \"organizer@hackforge.com\",\n  \"password\": \"password123\"\n}"
             },
             "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
           }

@@ -147,7 +147,7 @@ const Signup = () => {
           {step === 1 && (
             <motion.div key="step1" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }}>
               <Card className="p-8 shadow-2xl bg-card/60 backdrop-blur-xl">
-                <h2 className="text-2xl font-extrabold mb-2 text-center text-foreground">How will you use HackVerse?</h2>
+                <h2 className="text-2xl font-extrabold mb-2 text-center text-foreground">How will you use HackForge?</h2>
                 <p className="text-sm text-foreground-secondary text-center mb-8">Select your primary portal account type to begin onboarding.</p>
 
                 <div className="space-y-4 mb-8">
@@ -204,7 +204,7 @@ const Signup = () => {
                 </div>
 
                 <h2 className="text-2xl font-extrabold mb-1">Account Credentials</h2>
-                <p className="text-sm text-foreground-secondary mb-6">Enter your details to create your HackVerse user identity.</p>
+                <p className="text-sm text-foreground-secondary mb-6">Enter your details to create your HackForge user identity.</p>
 
                 <form onSubmit={handleNextStep2} className="space-y-4 text-sm">
                   <div>
@@ -260,7 +260,7 @@ const Signup = () => {
                 <p className="text-sm text-foreground-secondary mb-6">
                   {role === 'participant'
                     ? 'Tell us about your developer skills and academic institution.'
-                    : `${role.toUpperCase()} accounts require a cryptographically issued HackVerse verification code.`}
+                    : `${role.toUpperCase()} accounts require a cryptographically issued HackForge verification code.`}
                 </p>
 
                 <form onSubmit={handleNextStep3} className="space-y-4 text-sm">
@@ -270,19 +270,19 @@ const Signup = () => {
                         <label className="font-bold text-warning flex items-center gap-1.5 text-xs">
                           <Key className="w-4 h-4" /> Access Verification Code *
                         </label>
-                        <button type="button" onClick={() => setVerificationCode(role === 'organizer' ? 'ORG-HACKVERSE-2026' : 'JDG-HACKVERSE-2026')} className="text-[10px] font-mono font-bold text-primary hover:underline">
+                        <button type="button" onClick={() => setVerificationCode(role === 'organizer' ? 'ORG-HACKFORGE-2026' : 'JDG-HACKFORGE-2026')} className="text-[10px] font-mono font-bold text-primary hover:underline">
                           Auto-fill Default
                         </button>
                       </div>
                       <Input
                         required
-                        placeholder={role === 'organizer' ? 'ORG-HACKVERSE-2026' : 'JDG-HACKVERSE-2026'}
+                        placeholder={role === 'organizer' ? 'ORG-HACKFORGE-2026' : 'JDG-HACKFORGE-2026'}
                         value={verificationCode}
                         onChange={(e) => setVerificationCode(e.target.value.toUpperCase())}
                         className="font-mono text-sm uppercase"
                       />
                       <p className="text-[11px] text-warning/80 mt-2">
-                        Default Code: <code className="font-mono font-bold text-foreground bg-surface px-1.5 py-0.5 rounded">{role === 'organizer' ? 'ORG-HACKVERSE-2026' : 'JDG-HACKVERSE-2026'}</code>
+                        Default Code: <code className="font-mono font-bold text-foreground bg-surface px-1.5 py-0.5 rounded">{role === 'organizer' ? 'ORG-HACKFORGE-2026' : 'JDG-HACKFORGE-2026'}</code>
                       </p>
                     </div>
                   )}
@@ -331,7 +331,7 @@ const Signup = () => {
                 </button>
 
                 <h2 className="text-2xl font-extrabold mb-1">Review Registration</h2>
-                <p className="text-sm text-foreground-secondary mb-6">Confirm your details before creating your HackVerse account.</p>
+                <p className="text-sm text-foreground-secondary mb-6">Confirm your details before creating your HackForge account.</p>
 
                 <div className="bg-surface border border-border rounded-2xl p-4 space-y-3 text-sm mb-6 shadow-sm">
                   <div className="flex justify-between">

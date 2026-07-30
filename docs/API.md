@@ -1,4 +1,4 @@
-# HackVerse REST API Documentation
+# HackForge REST API Documentation
 
 ## Authentication Endpoints
 

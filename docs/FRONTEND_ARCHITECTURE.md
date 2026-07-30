@@ -1,7 +1,7 @@
-# HackVerse Frontend Architecture Documentation
+# HackForge Frontend Architecture Documentation
 
 ## 1. Overview
-The HackVerse frontend is built using **Vite + React (v19)**, **Tailwind CSS**, **Framer Motion**, **TanStack Query (v5)**, **Three.js / React Three Fiber**, and **Matter.js**.
+The HackForge frontend is built using **Vite + React (v19)**, **Tailwind CSS**, **Framer Motion**, **TanStack Query (v5)**, **Three.js / React Three Fiber**, and **Matter.js**.
 
 It interfaces directly with the authoritative Node.js/Express/MongoDB backend over RESTful HTTP APIs.
 
@@ -48,7 +48,7 @@ client/src/
 ## 3. Authentication & Role Security
 
 ### Auth Initialization Flow
-1. Upon application launch, `AuthContext` checks `localStorage` for `hackverse_token`.
+1. Upon application launch, `AuthContext` checks `localStorage` for `hackforge_token`.
 2. If token exists, it calls `GET /api/auth/me` to validate credentials against the backend database.
 3. During validation, `AuthLoadingScreen` is rendered to eliminate any UI flashing or unauthorized route rendering.
 4. If token is invalid or user is blocked by an admin, session is cleared and user is redirected to `/login`.

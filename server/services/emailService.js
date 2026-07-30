@@ -25,7 +25,7 @@ const sendEmail = async ({ to, subject, html }) => {
 
   try {
     await transporter.sendMail({
-      from: process.env.EMAIL_FROM || '"HackVerse Team" <noreply@hackverse.com>',
+      from: process.env.EMAIL_FROM || '"HackForge Team" <noreply@hackforge.com>',
       to,
       subject,
       html,

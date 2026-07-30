@@ -51,7 +51,7 @@ export const DashboardLayout = () => {
               <Search className="h-4 w-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 group-focus-within:text-purple transition-colors" />
               <input 
                 type="text" 
-                placeholder="Search HackVerse..." 
+                placeholder="Search HackForge..." 
                 className="w-full bg-surface border border-border rounded-xl pl-9 pr-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-purple focus:ring-1 focus:ring-purple/50 transition-all"
               />
             </div>

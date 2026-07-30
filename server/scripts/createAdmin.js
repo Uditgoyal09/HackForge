@@ -6,9 +6,9 @@ const createAdmin = async () => {
   try {
     await connectDB();
 
-    const email = process.env.ADMIN_EMAIL || 'admin@hackverse.io';
-    const password = process.env.ADMIN_PASSWORD || 'Admin@Hackverse2026';
-    const name = process.env.ADMIN_NAME || 'HackVerse Super Admin';
+    const email = process.env.ADMIN_EMAIL || 'admin@hackforge.io';
+    const password = process.env.ADMIN_PASSWORD || 'Admin@HackForge2026';
+    const name = process.env.ADMIN_NAME || 'HackForge Super Admin';
 
     const existingAdmin = await User.findOne({ email });
     if (existingAdmin) {

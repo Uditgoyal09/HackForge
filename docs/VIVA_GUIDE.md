@@ -1,7 +1,7 @@
-# HackVerse Capstone Viva & Presentation Guide
+# HackForge Capstone Viva & Presentation Guide
 
 ## 1. Executive Summary
-**HackVerse** is a full-stack MERN (MongoDB, Express, React, Node.js) platform for hosting, competing in, and judging hackathons. It automates participant registration, team formation, email invitations, project submissions, dynamic criteria evaluation, server-calculated leaderboards with tie-breaking algorithms, notification alerts, and administrative user moderation.
+**HackForge** is a full-stack MERN (MongoDB, Express, React, Node.js) platform for hosting, competing in, and judging hackathons. It automates participant registration, team formation, email invitations, project submissions, dynamic criteria evaluation, server-calculated leaderboards with tie-breaking algorithms, notification alerts, and administrative user moderation.
 
 ---
 

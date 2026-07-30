@@ -5,11 +5,11 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(() => localStorage.getItem('hackverse_token'));
+  const [token, setToken] = useState(() => localStorage.getItem('hackforge_token'));
   const [isLoading, setIsLoading] = useState(true);
 
   const restoreSession = async () => {
-    const savedToken = localStorage.getItem('hackverse_token');
+    const savedToken = localStorage.getItem('hackforge_token');
     if (!savedToken) {
       setUser(null);
       setToken(null);
@@ -26,8 +26,8 @@ export const AuthProvider = ({ children }) => {
         throw new Error('Failed to fetch user');
       }
     } catch {
-      localStorage.removeItem('hackverse_token');
-      localStorage.removeItem('hackverse_user');
+      localStorage.removeItem('hackforge_token');
+      localStorage.removeItem('hackforge_user');
       setUser(null);
       setToken(null);
     } finally {
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
 
   const setAuthSession = (userData, userToken) => {
     if (userToken) {
-      localStorage.setItem('hackverse_token', userToken);
+      localStorage.setItem('hackforge_token', userToken);
       setToken(userToken);
     }
     if (userData) {
@@ -91,8 +91,8 @@ export const AuthProvider = ({ children }) => {
     } catch {
       // Ignore logout errors
     } finally {
-      localStorage.removeItem('hackverse_token');
-      localStorage.removeItem('hackverse_user');
+      localStorage.removeItem('hackforge_token');
+      localStorage.removeItem('hackforge_user');
       setUser(null);
       setToken(null);
       window.location.href = '/login';

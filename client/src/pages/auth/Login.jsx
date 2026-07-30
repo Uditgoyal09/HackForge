@@ -35,7 +35,7 @@ const roleOnboardingMessages = {
     route: '/judge/dashboard',
   },
   admin: {
-    welcome: 'Welcome back to HackVerse Control.',
+    welcome: 'Welcome back to HackForge Control.',
     workspace: 'Opening your Admin Workspace...',
     icon: Crown,
     color: 'text-error border-error/30 bg-error/10',
@@ -124,7 +124,7 @@ const Login = () => {
                     <Sparkles className="w-6 h-6" />
                   </div>
                   <h1 className="text-2xl font-black tracking-tight text-foreground mb-1">WELCOME BACK</h1>
-                  <p className="text-xs text-muted-foreground">Continue your HackVerse journey.</p>
+                  <p className="text-xs text-muted-foreground">Continue your HackForge journey.</p>
                 </div>
 
                 {/* Form */}
@@ -197,7 +197,7 @@ const Login = () => {
                   >
                     {!authState === 'authenticating' && (
                       <>
-                        <span>Login to HackVerse</span>
+                        <span>Login to HackForge</span>
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </>
                     )}
@@ -206,7 +206,7 @@ const Login = () => {
 
                 {/* Bottom Signup Link */}
                 <div className="text-center text-xs text-muted-foreground border-t border-border/50 pt-6 mt-6">
-                  New to HackVerse?{' '}
+                  New to HackForge?{' '}
                   <Link to="/signup" className="text-primary hover:underline font-semibold">
                     Create Account
                   </Link>

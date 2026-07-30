@@ -10,7 +10,7 @@ export const AuthLayout = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 text-center mb-8">
         <Link to="/" className="inline-flex items-center gap-2 text-text-primary hover:text-accent transition-colors">
           <Terminal className="h-8 w-8 text-primary" />
-          <span className="font-bold text-3xl tracking-tight">HackVerse</span>
+          <span className="font-bold text-3xl tracking-tight">HackForge</span>
         </Link>
       </div>
 

@@ -5,7 +5,7 @@ export const Dashboard = () => {
     <div className="space-y-6">
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-        <p className="text-muted-foreground">Welcome to your HackVerse control panel.</p>
+        <p className="text-muted-foreground">Welcome to your HackForge control panel.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

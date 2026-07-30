@@ -1,7 +1,7 @@
 const cloudinary = require('../config/cloudinary');
 const streamifier = require('streamifier');
 
-const uploadToCloudinary = (fileBuffer, folder = 'hackverse') => {
+const uploadToCloudinary = (fileBuffer, folder = 'hackforge') => {
   return new Promise((resolve, reject) => {
     // If Cloudinary is not configured, gracefully degrade
     if (cloudinary.config().cloud_name === 'fallback') {

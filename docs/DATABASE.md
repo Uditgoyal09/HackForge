@@ -1,4 +1,4 @@
-# HackVerse Database Schema Documentation
+# HackForge Database Schema Documentation
 
 ## Mongoose Collections
 

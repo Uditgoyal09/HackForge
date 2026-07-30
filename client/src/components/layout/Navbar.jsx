@@ -29,7 +29,7 @@ export const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    const theme = localStorage.getItem('hackverse-theme');
+    const theme = localStorage.getItem('hackforge-theme');
     if (theme === 'light') {
       setIsDark(false);
       document.documentElement.classList.add('light');
@@ -40,10 +40,10 @@ export const Navbar = () => {
     setIsDark(!isDark);
     if (isDark) {
       document.documentElement.classList.add('light');
-      localStorage.setItem('hackverse-theme', 'light');
+      localStorage.setItem('hackforge-theme', 'light');
     } else {
       document.documentElement.classList.remove('light');
-      localStorage.setItem('hackverse-theme', 'dark');
+      localStorage.setItem('hackforge-theme', 'dark');
     }
   };
 

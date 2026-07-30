@@ -50,7 +50,7 @@ const PublicProjects = () => {
               Public <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-hover">Project Gallery</span>
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base mt-2">
-              Explore innovative solutions and open-source applications built by the HackVerse community.
+              Explore innovative solutions and open-source applications built by the HackForge community.
             </p>
           </motion.div>
         </div>

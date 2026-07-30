@@ -1,6 +1,6 @@
-# HackVerse - Phase 1 Foundation
+# HackForge - Phase 1 Foundation
 
-HackVerse is a premium MERN Hackathon Management Platform. This repository contains the Phase 1 foundational setup.
+HackForge is a premium MERN Hackathon Management Platform. This repository contains the Phase 1 foundational setup.
 
 ## Tech Stack
 
@@ -20,7 +20,7 @@ HackVerse is a premium MERN Hackathon Management Platform. This repository conta
 ## Folder Structure
 
 ```
-hackverse/
+hackforge/
 ├── client/          # Vite + React frontend
 ├── server/          # Node.js + Express backend
 ├── README.md

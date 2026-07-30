@@ -9,7 +9,7 @@ export const PublicLayout = () => {
         <Outlet />
       </main>
       <footer className="py-8 text-center text-sm text-text-secondary border-t border-border mt-auto">
-        &copy; {new Date().getFullYear()} HackVerse. All rights reserved.
+        &copy; {new Date().getFullYear()} HackForge. All rights reserved.
       </footer>
     </div>
   );

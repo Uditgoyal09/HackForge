@@ -1,4 +1,4 @@
-# HackVerse Feature Traceability & Requirements Matrix
+# HackForge Feature Traceability & Requirements Matrix
 
 This document maps every product requirement to its corresponding backend API, frontend component, integration status, and verification state.
 
