@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Code2, UsersRound, Calendar, ArrowUpRight } from 'lucide-react';
+import { Users, Code2, UsersRound, Calendar, ArrowUpRight, Scale } from 'lucide-react';
 import { motion } from 'framer-motion';
 import EventStatusBadge from './EventStatusBadge';
 import EventProgress from './EventProgress';
@@ -71,6 +71,10 @@ const HackathonManagementCard = ({ hackathon }) => {
             <Link to={`/organizer/hackathons/${hackathon._id}/submissions`} className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors group/stat">
               <Code2 className="w-4 h-4 group-hover/stat:text-primary" />
               <span className="text-sm font-semibold">Projects</span>
+            </Link>
+            <Link to={`/organizer/hackathons/${hackathon._id}/judges`} className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors group/stat">
+              <Scale className="w-4 h-4 group-hover/stat:text-primary" />
+              <span className="text-sm font-semibold">Judges</span>
             </Link>
           </div>
           

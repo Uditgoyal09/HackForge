@@ -4,6 +4,7 @@ import { Plus, Trash2, ArrowRight, ArrowLeft, CheckCircle2, ShieldCheck, Trophy,
 import PageHeader from '../../components/common/PageHeader';
 import { hackathonService } from '../../services/hackathonService';
 import { toast } from 'sonner';
+import JudgeSelector from '../../components/organizer/JudgeSelector';
 
 const CreateHackathon = () => {
   const navigate = useNavigate();
@@ -22,9 +23,10 @@ const CreateHackathon = () => {
     endDate: '',
     registrationDeadline: '',
     submissionDeadline: '',
-    prizePool: 10000,
+    prizePool: 1000,
     maxTeamSize: 4,
     rules: '',
+    judges: [],
   });
 
   // Dynamic Judging Criteria State
@@ -57,9 +59,10 @@ const CreateHackathon = () => {
             endDate: toLocalDatetime(h.endDate),
             registrationDeadline: toLocalDatetime(h.registrationDeadline),
             submissionDeadline: toLocalDatetime(h.submissionDeadline),
-            prizePool: h.prizePool || 10000,
+            prizePool: h.prizePool || 1000,
             maxTeamSize: h.maxTeamSize || 4,
             rules: h.rules || '',
+            judges: h.judges ? h.judges.map(j => j.user?._id || j.user) : [],
           });
           if (h.judgingCriteria && h.judgingCriteria.length > 0) {
             setCriteria(h.judgingCriteria.map(c => ({
@@ -127,6 +130,7 @@ const CreateHackathon = () => {
       prizePool: Number(formData.prizePool) || 0,
       maxTeamSize: Number(formData.maxTeamSize) || 4,
       judgingCriteria: criteria.map(c => ({ name: c.name, description: c.description || '', maxScore: Number(c.maxScore) || 10 })),
+      judges: formData.judges,
     };
 
     setSubmitting(true);
@@ -303,7 +307,7 @@ const CreateHackathon = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1.5">Prize Pool ($ USD)</label>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">Prize Pool (INR)</label>
                   <input
                     type="number"
                     name="prizePool"
@@ -331,10 +335,11 @@ const CreateHackathon = () => {
 
           {/* STEP 4: Judging Criteria */}
           {step === 4 && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-lg text-foreground">Step 4: Dynamic Judging Criteria</h3>
-                <button
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-bold text-lg text-foreground">Step 4: Dynamic Judging Criteria</h3>
+                  <button
                   type="button"
                   onClick={handleAddCriterion}
                   className="px-3 py-1.5 rounded-[var(--radius-md)] bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold flex items-center gap-1"
@@ -380,7 +385,19 @@ const CreateHackathon = () => {
                   </div>
                 ))}
               </div>
+              
+              <div className="pt-6 border-t border-border space-y-4">
+                <h3 className="font-bold text-lg text-foreground">Assign Hackathon Judges</h3>
+                <p className="text-xs text-muted-foreground mb-4">
+                  Select the judges who will evaluate submissions for this hackathon. You can also manage judges later from the Hackathon Management page.
+                </p>
+                <JudgeSelector 
+                  selectedJudges={formData.judges} 
+                  onChange={(judges) => setFormData({ ...formData, judges })}
+                />
+              </div>
             </div>
+          </div>
           )}
 
           {/* STEP 5: Rules */}

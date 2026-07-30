@@ -18,6 +18,10 @@ const activityLogSchema = new mongoose.Schema(
     entityId: {
       type: mongoose.Schema.Types.ObjectId,
     },
+    hackathonId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Hackathon',
+    },
     description: { type: String },
     metadata: { type: mongoose.Schema.Types.Mixed },
   },
@@ -26,6 +30,7 @@ const activityLogSchema = new mongoose.Schema(
 
 activityLogSchema.index({ user: 1, createdAt: -1 });
 activityLogSchema.index({ entityType: 1, entityId: 1 });
+activityLogSchema.index({ hackathonId: 1, createdAt: -1 });
 
 const ActivityLog = mongoose.model('ActivityLog', activityLogSchema);
 module.exports = ActivityLog;

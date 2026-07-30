@@ -99,8 +99,12 @@ const publishResults = asyncHandler(async (req, res) => {
     const hackathon = await Hackathon.findById(hackathonId, null, opts);
     if (!hackathon) throw new ApiError(404, 'Hackathon not found');
 
-    if (req.user.role !== 'admin' && hackathon.organizer.toString() !== req.user._id.toString()) {
-      throw new ApiError(403, 'Unauthorized');
+    const isOrganizer = req.user.role === 'organizer' && hackathon.organizer.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+    const isPublisherJudge = hackathon.judges?.some(j => j.user.toString() === req.user._id.toString() && j.status === 'active' && j.canPublishResults === true);
+
+    if (!isAdmin && !isOrganizer && !isPublisherJudge) {
+      throw new ApiError(403, 'Unauthorized to publish results for this hackathon');
     }
 
     if (hackathon.resultsPublished) {

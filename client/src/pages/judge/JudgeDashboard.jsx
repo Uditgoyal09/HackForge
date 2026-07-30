@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, FolderGit2, CheckCircle2, Clock, ArrowRight } from 'lucide-react';
+import { ShieldCheck, FolderGit2, CheckCircle2, Clock, ArrowRight, Calendar } from 'lucide-react';
 import { dashboardService } from '../../services/dashboardService';
 import { judgeService } from '../../services/judgeService';
 
 const JudgeDashboard = () => {
   const [data, setData] = useState(null);
   const [assignments, setAssignments] = useState([]);
+  const [hackathons, setHackathons] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [dashRes, assignRes] = await Promise.all([
+        const [dashRes, assignRes, hackRes] = await Promise.all([
           dashboardService.getJudgeDashboard(),
           judgeService.getJudgeAssignments(),
+          judgeService.getJudgeHackathons()
         ]);
         if (dashRes.success) setData(dashRes.data);
         if (assignRes.success) setAssignments(assignRes.data || []);
+        if (hackRes.success) setHackathons(hackRes.data || []);
       } catch {
         setData(null);
       } finally {
@@ -53,6 +56,42 @@ const JudgeDashboard = () => {
           </span>
           <h1 className="text-3xl font-extrabold tracking-tight">Judge Dashboard</h1>
           <p className="text-muted-foreground text-sm mt-1">Review assigned hackathon submissions, evaluate dynamic criteria, and submit feedback.</p>
+        </div>
+
+        {/* Assigned Hackathons */}
+        <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 sm:p-8 mb-8">
+          <h3 className="font-bold text-lg text-foreground mb-6 flex items-center gap-2">
+            <ShieldCheck className="w-5 h-5 text-primary" />
+            Hackathon Judge Pools
+          </h3>
+          
+          {hackathons.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground text-sm bg-background rounded-[var(--radius-md)] border border-border border-dashed">
+              You haven't been added to any hackathon judge pools yet.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {hackathons.map((h) => (
+                <Link key={h._id} to={`/judge/hackathons/${h._id}`} className="block group">
+                  <div className="bg-background border border-border rounded-[var(--radius-lg)] p-5 h-full transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-bold text-foreground line-clamp-1">{h.title}</h4>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
+                      <Calendar className="w-3.5 h-3.5" />
+                      {new Date(h.startDate).toLocaleDateString()}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold px-2 py-1 bg-primary/10 text-primary rounded-[var(--radius-sm)]">
+                        Active Pool
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Assigned Projects */}

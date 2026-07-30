@@ -6,7 +6,8 @@ const {
   updateHackathon, 
   deleteHackathon,
   openRegistration,
-  closeRegistration
+  closeRegistration,
+  getHackathonActivity
 } = require('../controllers/hackathonController');
 const { protect } = require('../middleware/authMiddleware');
 const authorize = require('../middleware/authorize');
@@ -42,6 +43,8 @@ router.route('/:id/register')
   .delete(protect, authorize('participant'), validateObjectId('id'), cancelRegistration);
 
 router.get('/:id/registrations', protect, authorize('admin', 'organizer'), validateObjectId('id'), getHackathonRegistrations);
+
+router.get('/:id/activity', protect, authorize('admin', 'organizer', 'judge'), validateObjectId('id'), getHackathonActivity);
 
 // Nested Team Routes
 router.post('/:id/teams', protect, authorize('participant'), validateObjectId('id'), validate(createTeamSchema), createTeam);

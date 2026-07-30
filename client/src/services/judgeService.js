@@ -25,4 +25,14 @@ export const judgeService = {
     const res = await api.get(`/submissions/${submissionId}/reviews`);
     return res.data;
   },
+
+  async getJudgeHackathons() {
+    const res = await api.get('/judge/hackathons');
+    return res.data;
+  },
+
+  async getAvailableJudges(params = {}) {
+    const res = await api.get('/judge/available', { params });
+    return res.data;
+  },
 };

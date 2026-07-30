@@ -1,5 +1,5 @@
 const express = require('express');
-const { getJudgeAssignments } = require('../controllers/judgeController');
+const { getJudgeAssignments, getAvailableJudges, getJudgeHackathons } = require('../controllers/judgeController');
 const { protect } = require('../middleware/authMiddleware');
 const authorize = require('../middleware/authorize');
 const { asyncHandler } = require('../utils/asyncHandler');
@@ -32,6 +32,8 @@ const getJudgeDashboard = asyncHandler(async (req, res) => {
 });
 
 router.get('/dashboard', protect, authorize('judge'), getJudgeDashboard);
+router.get('/hackathons', protect, authorize('judge'), getJudgeHackathons);
 router.get('/assignments', protect, authorize('judge'), getJudgeAssignments);
+router.get('/available', protect, authorize('organizer', 'admin'), getAvailableJudges);
 
 module.exports = router;

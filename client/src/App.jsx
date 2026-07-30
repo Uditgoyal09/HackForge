@@ -30,9 +30,11 @@ import CreateHackathon from './pages/organizer/CreateHackathon';
 import OrganizerRegistrations from './pages/organizer/OrganizerRegistrations';
 import OrganizerTeams from './pages/organizer/OrganizerTeams';
 import OrganizerSubmissions from './pages/organizer/OrganizerSubmissions';
+import ManageJudges from './pages/organizer/ManageJudges';
 
 // Judge Pages
 import JudgeDashboard from './pages/judge/JudgeDashboard';
+import JudgeWorkspace from './pages/judge/JudgeWorkspace';
 import EvaluationInterface from './pages/judge/EvaluationInterface';
 
 // Admin Pages
@@ -81,10 +83,12 @@ export default function App() {
               <Route path="/organizer/hackathons/:id/registrations" element={<ProtectedRoute allowedRoles={['organizer', 'admin']}><OrganizerRegistrations /></ProtectedRoute>}/>
               <Route path="/organizer/hackathons/:id/teams" element={<ProtectedRoute allowedRoles={['organizer', 'admin']}><OrganizerTeams /></ProtectedRoute>}/>
               <Route path="/organizer/hackathons/:id/submissions" element={<ProtectedRoute allowedRoles={['organizer', 'admin']}><OrganizerSubmissions /></ProtectedRoute>}/>
+              <Route path="/organizer/hackathons/:id/judges" element={<ProtectedRoute allowedRoles={['organizer', 'admin']}><ManageJudges /></ProtectedRoute>}/>
 
               {/* Judge Routes */}
               <Route path="/judge" element={<Navigate to="/judge/dashboard" replace />} />
               <Route path="/judge/dashboard" element={<ProtectedRoute allowedRoles={['judge', 'admin']}><JudgeDashboard /></ProtectedRoute>}/>
+              <Route path="/judge/hackathons/:id" element={<ProtectedRoute allowedRoles={['judge', 'admin']}><JudgeWorkspace /></ProtectedRoute>}/>
               <Route path="/judge/assignments" element={<ProtectedRoute allowedRoles={['judge', 'admin']}><JudgeDashboard /></ProtectedRoute>}/>
               <Route path="/judge/assignments/:id" element={<ProtectedRoute allowedRoles={['judge', 'admin']}><EvaluationInterface /></ProtectedRoute>}/>
 

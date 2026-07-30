@@ -26,6 +26,13 @@ const hackathonSchema = new mongoose.Schema(
     participantCount: { type: Number, default: 0 },
     rules: { type: String },
     judgingCriteria: [criteriaSchema],
+    judges: [{
+      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+      assignedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      assignedAt: { type: Date, default: Date.now },
+      status: { type: String, enum: ['active', 'removed'], default: 'active' },
+      canPublishResults: { type: Boolean, default: false }
+    }],
     organizer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

@@ -35,4 +35,9 @@ export const hackathonService = {
     const res = await api.patch(`/hackathons/${id}/registration/close`);
     return res.data;
   },
+
+  async getHackathonActivity(id) {
+    const res = await api.get(`/hackathons/${id}/activity`);
+    return res.data;
+  },
 };
