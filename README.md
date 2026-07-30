@@ -1,6 +1,10 @@
-# HackForge - Phase 1 Foundation
+# HackForge
 
-HackForge is a premium MERN Hackathon Management Platform. This repository contains the Phase 1 foundational setup.
+HackForge is a premium MERN Hackathon Management Platform.
+
+## Live Deployment Links
+- **Frontend (Vercel):** [https://hackforge-sigma.vercel.app](https://hackforge-sigma.vercel.app)
+- **Backend API (Render):** [https://hackforge-95kx.onrender.com](https://hackforge-95kx.onrender.com)
 
 ## Tech Stack
 
